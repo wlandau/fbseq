@@ -1,1 +1,3 @@
-# fbseq
+heterosis
+==========
+Read the vignettes first.

@@ -1,0 +1,378 @@
+---
+title: "`heterosis` package tutorial"
+author: Will Landau, Dr. Jarad Niemi
+date: 2015
+output: 
+  rmarkdown::html_vignette:
+    number_sections: true
+    pandoc_args: [
+      "+RTS", "-K64m",
+      "-RTS"]
+    toc: true
+vignette: >
+  \VignetteEngine{knitr::rmarkdown}
+  \VignetteIndexEntry{`heterosis` package tutorial}
+  \usepackage[utf8]{inputenc}
+---
+
+# Read the methodology vignette first.
+
+It's short, and it's important for understanding this tutorial.
+
+# Check your system.
+
+You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `methods`, `MASS`, `MCMCpack`, `parallel`, `plyr`, `pracma`, and `knitr`, all are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install `heterosis`, load it in an R session, create input, and analyze output. To actually run the underlying Markov chain Monte Carlo (MCMC) procedure, however, you need access to a machine with a [CUDA-enabled GPU](http://www.nvidia.com/object/cuda_home_new.html), along with the [`heterosisCUDA` package](https://github.com/wlandau/heterosisCUDA). `heterosisCUDA` is the internal engine of `heterosis`, and it is implemented in CUDA to provide necessary acceleration for the MCMC. `heterosis` and `heterosisCUDA` are kept separate for convenience. For example, you can set up input with `heterosis` and without `heterosisCUDA` on a low-end laptop, run the main algorithm remotely with both `heterosis` and `heterosisCUDA` on a CUDA-enabled [cloud computing enterprise](http://www.nvidia.com/object/gpu-cloud-computing-services.html) such as [Amazon Web Services](http://aws.amazon.com/ec2/instance-types/), and analyze the output locally with `heterosis` and without `heterosisCUDA`. See the `heterosisCUDA` installation vignette for more details.
+
+# Install `heterosis`.
+
+## Option 1: install directly from GitHub.
+
+For this option, you need the `devtools` package, available from CRAN or GitHub. Just open R and run 
+
+```{r, eval=F}
+library(devtools)
+install_github("wlandau/heterosis")
+```
+and then if you have CUDA,
+
+```{r, eval=F}
+install_github("wlandau/heterosisCUDA")
+```
+
+## Option 2: install from the source.
+
+Open a command line program such as Terminal in Mac/Linux and enter the following commands.
+
+```
+git clone git@github.com:wlandau/heterosis.git
+R CMD build heterosis
+R CMD INSTALL heterosis_0.0.tar.gz
+```
+
+Note: you may have to replace `heterosis_0.0.tar.gz` by the name of whatever tarball comes out of `R CMD build`. 
+
+You can install `heterosisCUDA` next, and the steps are analogous. However, you may have to modify the top of the `src/Makevars` file before running `R CMD build`. See the `heterosisCUDA` package vignette for more detailed installation instructions.
+
+# Generate data from the model.
+
+```{r, echo = F, message = F}
+library(heterosis)
+data(vignette_data)
+```
+
+To follow the examples in this vignette, start off by generating data from the model.
+
+```{r, eval = F}
+library(heterosis)
+dat = generate_data(samples = 12, features = 20)
+```
+The list `dat` has 3 members.
+
+<dl>
+<dt>`counts`</dt><dd>A matrix of RNA-sequencing read counts. The rows stand for features/genes, and the columns stand for samples/libraries. This dataset should be fully preprocessed in a similar manner to the publicly available [ReCount](http://bowtie-bio.sourceforge.net/recount/) datasets.
+```{r}
+head(dat$counts)
+```
+</dd>
+<dt>`group`</dt><dd>An integer vector of 1's, 2's,and 3's, indicating the genetic variety of each column of `counts`. 1 stands for one parent, 3 stands for the other parent, and 2 stands for the hybrid. You cannot break this convention.
+```{r}
+dat$group
+```
+</dd>
+<dt>`truth`</dt><dd>A `Starts` object storing the parameter values used to generate `counts`. (More on `Starts` objects later.)</dd>
+</dl>
+
+# Run a simplified workflow with the `heterosis()` function.
+
+The `heterosis()` function simplifies your workflow. If you supply it your RNA-seq count matrix, the group structure, and the name of a supported convergence diagnostic, it runs one or more MCMC chains until the convergence diagnostic shows no evidence of non-convergence. Running 
+
+```{r, eval = F}
+heterosis_output = heterosis(dat$counts, dat$group)
+```
+
+or
+
+```{r, eval = F}
+heterosis_output = heterosis(dat$counts, dat$group, diag = "geweke")
+```
+
+will run a single MCMC chain until the Geweke statistics on the returned parameters appear normally distributed. Starting values are calculated with the `simple_starts()` function. Running
+
+```{r, eval = F}
+heterosis_output = heterosis(dat$counts, dat$group, diag = "gelman")
+```
+will run 4 separate chains (in parallel if multiple GPUs are available) until there is evidence of mixing. In order for Gelman factors to be valid, the starting values need to be dispersed relative to the full posterior distribution. However, too much dispersion leads to an unnecessarily long run time, so the starting values are computed as follows. First, a pilot chain is run with a fixed burnin and a fixed number of "true" iterations. To start a second chain from the pilot chain, either the 0.01 quantile or 0.99 quantile (chosen at random) is taken from each hyperparameter's MCMC samples, and then the rest of the parameters are generated from their prior distributions using those quantiles. This process is iterated for 3 chains, so including the pilot chain, we now have 4 MCMC chains with dispersed starting values. These 4 chains are run concurrently until the Gelman factors of the returned parameters are at or below 1.1.
+
+The output object `heterosis_output` stores the estimated heterosis probabilities and the estimated posterior means of all the parameters from the first chain. The order of the probabilities and means respects the order of genes and libraries in the RNA-seq count dataset. For example, `heterosis_output$eps` is a matrix of posterior means of the $\varepsilon_{n,g}$ parameters with genes ($g$) in the rows and libraries ($n$) in the same arrangement as the counts in `dat$counts`.
+
+```{r}
+str(heterosis_output)
+```
+
+## Run an empirical Bayes analsysis
+
+Set the `empirical_bayes` argument of `heterosis()` to TRUE to fix the model hyperparameters constant at their starting values during the MCMC. You can view the names of the hyperparameters with the `hyperparameters()` function.
+
+```{r}
+hyperparameters()
+```
+
+
+
+
+# Use `run_mcmc()` for more control.
+
+The function `run_mcmc()` one or more MCMC chains, and it gives the user control over configuration parameters and MCMC starting values. Before using `run_mcmc()`, you should understand
+
+1. the `Chain` class, an s4 class for storing the internals of MCMC chains in this package.
+2. how to work with output `Chain` objects to assess convergence and extract heterosis probabilities. 
+
+You can set the `parallel` argument in `run_mcmc` to `TRUE` to run the chains in parallel across different GPUs, if multiple GPUs are available. 
+
+## Set up a `Chain` object.
+
+Create a Chain object easily as follows.
+
+```{r, eval = F}
+starting_chain = Chain(data = dat$counts, group = dat$group)
+```
+
+The`Chain` constructor computes MCMC starting values that the user does not provide. There is more on starting values later.
+
+## Run the MCMC.
+
+If `heterosisCUDA` is installed, you can run the MCMC with the `run_mcmc()` function.
+
+```{r, eval = F}
+ending_chain = run_mcmc(starting_chain)
+```
+
+Compare `starting_chain` to `ending_chain`.
+
+```{r}
+str(starting_chain)
+```
+
+```{r}
+str(ending_chain)
+```
+
+To understand what `run_mcmc()` did, verify these differences for yourself.
+
+<ul>
+<li> `starting_chain@sigRho`, `starting_chain@nu`, ...,  `starting_chain@eps` are zeroed out, whereas `ending_chain@sigRho`, `ending_chain@nu`, ...,  `ending_chain@eps` are filled in. That's because `run_mcmc()` stored the MCMC parameter samples in those slots. When `Configs` objects are introduced later, you will be able to control which parameter samples are returned to you. </li>
+<li>`starting_chain@hph`, `starting_chain@lph`, and `starting_chain@mph` are zeroed out, whereas  `ending_chain@hph`, `ending_chain@lph`, and `ending_chain@mph` are filled in. These are feature/gene-specific estimates of posterior probabilities  of high-parent heterosis, low-parent heterosis, and mid-parent heterosis, respectively. The `run_mcmc()` function computed them.</li>
+<li> Except for `rhoStart`, the slots for MCMC starting values (`sigRhoStart`, `nuStart`, ..., `epsStart`) are different between `starting_chain` and `ending_chain`. That's because the `run_mcmc()` function inserted the parameter samples from the last iteration in those slots. The upshot is that you can easily restart the MCMC from where you left off as many times as you want.
+
+```{r, eval = F}
+ending_chain = run_mcmc(ending_chain)
+ending_chain = run_mcmc(ending_chain)
+# ...
+```
+
+</li>
+
+## Run a single MCMC chain with convergence diagnostics using `run_geweke_mcmc()` or `run_gelman_mcmc()`.
+
+The `run_geweke_mcmc()` and `run_gelman_mcmc()` each take a `Chain` object and run it with Geweke and Gelman diagnostics, respectively, to assess convergence. (`run_gelman_mcmc()` uses an additional 3 mcmc chains to do so.) After the respective checks for convergence are satisfied, more iterations are run to ensure that the hyperparameters and a a random subset of the feature/gene-specific parameters reach a high enough effective sample size. Each function returns the resulting `Chain` object.
+
+
+## Run multiple MCMC chains in parallel.
+
+Let `chain1` and `chain2` be `Chain` objects. You can run both in parallel with
+
+```{r, eval = F}
+output = run_mcmc(chain1, chain2, parallel = TRUE)
+```
+
+The `parallel ` argument is set to `TRUE` by default, so the above is the same as 
+
+```{r, eval = F}
+output = run_mcmc(chain1, chain2)
+```
+
+In either scenario, the program will run MCMCs on `chain1` and `chain2` in parallel on different CUDA-enabled GPUs, if available. If there is only one CUDA GPU or if `parallel` is set to `FALSE`, the chains will run sequentially.
+
+The `output` object is a list containing the `Chain` MCMC output objects corresponding to `chain1` and `chain2`, respectively. You could have also run 
+
+```{r, eval = F}
+output = run_mcmc(list(chain1, chain2))
+```
+
+since `run_mcmc()` accepts lists of `Chain` objects as well. If only a single `Chain` object is passed to `run_mcmc()`, then the function will output a single `Chain` object instead of a list of `Chain` objects.
+
+
+## Look at the output.
+
+### Estimated posterior heterosis probabilities.
+
+Heterosis probabilities are just s4 slots in `Chain` objects. `hph`, `lph`, and `mph` are feature/gene-specific estimates of posterior probabilities  of high-parent heterosis, low-parent heterosis, and mid-parent heterosis, respectively. 
+
+```{r}
+head(ending_chain@hph)
+head(ending_chain@lph)
+head(ending_chain@mph)
+```
+
+These values match the rows of your RNA-seq count matrix as you would expect. For example, the feature/gene in row 2 is estimated to have a `r ending_chain@hph[2]` probability of high-parent heterosis. 
+
+You can extract a list of estimated heterosis probabilities and estimated posterior means for all the parameters with the `list_estimates()` function.
+
+```{r eval = F}
+heterosis_output = list_estimates(ending_chain)
+```
+
+```{r}
+str(heterosis_output)
+```
+
+### `mcmc` objects.
+
+The package provides some functions for reformatting and inspecting `Chain` objects. The `flatten()` function turns a `Chain` object into a `coda::mcmc` object. 
+
+```{r}
+flat = flatten(ending_chain)
+str(flat)
+```
+
+`coda::mcmc` objects are easy to inspect with the [`coda` package](http://cran.r-project.org/web/packages/coda/index.html). You can call `plot(flat)` to view traceplots and density plots of MCMC parameter samples, and if you run multiple chain objects, you can compute Gelman potential scale reduction factors with `coda::gelman.diag`. Just call `gelman.diag(mcmc.list(flatten(chain1), flatten(chain2)))`.
+
+You can also call `flatten()` on an object of class `Starts` to get a named numeric vector of starting values.
+
+```{r}
+head(flatten(dat$truth))
+```
+
+### Comparison of MCMC samples with individual points.
+
+Suppose you want to compare your MCMC parameter samples with the "true" parameters that the data were generated from. Use the `compare_points()` function.
+
+
+```{r}
+head(compare_points(chain = ending_chain, points = dat$truth))
+```
+
+The columns are useful for summarizing the results of this kind of simulation study.
+
+<dl>
+<dt>`pointsIn95ci`</dt><dd>TRUE if the parameter in a given row falls in a 95\% credible interval generated from the parameter samples.</dd>
+<dt>`meansMinusPoints`</dt><dd>For a given parameter, this is the mean of the MCMC samples minus the corresponding value in the `points` argument.</dd>
+<dt>`mediansMinusPoints`</dt><dd>Same as `meansMinusPoints`, but for medians.</dd>
+</dl>
+
+You can also call `compare_points(chain = ending_chain, points = flatten(dat$truth))` or set `points` to be a named numeric vector that you create by hand. However, be sure to respect the naming convention for elements of `points`.
+
+```{r}
+head(flatten(dat$truth), 30)
+```
+
+The `variable_names()` function alludes to the notation used throughout the package.
+
+```{r}
+variable_names()
+```
+
+# Customize your MCMC.
+
+It is often necessary to set control parameters, such as the number of iterations or the length of burnin. It may also be useful to set MCMC starting values. This section describes how to take advantage of this flexibility.
+
+## Set operational parameters with a `Configs` object.
+
+The following code customizes an MCMC.
+
+```{r}
+my_configs = Configs(iterations = 479, burnin = 300, thin = 12, verbose = 7, 
+    returns = c("nu", "tau"), updates_skip = c("gam", "sigRho"), 
+    samples_keep = 2, features_keep = c(1, 5), starts_method = "simple")
+str(my_configs)
+configured_chain = Chain(data = dat$counts, group = dat$group, configs = my_configs)
+```
+
+Now, when I call `run_mcmc(configured_chain)`,
+
+- 300 iterations of burnin will run first, and the parameter samples from those 300 iterations will be discarded. MCMC progress will be printed out 7 times during burnin. 
+- 479 true iterations will follow, and between them, 12 "thinning" iterations will run and then be discarded.
+- Only parameter samples from $\nu$ and $\tau$ will be returned back to the user in the output `Chain` object.
+- The Gibbs steps for $\gamma_1, \ldots, \gamma_G$ ($G$ rows/features/genes in the data) and $\sigma_\rho$ are skipped, so those parameters will stay constant at their starting values throughout the whole MCMC. 
+- Since `samples_keep = 2`, for any parameter with an "$n$" index ($\rho_n$ and $\epsilon_{n, g}$), only parameter samples for $n = 2$ will be returned to the user. When unspecified, `samples_keep` defaults to a random subset of 3 possible values when the `Chain` object is created.
+- Since I set `features_keep = c(1, 5)`, for any parameter with an "$g$" index ($\phi_g$, $\epsilon_{n, g}$, etc.), only parameter samples for $g = 1$ or $g = 5$ will be returned to the user. When unspecified, `features_keep` defaults to a random subset of 4 possible values when the `Chain` object is created.
+- Since I set `starts_method = "simple"`, any unspecified starting values will computed with quick arithmetic. Other options include "glm" and "random".
+
+
+You can easily recover your `Configs` object.
+
+```{r}
+str(Configs(configured_chain))
+```
+
+## Set the starting values with a `Starts` object.
+
+`Starts` objects store starting values. Here, I set $\nu = 37$ and $\rho_1 = \cdots = \rho_N = 10^{-5}$ at the beginning of a chain. 
+
+```{r}
+N = ncol(dat$counts)
+my_starts = Starts(nu = 37, rho = rep(1e-5, N))
+str(my_starts)
+new_chain = Chain(data = dat$counts, group = dat$group, starts = my_starts)
+new_chain@nuStart
+new_chain@rhoStart
+```
+
+Conveniently, `dat$truth` is a `Starts` object, where `dat` was generated from `generate_data()`. That means we can start a chain from the true model parameters when simulating data from the model.
+
+```{r}
+chain_started_at_truth = Chain(data = dat$counts, group = dat$group, starts = dat$truth)
+```
+
+I can also recover my starting values back from a `Chain` object.
+
+```{r}
+str(Starts(new_chain))
+```
+
+But be careful: a call to `run_mcmc(new_chain)` modifies `new_chain@sigRhoStart`, `new_chain@nuStart`, ..., `new_chain@epsStart`. In other words, after running `run_mcmc(new_chain)`, `Starts(new_chain)` will no longer return the starting values you began with. If you want to keep track of your original starting values, call `Starts(new_chain)` before `run_mcmc(new_chain)`.
+
+As a last note on starting values, the `eps` and `epsStart` slots can almost always be ignored. The $\epsilon_{n, g}$ parameters don't need starting values because these are the first to be sampled in the MCMC.
+
+
+# Select a GPU.
+
+This section is only relevant if your machine has multiple CUDA-enabled GPU cards. For a single MCMC chain, you have the option to select the GPU you want to use. First, check how many GPUs you have.
+
+```{r eval = F}
+count = getDeviceCount()
+print(count)
+```
+
+```{r echo = F}
+count = 4
+print(count)
+```
+
+Every GPU has unique index from 0 to `getDeviceCount() - 1`. To get the index of the current GPU, use `getDevice()`.
+
+```{r eval = F}
+dev = getDevice()
+print(dev)
+```
+
+```{r echo = F}
+dev = 0
+print(dev)
+```
+
+Suppose I have a single `Chain` object `my_chain` and I want to run it on GPU 2. I can run
+
+```{r eval = F}
+setDevice(2)
+heterosis_output = run_mcmc(my_chain)
+```
+
+If you set `verbose` to be greater than 0 when creating `my_chain`, the console will tell you the index of the GPU you're running.
+
+Some functions set the GPU index automatically and ignore your calls to `setDevice()`. Notable examples are
+
+- calls to `run_mcmc()` with more than one chain and `parallel = TRUE`.
+- calls to `heterosis()` with `diag = "gelman"`.
+
+

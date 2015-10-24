@@ -1,0 +1,43 @@
+Package: fbseq
+Title: fbseq
+Description: A Markov chain Monte Carlo method for analyzing RNA-seq data
+URL: https://github.com/wlandau/fbseq
+Version: 0.0
+Author: Will Landau <will.landau@gmail.com>
+Maintainer: Will Landau <will.landau@gmail.com>
+Depends:
+    R (>= 3.0.0),
+    methods
+Imports:
+    coda,
+    MASS,
+    parallel,
+    plyr,
+    pracma,
+    R.utils
+Suggests:
+    heterosisCUDA,
+    knitr
+VignetteBuilder: knitr
+License: GPL (>= 3)
+Collate:
+    'alternate_priors.R'
+    'chain.R'
+    'generate_starts.R'
+    'chain_constructor.R'
+    'concatenate.R'
+    'parameters.R'
+    'configs.R'
+    'flatten.R'
+    'credible_intervals.R'
+    'cuda_usage.R'
+    'data.R'
+    'run_fixed_mcmc.R'
+    'effectiveSampleSize.R'
+    'estimates.R'
+    'generate_data.R'
+    'run_gelman_mcmc.R'
+    'heterosis.R'
+    'namespace.R'
+    's4list.R'
+    'starts.R'

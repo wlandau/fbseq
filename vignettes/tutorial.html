@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Will Landau, Dr. Jarad Niemi" />
+
+<meta name="date" content="2015-01-01" />
+
+<title>heterosis package tutorial</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<link href="data:text/css,body%20%7B%0A%20%20background%2Dcolor%3A%20%23fff%3B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20max%2Dwidth%3A%20700px%3B%0A%20%20overflow%3A%20visible%3B%0A%20%20padding%2Dleft%3A%202em%3B%0A%20%20padding%2Dright%3A%202em%3B%0A%20%20font%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0A%20%20font%2Dsize%3A%2014px%3B%0A%20%20line%2Dheight%3A%201%2E35%3B%0A%7D%0A%0A%23header%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0A%0A%23TOC%20%7B%0A%20%20clear%3A%20both%3B%0A%20%20margin%3A%200%200%2010px%2010px%3B%0A%20%20padding%3A%204px%3B%0A%20%20width%3A%20400px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20border%2Dradius%3A%205px%3B%0A%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20font%2Dsize%3A%2013px%3B%0A%20%20line%2Dheight%3A%201%2E3%3B%0A%7D%0A%20%20%23TOC%20%2Etoctitle%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20font%2Dsize%3A%2015px%3B%0A%20%20%20%20margin%2Dleft%3A%205px%3B%0A%20%20%7D%0A%0A%20%20%23TOC%20ul%20%7B%0A%20%20%20%20padding%2Dleft%3A%2040px%3B%0A%20%20%20%20margin%2Dleft%3A%20%2D1%2E5em%3B%0A%20%20%20%20margin%2Dtop%3A%205px%3B%0A%20%20%20%20margin%2Dbottom%3A%205px%3B%0A%20%20%7D%0A%20%20%23TOC%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dleft%3A%20%2D2em%3B%0A%20%20%7D%0A%20%20%23TOC%20li%20%7B%0A%20%20%20%20line%2Dheight%3A%2016px%3B%0A%20%20%7D%0A%0Atable%20%7B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dcolor%3A%20%23DDDDDD%3B%0A%20%20border%2Dstyle%3A%20outset%3B%0A%20%20border%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0A%20%20border%2Dwidth%3A%202px%3B%0A%20%20padding%3A%205px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%20%20line%2Dheight%3A%2018px%3B%0A%20%20padding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0A%20%20border%2Dleft%2Dstyle%3A%20none%3B%0A%20%20border%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Ap%20%7B%0A%20%20margin%3A%200%2E5em%200%3B%0A%7D%0A%0Ablockquote%20%7B%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20padding%3A%200%2E25em%200%2E75em%3B%0A%7D%0A%0Ahr%20%7B%0A%20%20border%2Dstyle%3A%20solid%3B%0A%20%20border%3A%20none%3B%0A%20%20border%2Dtop%3A%201px%20solid%20%23777%3B%0A%20%20margin%3A%2028px%200%3B%0A%7D%0A%0Adl%20%7B%0A%20%20margin%2Dleft%3A%200%3B%0A%7D%0A%20%20dl%20dd%20%7B%0A%20%20%20%20margin%2Dbottom%3A%2013px%3B%0A%20%20%20%20margin%2Dleft%3A%2013px%3B%0A%20%20%7D%0A%20%20dl%20dt%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%7D%0A%0Aul%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%20%20ul%20li%20%7B%0A%20%20%20%20list%2Dstyle%3A%20circle%20outside%3B%0A%20%20%7D%0A%20%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dbottom%3A%200%3B%0A%20%20%7D%0A%0Apre%2C%20code%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20color%3A%20%23333%3B%0A%7D%0Apre%20%7B%0A%20%20white%2Dspace%3A%20pre%2Dwrap%3B%20%20%20%20%2F%2A%20Wrap%20long%20lines%20%2A%2F%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20margin%3A%205px%200px%2010px%200px%3B%0A%20%20padding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Acode%20%7B%0A%20%20font%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0A%20%20font%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0A%20%20padding%3A%202px%200px%3B%0A%7D%0A%0Adiv%2Efigure%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0A%20%20background%2Dcolor%3A%20%23FFFFFF%3B%0A%20%20padding%3A%202px%3B%0A%20%20border%3A%201px%20solid%20%23DDDDDD%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20margin%3A%200%205px%3B%0A%7D%0A%0Ah1%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%20%20font%2Dsize%3A%2035px%3B%0A%20%20line%2Dheight%3A%2040px%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20border%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20padding%2Dbottom%3A%202px%3B%0A%20%20font%2Dsize%3A%20145%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20border%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20font%2Dsize%3A%20120%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0A%20%20margin%2Dleft%3A%208px%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Ah5%2C%20h6%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23ccc%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Aa%20%7B%0A%20%20color%3A%20%230033dd%3B%0A%20%20text%2Ddecoration%3A%20none%3B%0A%7D%0A%20%20a%3Ahover%20%7B%0A%20%20%20%20color%3A%20%236666ff%3B%20%7D%0A%20%20a%3Avisited%20%7B%0A%20%20%20%20color%3A%20%23800080%3B%20%7D%0A%20%20a%3Avisited%3Ahover%20%7B%0A%20%20%20%20color%3A%20%23BB00BB%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%0A%2F%2A%20Class%20described%20in%20https%3A%2F%2Fbenjeffrey%2Ecom%2Fposts%2Fpandoc%2Dsyntax%2Dhighlighting%2Dcss%0A%20%20%20Colours%20from%20https%3A%2F%2Fgist%2Egithub%2Ecom%2Frobsimmons%2F1172277%20%2A%2F%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Keyword%20%2A%2F%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%2F%2A%20DataType%20%2A%2F%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%2F%2A%20DecVal%20%28decimal%20values%29%20%2A%2F%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20BaseN%20%2A%2F%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Float%20%2A%2F%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Char%20%2A%2F%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20String%20%2A%2F%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%2F%2A%20Comment%20%2A%2F%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%2F%2A%20OtherToken%20%2A%2F%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20AlertToken%20%2A%2F%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Function%20calls%20%2A%2F%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%2F%2A%20ErrorTok%20%2A%2F%0A%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div id="header">
+<h1 class="title"><code>heterosis</code> package tutorial</h1>
+<h4 class="author"><em>Will Landau, Dr. Jarad Niemi</em></h4>
+<h4 class="date"><em>2015</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#read-the-methodology-vignette-first."><span class="toc-section-number">1</span> Read the methodology vignette first.</a></li>
+<li><a href="#check-your-system."><span class="toc-section-number">2</span> Check your system.</a></li>
+<li><a href="#install-heterosis."><span class="toc-section-number">3</span> Install <code>heterosis</code>.</a><ul>
+<li><a href="#option-1-install-directly-from-github."><span class="toc-section-number">3.1</span> Option 1: install directly from GitHub.</a></li>
+<li><a href="#option-2-install-from-the-source."><span class="toc-section-number">3.2</span> Option 2: install from the source.</a></li>
+</ul></li>
+<li><a href="#generate-data-from-the-model."><span class="toc-section-number">4</span> Generate data from the model.</a></li>
+<li><a href="#run-a-simplified-workflow-with-the-heterosis-function."><span class="toc-section-number">5</span> Run a simplified workflow with the <code>heterosis()</code> function.</a><ul>
+<li><a href="#run-an-empirical-bayes-analsysis"><span class="toc-section-number">5.1</span> Run an empirical Bayes analsysis</a></li>
+</ul></li>
+<li><a href="#use-run_mcmc-for-more-control."><span class="toc-section-number">6</span> Use <code>run_mcmc()</code> for more control.</a><ul>
+<li><a href="#set-up-a-chain-object."><span class="toc-section-number">6.1</span> Set up a <code>Chain</code> object.</a></li>
+<li><a href="#run-the-mcmc."><span class="toc-section-number">6.2</span> Run the MCMC.</a></li>
+<li><a href="#run-a-single-mcmc-chain-with-convergence-diagnostics-using-run_geweke_mcmc-or-run_gelman_mcmc."><span class="toc-section-number">6.3</span> Run a single MCMC chain with convergence diagnostics using <code>run_geweke_mcmc()</code> or <code>run_gelman_mcmc()</code>.</a></li>
+<li><a href="#run-multiple-mcmc-chains-in-parallel."><span class="toc-section-number">6.4</span> Run multiple MCMC chains in parallel.</a></li>
+<li><a href="#look-at-the-output."><span class="toc-section-number">6.5</span> Look at the output.</a><ul>
+<li><a href="#estimated-posterior-heterosis-probabilities."><span class="toc-section-number">6.5.1</span> Estimated posterior heterosis probabilities.</a></li>
+<li><a href="#mcmc-objects."><span class="toc-section-number">6.5.2</span> <code>mcmc</code> objects.</a></li>
+<li><a href="#comparison-of-mcmc-samples-with-individual-points."><span class="toc-section-number">6.5.3</span> Comparison of MCMC samples with individual points.</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#customize-your-mcmc."><span class="toc-section-number">7</span> Customize your MCMC.</a><ul>
+<li><a href="#set-operational-parameters-with-a-configs-object."><span class="toc-section-number">7.1</span> Set operational parameters with a <code>Configs</code> object.</a></li>
+<li><a href="#set-the-starting-values-with-a-starts-object."><span class="toc-section-number">7.2</span> Set the starting values with a <code>Starts</code> object.</a></li>
+</ul></li>
+<li><a href="#select-a-gpu."><span class="toc-section-number">8</span> Select a GPU.</a></li>
+</ul>
+</div>
+
+<div id="read-the-methodology-vignette-first." class="section level1">
+<h1><span class="header-section-number">1</span> Read the methodology vignette first.</h1>
+<p>It’s short, and it’s important for understanding this tutorial.</p>
+</div>
+<div id="check-your-system." class="section level1">
+<h1><span class="header-section-number">2</span> Check your system.</h1>
+<p>You need to have at least R <span class="math">\(\ge\)</span> 3.2.0, along with the R packages <code>coda</code>, <code>methods</code>, <code>MASS</code>, <code>MCMCpack</code>, <code>parallel</code>, <code>plyr</code>, <code>pracma</code>, and <code>knitr</code>, all are available through the <a href="https://cran.r-project.org/">Comprehensive R Archive Network (CRAN</a>. With those requirements met, you can install <code>heterosis</code>, load it in an R session, create input, and analyze output. To actually run the underlying Markov chain Monte Carlo (MCMC) procedure, however, you need access to a machine with a <a href="http://www.nvidia.com/object/cuda_home_new.html">CUDA-enabled GPU</a>, along with the <a href="https://github.com/wlandau/heterosisCUDA"><code>heterosisCUDA</code> package</a>. <code>heterosisCUDA</code> is the internal engine of <code>heterosis</code>, and it is implemented in CUDA to provide necessary acceleration for the MCMC. <code>heterosis</code> and <code>heterosisCUDA</code> are kept separate for convenience. For example, you can set up input with <code>heterosis</code> and without <code>heterosisCUDA</code> on a low-end laptop, run the main algorithm remotely with both <code>heterosis</code> and <code>heterosisCUDA</code> on a CUDA-enabled <a href="http://www.nvidia.com/object/gpu-cloud-computing-services.html">cloud computing enterprise</a> such as <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Web Services</a>, and analyze the output locally with <code>heterosis</code> and without <code>heterosisCUDA</code>. See the <code>heterosisCUDA</code> installation vignette for more details.</p>
+</div>
+<div id="install-heterosis." class="section level1">
+<h1><span class="header-section-number">3</span> Install <code>heterosis</code>.</h1>
+<div id="option-1-install-directly-from-github." class="section level2">
+<h2><span class="header-section-number">3.1</span> Option 1: install directly from GitHub.</h2>
+<p>For this option, you need the <code>devtools</code> package, available from CRAN or GitHub. Just open R and run</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
+<span class="kw">install_github</span>(<span class="st">&quot;wlandau/heterosis&quot;</span>)</code></pre>
+<p>and then if you have CUDA,</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install_github</span>(<span class="st">&quot;wlandau/heterosisCUDA&quot;</span>)</code></pre>
+</div>
+<div id="option-2-install-from-the-source." class="section level2">
+<h2><span class="header-section-number">3.2</span> Option 2: install from the source.</h2>
+<p>Open a command line program such as Terminal in Mac/Linux and enter the following commands.</p>
+<pre><code>git clone git@github.com:wlandau/heterosis.git
+R CMD build heterosis
+R CMD INSTALL heterosis_0.0.tar.gz</code></pre>
+<p>Note: you may have to replace <code>heterosis_0.0.tar.gz</code> by the name of whatever tarball comes out of <code>R CMD build</code>.</p>
+<p>You can install <code>heterosisCUDA</code> next, and the steps are analogous. However, you may have to modify the top of the <code>src/Makevars</code> file before running <code>R CMD build</code>. See the <code>heterosisCUDA</code> package vignette for more detailed installation instructions.</p>
+</div>
+</div>
+<div id="generate-data-from-the-model." class="section level1">
+<h1><span class="header-section-number">4</span> Generate data from the model.</h1>
+<p>To follow the examples in this vignette, start off by generating data from the model.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(heterosis)
+dat =<span class="st"> </span><span class="kw">generate_data</span>(<span class="dt">samples =</span> <span class="dv">12</span>, <span class="dt">features =</span> <span class="dv">20</span>)</code></pre>
+<p>The list <code>dat</code> has 3 members.</p>
+<dl>
+<dt>
+<code>counts</code>
+</dt>
+<dd>
+<p>A matrix of RNA-sequencing read counts. The rows stand for features/genes, and the columns stand for samples/libraries. This dataset should be fully preprocessed in a similar manner to the publicly available <a href="http://bowtie-bio.sourceforge.net/recount/">ReCount</a> datasets.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(dat$counts)</code></pre>
+<pre><code>##           sample_1 sample_2 sample_3 sample_4 sample_5 sample_6 sample_7
+## feature_1       27     1364       19      241      543       74       87
+## feature_2      286        2        0        3       44       32       21
+## feature_3       12        7       14        0       13       11       23
+## feature_4       14       27       91       55       80       24       10
+## feature_5      244        8       40        4       61        1       61
+## feature_6       27       23       47      125      173        7       72
+##           sample_8 sample_9 sample_10 sample_11 sample_12
+## feature_1       88      154        24        54        31
+## feature_2       14        9       265         3        52
+## feature_3        8        7         5         6         5
+## feature_4        5       20        18         3        10
+## feature_5       37      112        54         7        82
+## feature_6       14       10        41        25        66</code></pre>
+</dd>
+<dt>
+<code>group</code>
+</dt>
+<dd>
+<p>An integer vector of 1’s, 2’s,and 3’s, indicating the genetic variety of each column of <code>counts</code>. 1 stands for one parent, 3 stands for the other parent, and 2 stands for the hybrid. You cannot break this convention.</p>
+<pre class="sourceCode r"><code class="sourceCode r">dat$group</code></pre>
+<pre><code>##  [1] 1 1 1 1 2 2 2 2 3 3 3 3</code></pre>
+</dd>
+<dt>
+<code>truth</code>
+</dt>
+<dd>
+A <code>Starts</code> object storing the parameter values used to generate <code>counts</code>. (More on <code>Starts</code> objects later.)
+</dd>
+</dl>
+</div>
+<div id="run-a-simplified-workflow-with-the-heterosis-function." class="section level1">
+<h1><span class="header-section-number">5</span> Run a simplified workflow with the <code>heterosis()</code> function.</h1>
+<p>The <code>heterosis()</code> function simplifies your workflow. If you supply it your RNA-seq count matrix, the group structure, and the name of a supported convergence diagnostic, it runs one or more MCMC chains until the convergence diagnostic shows no evidence of non-convergence. Running</p>
+<pre class="sourceCode r"><code class="sourceCode r">heterosis_output =<span class="st"> </span><span class="kw">heterosis</span>(dat$counts, dat$group)</code></pre>
+<p>or</p>
+<pre class="sourceCode r"><code class="sourceCode r">heterosis_output =<span class="st"> </span><span class="kw">heterosis</span>(dat$counts, dat$group, <span class="dt">diag =</span> <span class="st">&quot;geweke&quot;</span>)</code></pre>
+<p>will run a single MCMC chain until the Geweke statistics on the returned parameters appear normally distributed. Starting values are calculated with the <code>simple_starts()</code> function. Running</p>
+<pre class="sourceCode r"><code class="sourceCode r">heterosis_output =<span class="st"> </span><span class="kw">heterosis</span>(dat$counts, dat$group, <span class="dt">diag =</span> <span class="st">&quot;gelman&quot;</span>)</code></pre>
+<p>will run 4 separate chains (in parallel if multiple GPUs are available) until there is evidence of mixing. In order for Gelman factors to be valid, the starting values need to be dispersed relative to the full posterior distribution. However, too much dispersion leads to an unnecessarily long run time, so the starting values are computed as follows. First, a pilot chain is run with a fixed burnin and a fixed number of “true” iterations. To start a second chain from the pilot chain, either the 0.01 quantile or 0.99 quantile (chosen at random) is taken from each hyperparameter’s MCMC samples, and then the rest of the parameters are generated from their prior distributions using those quantiles. This process is iterated for 3 chains, so including the pilot chain, we now have 4 MCMC chains with dispersed starting values. These 4 chains are run concurrently until the Gelman factors of the returned parameters are at or below 1.1.</p>
+<p>The output object <code>heterosis_output</code> stores the estimated heterosis probabilities and the estimated posterior means of all the parameters from the first chain. The order of the probabilities and means respects the order of genes and libraries in the RNA-seq count dataset. For example, <code>heterosis_output$eps</code> is a matrix of posterior means of the <span class="math">\(\varepsilon_{n,g}\)</span> parameters with genes (<span class="math">\(g\)</span>) in the rows and libraries (<span class="math">\(n\)</span>) in the same arrangement as the counts in <code>dat$counts</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(heterosis_output)</code></pre>
+<pre><code>## List of 21
+##  $ hph   : num [1:20] 0.476 0.246 0.527 0.16 0.187 0.259 0.315 0.633 0.576 0.959 ...
+##  $ lph   : num [1:20] 0.271 0.302 0.196 0.357 0.611 0.383 0.363 0.072 0.178 0 ...
+##  $ mph   : num [1:20] 0.842 0.778 0.809 0.788 0.885 0.767 0.79 0.866 0.868 0.961 ...
+##  $ sigRho: num 0.379
+##  $ nu    : num 28.9
+##  $ tau   : num 1.05
+##  $ thePhi: num 2.99
+##  $ theAlp: num 0
+##  $ theDel: num 0
+##  $ sigPhi: num 1
+##  $ sigAlp: num 0.273
+##  $ sigDel: num 0.599
+##  $ rho   : num [1:12] 0.325 0.177 -0.34 -0.497 0.666 ...
+##  $ phi   : num [1:20] 4.21 2.94 2.01 3.07 3.39 ...
+##  $ alp   : num [1:20] -0.1165 0.2721 0.0174 -0.2331 0.0509 ...
+##  $ del   : num [1:20] 0.1434 -0.0511 0.2053 -0.1423 -0.3405 ...
+##  $ gam   : num [1:20] 1.18 1.29 0.99 1.07 1.18 ...
+##  $ xiPhi : num [1:20] 0.1 0.1 0.1 0.1 0.1 ...
+##  $ xiAlp : num [1:20] 0.2 0.2 0.2 0.2 0.2 ...
+##  $ xiDel : num [1:20] 0.3 0.3 0.3 0.3 0.3 ...
+##  $ eps   : num [1:20, 1:12] -1.341 2.662 0.119 -0.964 1.83 ...</code></pre>
+<div id="run-an-empirical-bayes-analsysis" class="section level2">
+<h2><span class="header-section-number">5.1</span> Run an empirical Bayes analsysis</h2>
+<p>Set the <code>empirical_bayes</code> argument of <code>heterosis()</code> to TRUE to fix the model hyperparameters constant at their starting values during the MCMC. You can view the names of the hyperparameters with the <code>hyperparameters()</code> function.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hyperparameters</span>()</code></pre>
+<pre><code>## [1] &quot;sigRho&quot; &quot;nu&quot;     &quot;tau&quot;    &quot;thePhi&quot; &quot;theAlp&quot; &quot;theDel&quot; &quot;sigPhi&quot; &quot;sigAlp&quot;
+## [9] &quot;sigDel&quot;</code></pre>
+</div>
+</div>
+<div id="use-run_mcmc-for-more-control." class="section level1">
+<h1><span class="header-section-number">6</span> Use <code>run_mcmc()</code> for more control.</h1>
+<p>The function <code>run_mcmc()</code> one or more MCMC chains, and it gives the user control over configuration parameters and MCMC starting values. Before using <code>run_mcmc()</code>, you should understand</p>
+<ol style="list-style-type: decimal">
+<li>the <code>Chain</code> class, an s4 class for storing the internals of MCMC chains in this package.</li>
+<li>how to work with output <code>Chain</code> objects to assess convergence and extract heterosis probabilities.</li>
+</ol>
+<p>You can set the <code>parallel</code> argument in <code>run_mcmc</code> to <code>TRUE</code> to run the chains in parallel across different GPUs, if multiple GPUs are available.</p>
+<div id="set-up-a-chain-object." class="section level2">
+<h2><span class="header-section-number">6.1</span> Set up a <code>Chain</code> object.</h2>
+<p>Create a Chain object easily as follows.</p>
+<pre class="sourceCode r"><code class="sourceCode r">starting_chain =<span class="st"> </span><span class="kw">Chain</span>(<span class="dt">data =</span> dat$counts, <span class="dt">group =</span> dat$group)</code></pre>
+<p>The<code>Chain</code> constructor computes MCMC starting values that the user does not provide. There is more on starting values later.</p>
+</div>
+<div id="run-the-mcmc." class="section level2">
+<h2><span class="header-section-number">6.2</span> Run the MCMC.</h2>
+<p>If <code>heterosisCUDA</code> is installed, you can run the MCMC with the <code>run_mcmc()</code> function.</p>
+<pre class="sourceCode r"><code class="sourceCode r">ending_chain =<span class="st"> </span><span class="kw">run_mcmc</span>(starting_chain)</code></pre>
+<p>Compare <code>starting_chain</code> to <code>ending_chain</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(starting_chain)</code></pre>
+<pre><code>## Formal class 'Chain' [package &quot;heterosis&quot;] with 94 slots
+##   ..@ counts        : int [1:240] 27 286 12 14 244 27 81 27 12 61 ...
+##   ..@ group         : int [1:12] 1 1 1 1 2 2 2 2 3 3 ...
+##   ..@ sums_n        : int [1:12] 1171 1833 965 750 1797 1037 650 732 1334 850 ...
+##   ..@ sums_g        : int [1:20] 2706 731 111 357 711 630 576 700 70 2188 ...
+##   ..@ returns       : Named int [1:19] 1 0 1 1 1 0 0 1 1 1 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:19] &quot;logpost&quot; &quot;sigRho&quot; &quot;nu&quot; &quot;tau&quot; ...
+##   ..@ updates       : Named int [1:19] 1 0 1 1 1 0 0 1 1 1 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:19] &quot;logpost&quot; &quot;sigRho&quot; &quot;nu&quot; &quot;tau&quot; ...
+##   ..@ samples_keep  : int [1:3] 10 11 12
+##   ..@ features_keep : int [1:4] 5 10 14 20
+##   ..@ M             : int 1000
+##   ..@ N             : int 12
+##   ..@ G             : int 20
+##   ..@ Nkeep         : int 3
+##   ..@ Gkeep         : int 4
+##   ..@ ess           : num 200
+##   ..@ burnin        : int 1000
+##   ..@ mphtol        : num 0.1
+##   ..@ thin          : int 0
+##   ..@ verbose       : int 10
+##   ..@ device        : int -1
+##   ..@ seeds         : int(0) 
+##   ..@ hph           : num [1:20] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ lph           : num [1:20] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ mph           : num [1:20] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ logpost       : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ sRho          : num 10
+##   ..@ d             : num 100
+##   ..@ a             : num 2
+##   ..@ b             : num 1
+##   ..@ cPhi          : num 10
+##   ..@ cAlp          : num 10
+##   ..@ cDel          : num 10
+##   ..@ sPhi          : num 10
+##   ..@ sAlp          : num 10
+##   ..@ sDel          : num 10
+##   ..@ kPhi          : num 0.1
+##   ..@ kAlp          : num 0.2
+##   ..@ kDel          : num 0.3
+##   ..@ rPhi          : num 1.1
+##   ..@ rAlp          : num 1.2
+##   ..@ rDel          : num 1.3
+##   ..@ sigRho        : num(0) 
+##   ..@ nu            : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ tau           : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ thePhi        : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ theAlp        : num(0) 
+##   ..@ theDel        : num(0) 
+##   ..@ sigPhi        : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ sigAlp        : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ sigDel        : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ rho           : num(0) 
+##   ..@ phi           : num [1:4000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ alp           : num [1:4000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ del           : num [1:4000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ gam           : num [1:4000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ xiPhi         : num(0) 
+##   ..@ xiAlp         : num(0) 
+##   ..@ xiDel         : num(0) 
+##   ..@ eps           : num [1:12000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ sigRhoStart   : num 0.379
+##   ..@ nuStart       : num 9.19
+##   ..@ tauStart      : num 1.94
+##   ..@ thePhiStart   : num 2.85
+##   ..@ theAlpStart   : num 0
+##   ..@ theDelStart   : num 0
+##   ..@ sigPhiStart   : num 0.952
+##   ..@ sigAlpStart   : num 0.444
+##   ..@ sigDelStart   : num 0.762
+##   ..@ rhoStart      : Named num [1:12] 0.325 0.177 -0.34 -0.497 0.666 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:12] &quot;sample_1&quot; &quot;sample_2&quot; &quot;sample_3&quot; &quot;sample_4&quot; ...
+##   ..@ phiStart      : Named num [1:20] 4.32 2.53 1.75 2.97 3.46 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ alpStart      : Named num [1:20] -0.4132 0.6724 -0.0142 -0.6457 0.301 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ delStart      : Named num [1:20] 0.5635 0.6991 0.7911 -0.0995 -0.5058 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ gamStart      : Named num [1:20] 1.249 1.451 0.574 0.947 1.36 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ xiPhiStart    : num [1:20] 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 ...
+##   ..@ xiAlpStart    : num [1:20] 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 ...
+##   ..@ xiDelStart    : num [1:20] 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 ...
+##   ..@ epsStart      : num [1:240] -1.765 3.469 0.393 -1.299 2.01 ...
+##   ..@ sigRhoPostMean: num 0
+##   ..@ nuPostMean    : num 0
+##   ..@ tauPostMean   : num 0
+##   ..@ thePhiPostMean: num 0
+##   ..@ theAlpPostMean: num 0
+##   ..@ theDelPostMean: num 0
+##   ..@ sigPhiPostMean: num 0
+##   ..@ sigAlpPostMean: num 0
+##   ..@ sigDelPostMean: num 0
+##   ..@ rhoPostMean   : num [1:12] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ phiPostMean   : num [1:20] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ alpPostMean   : num [1:20] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ delPostMean   : num [1:20] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ gamPostMean   : num [1:20] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ xiPhiPostMean : num [1:20] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ xiAlpPostMean : num [1:20] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ xiDelPostMean : num [1:20] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ epsPostMean   : num [1:240] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(ending_chain)</code></pre>
+<pre><code>## Formal class 'Chain' [package &quot;heterosis&quot;] with 94 slots
+##   ..@ counts        : int [1:240] 27 286 12 14 244 27 81 27 12 61 ...
+##   ..@ group         : int [1:12] 1 1 1 1 2 2 2 2 3 3 ...
+##   ..@ sums_n        : int [1:12] 1171 1833 965 750 1797 1037 650 732 1334 850 ...
+##   ..@ sums_g        : int [1:20] 2706 731 111 357 711 630 576 700 70 2188 ...
+##   ..@ returns       : Named int [1:19] 1 0 1 1 1 0 0 1 1 1 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:19] &quot;logpost&quot; &quot;sigRho&quot; &quot;nu&quot; &quot;tau&quot; ...
+##   ..@ updates       : Named int [1:19] 1 0 1 1 1 0 0 1 1 1 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:19] &quot;logpost&quot; &quot;sigRho&quot; &quot;nu&quot; &quot;tau&quot; ...
+##   ..@ samples_keep  : int [1:3] 10 11 12
+##   ..@ features_keep : int [1:4] 5 10 14 20
+##   ..@ M             : int 1000
+##   ..@ N             : int 12
+##   ..@ G             : int 20
+##   ..@ Nkeep         : int 3
+##   ..@ Gkeep         : int 4
+##   ..@ ess           : num 200
+##   ..@ burnin        : int 1000
+##   ..@ mphtol        : num 0.1
+##   ..@ thin          : int 0
+##   ..@ verbose       : int 10
+##   ..@ device        : int -1
+##   ..@ seeds         : int [1:20] 100707 89569 144077 42536 186528 46020 87310 42903 163143 23909 ...
+##   ..@ hph           : num [1:20] 0.682 0.333 0.441 0.187 0.172 0.399 0.35 0.466 0.495 0.621 ...
+##   ..@ lph           : num [1:20] 0.095 0.253 0.255 0.41 0.433 0.259 0.359 0.215 0.183 0.05 ...
+##   ..@ mph           : num [1:20] 0.713 0.607 0.673 0.674 0.647 0.544 0.684 0.62 0.665 0.664 ...
+##   ..@ logpost       : num [1:1000] 52561 52545 52527 52532 52530 ...
+##   ..@ sRho          : num 10
+##   ..@ d             : num 100
+##   ..@ a             : num 2
+##   ..@ b             : num 1
+##   ..@ cPhi          : num 10
+##   ..@ cAlp          : num 10
+##   ..@ cDel          : num 10
+##   ..@ sPhi          : num 10
+##   ..@ sAlp          : num 10
+##   ..@ sDel          : num 10
+##   ..@ kPhi          : num 0.1
+##   ..@ kAlp          : num 0.2
+##   ..@ kDel          : num 0.3
+##   ..@ rPhi          : num 1.1
+##   ..@ rAlp          : num 1.2
+##   ..@ rDel          : num 1.3
+##   ..@ sigRho        : num(0) 
+##   ..@ nu            : num [1:1000] 14.85 18.27 13.74 6.64 7.78 ...
+##   ..@ tau           : num [1:1000] 0.97 1.04 1.12 1.05 1 ...
+##   ..@ thePhi        : num [1:1000] 2.85 3.06 2.71 2.8 2.93 ...
+##   ..@ theAlp        : num(0) 
+##   ..@ theDel        : num(0) 
+##   ..@ sigPhi        : num [1:1000] 0.822 0.933 0.768 1.099 0.918 ...
+##   ..@ sigAlp        : num [1:1000] 0.105 0.126 0.147 0.143 0.153 ...
+##   ..@ sigDel        : num [1:1000] 0.534 0.388 0.644 0.634 0.658 ...
+##   ..@ rho           : num(0) 
+##   ..@ phi           : num [1:4000] 3.683 3.608 0.693 4.007 3.656 ...
+##   ..@ alp           : num [1:4000] 0.0409 0.1043 -0.0389 0.2276 0.0275 ...
+##   ..@ del           : num [1:4000] -0.3769 0.0821 -0.4001 -0.0703 -0.2694 ...
+##   ..@ gam           : num [1:4000] 1.12 1.73 1.29 1.28 1.37 ...
+##   ..@ xiPhi         : num(0) 
+##   ..@ xiAlp         : num(0) 
+##   ..@ xiDel         : num(0) 
+##   ..@ eps           : num [1:12000] 0.193 -4.24 -0.126 -0.89 -1.175 ...
+##   ..@ sigRhoStart   : num 0.379
+##   ..@ nuStart       : num 4.91
+##   ..@ tauStart      : num 0.993
+##   ..@ thePhiStart   : num 2.78
+##   ..@ theAlpStart   : num 0
+##   ..@ theDelStart   : num 0
+##   ..@ sigPhiStart   : num 0.827
+##   ..@ sigAlpStart   : num 0.0787
+##   ..@ sigDelStart   : num 0.171
+##   ..@ rhoStart      : Named num [1:12] 0.325 0.177 -0.34 -0.497 0.666 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:12] &quot;sample_1&quot; &quot;sample_2&quot; &quot;sample_3&quot; &quot;sample_4&quot; ...
+##   ..@ phiStart      : Named num [1:20] 4.17 2.54 2.09 3.06 3.33 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ alpStart      : Named num [1:20] -0.0111 -0.0411 -0.1097 -0.0707 -0.13 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ delStart      : Named num [1:20] -0.0716 0.0706 0.2169 -0.2928 -0.029 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ gamStart      : Named num [1:20] 1.28 1.41 0.6 1.08 1.67 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ xiPhiStart    : num [1:20] 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 ...
+##   ..@ xiAlpStart    : num [1:20] 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 ...
+##   ..@ xiDelStart    : num [1:20] 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 ...
+##   ..@ epsStart      : num [1:240] -1.235 2.709 -0.147 -0.469 1.712 ...
+##   ..@ sigRhoPostMean: num 0.379
+##   ..@ nuPostMean    : num 30.5
+##   ..@ tauPostMean   : num 1.05
+##   ..@ thePhiPostMean: num 2.94
+##   ..@ theAlpPostMean: num 0
+##   ..@ theDelPostMean: num 0
+##   ..@ sigPhiPostMean: num 0.939
+##   ..@ sigAlpPostMean: num 0.173
+##   ..@ sigDelPostMean: num 0.326
+##   ..@ rhoPostMean   : num [1:12] 0.325 0.177 -0.34 -0.497 0.666 ...
+##   ..@ phiPostMean   : num [1:20] 4.18 2.72 2.02 3.08 3.32 ...
+##   ..@ alpPostMean   : num [1:20] -0.081 0.05517 -0.00698 -0.12056 0.09947 ...
+##   ..@ delPostMean   : num [1:20] 0.3014 0.0317 0.1107 -0.1102 -0.1255 ...
+##   ..@ gamPostMean   : num [1:20] 1.177 1.304 0.982 1.079 1.166 ...
+##   ..@ xiPhiPostMean : num [1:20] 0.1 0.1 0.1 0.1 0.1 ...
+##   ..@ xiAlpPostMean : num [1:20] 0.2 0.2 0.2 0.2 0.2 ...
+##   ..@ xiDelPostMean : num [1:20] 0.3 0.3 0.3 0.3 0.3 ...
+##   ..@ epsPostMean   : num [1:240] -1.2785 2.6569 0.0716 -0.871 1.9399 ...</code></pre>
+<p>To understand what <code>run_mcmc()</code> did, verify these differences for yourself.</p>
+<ul>
+<li>
+<code>starting_chain@sigRho</code>, <code>starting_chain@nu</code>, …, <code>starting_chain@eps</code> are zeroed out, whereas <code>ending_chain@sigRho</code>, <code>ending_chain@nu</code>, …, <code>ending_chain@eps</code> are filled in. That’s because <code>run_mcmc()</code> stored the MCMC parameter samples in those slots. When <code>Configs</code> objects are introduced later, you will be able to control which parameter samples are returned to you.
+</li>
+<li>
+<code>starting_chain@hph</code>, <code>starting_chain@lph</code>, and <code>starting_chain@mph</code> are zeroed out, whereas <code>ending_chain@hph</code>, <code>ending_chain@lph</code>, and <code>ending_chain@mph</code> are filled in. These are feature/gene-specific estimates of posterior probabilities of high-parent heterosis, low-parent heterosis, and mid-parent heterosis, respectively. The <code>run_mcmc()</code> function computed them.
+</li>
+<li>
+<p>Except for <code>rhoStart</code>, the slots for MCMC starting values (<code>sigRhoStart</code>, <code>nuStart</code>, …, <code>epsStart</code>) are different between <code>starting_chain</code> and <code>ending_chain</code>. That’s because the <code>run_mcmc()</code> function inserted the parameter samples from the last iteration in those slots. The upshot is that you can easily restart the MCMC from where you left off as many times as you want.</p>
+<pre class="sourceCode r"><code class="sourceCode r">ending_chain =<span class="st"> </span><span class="kw">run_mcmc</span>(ending_chain)
+ending_chain =<span class="st"> </span><span class="kw">run_mcmc</span>(ending_chain)
+<span class="co"># ...</span></code></pre>
+</li>
+</div>
+<div id="run-a-single-mcmc-chain-with-convergence-diagnostics-using-run_geweke_mcmc-or-run_gelman_mcmc." class="section level2">
+<h2><span class="header-section-number">6.3</span> Run a single MCMC chain with convergence diagnostics using <code>run_geweke_mcmc()</code> or <code>run_gelman_mcmc()</code>.</h2>
+<p>The <code>run_geweke_mcmc()</code> and <code>run_gelman_mcmc()</code> each take a <code>Chain</code> object and run it with Geweke and Gelman diagnostics, respectively, to assess convergence. (<code>run_gelman_mcmc()</code> uses an additional 3 mcmc chains to do so.) After the respective checks for convergence are satisfied, more iterations are run to ensure that the hyperparameters and a a random subset of the feature/gene-specific parameters reach a high enough effective sample size. Each function returns the resulting <code>Chain</code> object.</p>
+</div>
+<div id="run-multiple-mcmc-chains-in-parallel." class="section level2">
+<h2><span class="header-section-number">6.4</span> Run multiple MCMC chains in parallel.</h2>
+<p>Let <code>chain1</code> and <code>chain2</code> be <code>Chain</code> objects. You can run both in parallel with</p>
+<pre class="sourceCode r"><code class="sourceCode r">output =<span class="st"> </span><span class="kw">run_mcmc</span>(chain1, chain2, <span class="dt">parallel =</span> <span class="ot">TRUE</span>)</code></pre>
+<p>The <code>parallel</code> argument is set to <code>TRUE</code> by default, so the above is the same as</p>
+<pre class="sourceCode r"><code class="sourceCode r">output =<span class="st"> </span><span class="kw">run_mcmc</span>(chain1, chain2)</code></pre>
+<p>In either scenario, the program will run MCMCs on <code>chain1</code> and <code>chain2</code> in parallel on different CUDA-enabled GPUs, if available. If there is only one CUDA GPU or if <code>parallel</code> is set to <code>FALSE</code>, the chains will run sequentially.</p>
+<p>The <code>output</code> object is a list containing the <code>Chain</code> MCMC output objects corresponding to <code>chain1</code> and <code>chain2</code>, respectively. You could have also run</p>
+<pre class="sourceCode r"><code class="sourceCode r">output =<span class="st"> </span><span class="kw">run_mcmc</span>(<span class="kw">list</span>(chain1, chain2))</code></pre>
+<p>since <code>run_mcmc()</code> accepts lists of <code>Chain</code> objects as well. If only a single <code>Chain</code> object is passed to <code>run_mcmc()</code>, then the function will output a single <code>Chain</code> object instead of a list of <code>Chain</code> objects.</p>
+</div>
+<div id="look-at-the-output." class="section level2">
+<h2><span class="header-section-number">6.5</span> Look at the output.</h2>
+<div id="estimated-posterior-heterosis-probabilities." class="section level3">
+<h3><span class="header-section-number">6.5.1</span> Estimated posterior heterosis probabilities.</h3>
+<p>Heterosis probabilities are just s4 slots in <code>Chain</code> objects. <code>hph</code>, <code>lph</code>, and <code>mph</code> are feature/gene-specific estimates of posterior probabilities of high-parent heterosis, low-parent heterosis, and mid-parent heterosis, respectively.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(ending_chain@hph)</code></pre>
+<pre><code>## [1] 0.682 0.333 0.441 0.187 0.172 0.399</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(ending_chain@lph)</code></pre>
+<pre><code>## [1] 0.095 0.253 0.255 0.410 0.433 0.259</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(ending_chain@mph)</code></pre>
+<pre><code>## [1] 0.713 0.607 0.673 0.674 0.647 0.544</code></pre>
+<p>These values match the rows of your RNA-seq count matrix as you would expect. For example, the feature/gene in row 2 is estimated to have a 0.333 probability of high-parent heterosis.</p>
+<p>You can extract a list of estimated heterosis probabilities and estimated posterior means for all the parameters with the <code>list_estimates()</code> function.</p>
+<pre class="sourceCode r"><code class="sourceCode r">heterosis_output =<span class="st"> </span><span class="kw">list_estimates</span>(ending_chain)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(heterosis_output)</code></pre>
+<pre><code>## List of 21
+##  $ hph   : num [1:20] 0.476 0.246 0.527 0.16 0.187 0.259 0.315 0.633 0.576 0.959 ...
+##  $ lph   : num [1:20] 0.271 0.302 0.196 0.357 0.611 0.383 0.363 0.072 0.178 0 ...
+##  $ mph   : num [1:20] 0.842 0.778 0.809 0.788 0.885 0.767 0.79 0.866 0.868 0.961 ...
+##  $ sigRho: num 0.379
+##  $ nu    : num 28.9
+##  $ tau   : num 1.05
+##  $ thePhi: num 2.99
+##  $ theAlp: num 0
+##  $ theDel: num 0
+##  $ sigPhi: num 1
+##  $ sigAlp: num 0.273
+##  $ sigDel: num 0.599
+##  $ rho   : num [1:12] 0.325 0.177 -0.34 -0.497 0.666 ...
+##  $ phi   : num [1:20] 4.21 2.94 2.01 3.07 3.39 ...
+##  $ alp   : num [1:20] -0.1165 0.2721 0.0174 -0.2331 0.0509 ...
+##  $ del   : num [1:20] 0.1434 -0.0511 0.2053 -0.1423 -0.3405 ...
+##  $ gam   : num [1:20] 1.18 1.29 0.99 1.07 1.18 ...
+##  $ xiPhi : num [1:20] 0.1 0.1 0.1 0.1 0.1 ...
+##  $ xiAlp : num [1:20] 0.2 0.2 0.2 0.2 0.2 ...
+##  $ xiDel : num [1:20] 0.3 0.3 0.3 0.3 0.3 ...
+##  $ eps   : num [1:20, 1:12] -1.341 2.662 0.119 -0.964 1.83 ...</code></pre>
+</div>
+<div id="mcmc-objects." class="section level3">
+<h3><span class="header-section-number">6.5.2</span> <code>mcmc</code> objects.</h3>
+<p>The package provides some functions for reformatting and inspecting <code>Chain</code> objects. The <code>flatten()</code> function turns a <code>Chain</code> object into a <code>coda::mcmc</code> object.</p>
+<pre class="sourceCode r"><code class="sourceCode r">flat =<span class="st"> </span><span class="kw">flatten</span>(ending_chain)
+<span class="kw">str</span>(flat)</code></pre>
+<pre><code>##  mcmc [1:1000, 1:35] 52561 52545 52527 52532 52530 ...
+##  - attr(*, &quot;dimnames&quot;)=List of 2
+##   ..$ : NULL
+##   ..$ : chr [1:35] &quot;logpost&quot; &quot;nu&quot; &quot;tau&quot; &quot;thePhi&quot; ...
+##  - attr(*, &quot;mcpar&quot;)= num [1:3] 1 1000 1</code></pre>
+<p><code>coda::mcmc</code> objects are easy to inspect with the <a href="http://cran.r-project.org/web/packages/coda/index.html"><code>coda</code> package</a>. You can call <code>plot(flat)</code> to view traceplots and density plots of MCMC parameter samples, and if you run multiple chain objects, you can compute Gelman potential scale reduction factors with <code>coda::gelman.diag</code>. Just call <code>gelman.diag(mcmc.list(flatten(chain1), flatten(chain2)))</code>.</p>
+<p>You can also call <code>flatten()</code> on an object of class <code>Starts</code> to get a named numeric vector of starting values.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">flatten</span>(dat$truth))</code></pre>
+<pre><code>## sRho    d    a    b cPhi cAlp 
+##   10  100    2    1   10   10</code></pre>
+</div>
+<div id="comparison-of-mcmc-samples-with-individual-points." class="section level3">
+<h3><span class="header-section-number">6.5.3</span> Comparison of MCMC samples with individual points.</h3>
+<p>Suppose you want to compare your MCMC parameter samples with the “true” parameters that the data were generated from. Use the <code>compare_points()</code> function.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">compare_points</span>(<span class="dt">chain =</span> ending_chain, <span class="dt">points =</span> dat$truth))</code></pre>
+<pre><code>##        pointsIn95ci meansMinusPoints mediansMinusPoints
+## nu             TRUE      20.53537117        11.87869159
+## tau            TRUE       0.05209485         0.05016519
+## thePhi         TRUE      -0.06371605        -0.07025462
+## sigPhi         TRUE      -0.06133596        -0.08487289
+## sigAlp         TRUE      -0.02698110        -0.05115585
+## sigDel         TRUE       0.12600030         0.10019846</code></pre>
+<p>The columns are useful for summarizing the results of this kind of simulation study.</p>
+<dl>
+<dt>
+<code>pointsIn95ci</code>
+</dt>
+<dd>
+TRUE if the parameter in a given row falls in a 95% credible interval generated from the parameter samples.
+</dd>
+<dt>
+<code>meansMinusPoints</code>
+</dt>
+<dd>
+For a given parameter, this is the mean of the MCMC samples minus the corresponding value in the <code>points</code> argument.
+</dd>
+<dt>
+<code>mediansMinusPoints</code>
+</dt>
+<dd>
+Same as <code>meansMinusPoints</code>, but for medians.
+</dd>
+</dl>
+<p>You can also call <code>compare_points(chain = ending_chain, points = flatten(dat$truth))</code> or set <code>points</code> to be a named numeric vector that you create by hand. However, be sure to respect the naming convention for elements of <code>points</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">flatten</span>(dat$truth), <span class="dv">30</span>)</code></pre>
+<pre><code>##          sRho             d             a             b          cPhi 
+##  10.000000000 100.000000000   2.000000000   1.000000000  10.000000000 
+##          cAlp          cDel          sPhi          sAlp          sDel 
+##  10.000000000  10.000000000  10.000000000  10.000000000  10.000000000 
+##          kPhi          kAlp          kDel          rPhi          rAlp 
+##   0.100000000   0.200000000   0.300000000   1.100000000   1.200000000 
+##          rDel        sigRho            nu           tau        thePhi 
+##   1.300000000   0.010000000  10.000000000   1.000000000   3.000000000 
+##        theAlp        theDel        sigPhi        sigAlp        sigDel 
+##   0.000000000   0.000000000   1.000000000   0.200000000   0.200000000 
+##         rho_1         rho_2         rho_3         rho_4         rho_5 
+##  -0.003831893  -0.005265772   0.005437902   0.004839993  -0.017360051</code></pre>
+<p>The <code>variable_names()</code> function alludes to the notation used throughout the package.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">variable_names</span>()</code></pre>
+<pre><code>##  [1] &quot;logpost&quot; &quot;sigRho&quot;  &quot;nu&quot;      &quot;tau&quot;     &quot;thePhi&quot;  &quot;theAlp&quot;  &quot;theDel&quot; 
+##  [8] &quot;sigPhi&quot;  &quot;sigAlp&quot;  &quot;sigDel&quot;  &quot;rho&quot;     &quot;phi&quot;     &quot;alp&quot;     &quot;del&quot;    
+## [15] &quot;gam&quot;     &quot;xiPhi&quot;   &quot;xiAlp&quot;   &quot;xiDel&quot;   &quot;eps&quot;</code></pre>
+</div>
+</div>
+</div>
+<div id="customize-your-mcmc." class="section level1">
+<h1><span class="header-section-number">7</span> Customize your MCMC.</h1>
+<p>It is often necessary to set control parameters, such as the number of iterations or the length of burnin. It may also be useful to set MCMC starting values. This section describes how to take advantage of this flexibility.</p>
+<div id="set-operational-parameters-with-a-configs-object." class="section level2">
+<h2><span class="header-section-number">7.1</span> Set operational parameters with a <code>Configs</code> object.</h2>
+<p>The following code customizes an MCMC.</p>
+<pre class="sourceCode r"><code class="sourceCode r">my_configs =<span class="st"> </span><span class="kw">Configs</span>(<span class="dt">iterations =</span> <span class="dv">479</span>, <span class="dt">burnin =</span> <span class="dv">300</span>, <span class="dt">thin =</span> <span class="dv">12</span>, <span class="dt">verbose =</span> <span class="dv">7</span>, 
+    <span class="dt">returns =</span> <span class="kw">c</span>(<span class="st">&quot;nu&quot;</span>, <span class="st">&quot;tau&quot;</span>), <span class="dt">updates_skip =</span> <span class="kw">c</span>(<span class="st">&quot;gam&quot;</span>, <span class="st">&quot;sigRho&quot;</span>), 
+    <span class="dt">samples_keep =</span> <span class="dv">2</span>, <span class="dt">features_keep =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">5</span>), <span class="dt">starts_method =</span> <span class="st">&quot;simple&quot;</span>)
+<span class="kw">str</span>(my_configs)</code></pre>
+<pre><code>## Formal class 'Configs' [package &quot;heterosis&quot;] with 13 slots
+##   ..@ iterations   : num 479
+##   ..@ ess          : num 200
+##   ..@ burnin       : num 300
+##   ..@ mphtol       : num 0.1
+##   ..@ thin         : num 12
+##   ..@ verbose      : num 7
+##   ..@ returns      : chr [1:2] &quot;nu&quot; &quot;tau&quot;
+##   ..@ returns_skip : chr [1:17] &quot;logpost&quot; &quot;sigRho&quot; &quot;thePhi&quot; &quot;theAlp&quot; ...
+##   ..@ updates      : chr [1:17] &quot;logpost&quot; &quot;nu&quot; &quot;tau&quot; &quot;thePhi&quot; ...
+##   ..@ updates_skip : chr [1:2] &quot;gam&quot; &quot;sigRho&quot;
+##   ..@ samples_keep : num 2
+##   ..@ features_keep: num [1:2] 1 5
+##   ..@ starts_method: chr &quot;simple&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">configured_chain =<span class="st"> </span><span class="kw">Chain</span>(<span class="dt">data =</span> dat$counts, <span class="dt">group =</span> dat$group, <span class="dt">configs =</span> my_configs)</code></pre>
+<pre><code>## [1] &quot;Checking for low-count features/genes.&quot;
+## [1] &quot;Computing simple nonstochastic starting values.&quot;</code></pre>
+<p>Now, when I call <code>run_mcmc(configured_chain)</code>,</p>
+<ul>
+<li>300 iterations of burnin will run first, and the parameter samples from those 300 iterations will be discarded. MCMC progress will be printed out 7 times during burnin.</li>
+<li>479 true iterations will follow, and between them, 12 “thinning” iterations will run and then be discarded.</li>
+<li>Only parameter samples from <span class="math">\(\nu\)</span> and <span class="math">\(\tau\)</span> will be returned back to the user in the output <code>Chain</code> object.</li>
+<li>The Gibbs steps for <span class="math">\(\gamma_1, \ldots, \gamma_G\)</span> (<span class="math">\(G\)</span> rows/features/genes in the data) and <span class="math">\(\sigma_\rho\)</span> are skipped, so those parameters will stay constant at their starting values throughout the whole MCMC.</li>
+<li>Since <code>samples_keep = 2</code>, for any parameter with an “<span class="math">\(n\)</span>” index (<span class="math">\(\rho_n\)</span> and <span class="math">\(\epsilon_{n, g}\)</span>), only parameter samples for <span class="math">\(n = 2\)</span> will be returned to the user. When unspecified, <code>samples_keep</code> defaults to a random subset of 3 possible values when the <code>Chain</code> object is created.</li>
+<li>Since I set <code>features_keep = c(1, 5)</code>, for any parameter with an “<span class="math">\(g\)</span>” index (<span class="math">\(\phi_g\)</span>, <span class="math">\(\epsilon_{n, g}\)</span>, etc.), only parameter samples for <span class="math">\(g = 1\)</span> or <span class="math">\(g = 5\)</span> will be returned to the user. When unspecified, <code>features_keep</code> defaults to a random subset of 4 possible values when the <code>Chain</code> object is created.</li>
+<li>Since I set <code>starts_method = &quot;simple&quot;</code>, any unspecified starting values will computed with quick arithmetic. Other options include “glm” and “random”.</li>
+</ul>
+<p>You can easily recover your <code>Configs</code> object.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">Configs</span>(configured_chain))</code></pre>
+<pre><code>## Formal class 'Configs' [package &quot;heterosis&quot;] with 13 slots
+##   ..@ iterations   : int 479
+##   ..@ ess          : num 200
+##   ..@ burnin       : int 300
+##   ..@ mphtol       : num 0.1
+##   ..@ thin         : int 12
+##   ..@ verbose      : int 7
+##   ..@ returns      : chr [1:2] &quot;nu&quot; &quot;tau&quot;
+##   ..@ returns_skip : chr [1:17] &quot;logpost&quot; &quot;sigRho&quot; &quot;thePhi&quot; &quot;theAlp&quot; ...
+##   ..@ updates      : chr [1:17] &quot;logpost&quot; &quot;nu&quot; &quot;tau&quot; &quot;thePhi&quot; ...
+##   ..@ updates_skip : chr [1:2] &quot;sigRho&quot; &quot;gam&quot;
+##   ..@ samples_keep : int 2
+##   ..@ features_keep: int [1:2] 1 5
+##   ..@ starts_method: chr &quot;simple&quot;</code></pre>
+</div>
+<div id="set-the-starting-values-with-a-starts-object." class="section level2">
+<h2><span class="header-section-number">7.2</span> Set the starting values with a <code>Starts</code> object.</h2>
+<p><code>Starts</code> objects store starting values. Here, I set <span class="math">\(\nu = 37\)</span> and <span class="math">\(\rho_1 = \cdots = \rho_N = 10^{-5}\)</span> at the beginning of a chain.</p>
+<pre class="sourceCode r"><code class="sourceCode r">N =<span class="st"> </span><span class="kw">ncol</span>(dat$counts)
+my_starts =<span class="st"> </span><span class="kw">Starts</span>(<span class="dt">nu =</span> <span class="dv">37</span>, <span class="dt">rho =</span> <span class="kw">rep</span>(<span class="fl">1e-5</span>, N))
+<span class="kw">str</span>(my_starts)</code></pre>
+<pre><code>## Formal class 'Starts' [package &quot;heterosis&quot;] with 34 slots
+##   ..@ sRho  : num 10
+##   ..@ d     : num 100
+##   ..@ a     : num 2
+##   ..@ b     : num 1
+##   ..@ cPhi  : num 10
+##   ..@ cAlp  : num 10
+##   ..@ cDel  : num 10
+##   ..@ sPhi  : num 10
+##   ..@ sAlp  : num 10
+##   ..@ sDel  : num 10
+##   ..@ kPhi  : num 0.1
+##   ..@ kAlp  : num 0.2
+##   ..@ kDel  : num 0.3
+##   ..@ rPhi  : num 1.1
+##   ..@ rAlp  : num 1.2
+##   ..@ rDel  : num 1.3
+##   ..@ sigRho: num(0) 
+##   ..@ nu    : num 37
+##   ..@ tau   : num(0) 
+##   ..@ thePhi: num(0) 
+##   ..@ theDel: num 0
+##   ..@ theAlp: num 0
+##   ..@ sigPhi: num(0) 
+##   ..@ sigAlp: num(0) 
+##   ..@ sigDel: num(0) 
+##   ..@ rho   : num [1:12] 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 ...
+##   ..@ phi   : num(0) 
+##   ..@ alp   : num(0) 
+##   ..@ del   : num(0) 
+##   ..@ gam   : num(0) 
+##   ..@ xiPhi : num(0) 
+##   ..@ xiAlp : num(0) 
+##   ..@ xiDel : num(0) 
+##   ..@ eps   : num(0)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">new_chain =<span class="st"> </span><span class="kw">Chain</span>(<span class="dt">data =</span> dat$counts, <span class="dt">group =</span> dat$group, <span class="dt">starts =</span> my_starts)</code></pre>
+<pre><code>## [1] &quot;Checking for low-count features/genes.&quot;
+## [1] &quot;Computing simple nonstochastic starting values.&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">new_chain@nuStart</code></pre>
+<pre><code>## [1] 37</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">new_chain@rhoStart</code></pre>
+<pre><code>##  [1] 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05
+## [12] 1e-05</code></pre>
+<p>Conveniently, <code>dat$truth</code> is a <code>Starts</code> object, where <code>dat</code> was generated from <code>generate_data()</code>. That means we can start a chain from the true model parameters when simulating data from the model.</p>
+<pre class="sourceCode r"><code class="sourceCode r">chain_started_at_truth =<span class="st"> </span><span class="kw">Chain</span>(<span class="dt">data =</span> dat$counts, <span class="dt">group =</span> dat$group, <span class="dt">starts =</span> dat$truth)</code></pre>
+<pre><code>## [1] &quot;Checking for low-count features/genes.&quot;
+## [1] &quot;Computing simple nonstochastic starting values.&quot;</code></pre>
+<p>I can also recover my starting values back from a <code>Chain</code> object.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">Starts</span>(new_chain))</code></pre>
+<pre><code>## Formal class 'Starts' [package &quot;heterosis&quot;] with 34 slots
+##   ..@ sRho  : num 10
+##   ..@ d     : num 100
+##   ..@ a     : num 2
+##   ..@ b     : num 1
+##   ..@ cPhi  : num 10
+##   ..@ cAlp  : num 10
+##   ..@ cDel  : num 10
+##   ..@ sPhi  : num 10
+##   ..@ sAlp  : num 10
+##   ..@ sDel  : num 10
+##   ..@ kPhi  : num 0.1
+##   ..@ kAlp  : num 0.2
+##   ..@ kDel  : num 0.3
+##   ..@ rPhi  : num 1.1
+##   ..@ rAlp  : num 1.2
+##   ..@ rDel  : num 1.3
+##   ..@ sigRho: num 0.379
+##   ..@ nu    : num 37
+##   ..@ tau   : num 1.94
+##   ..@ thePhi: num 2.85
+##   ..@ theDel: num 0
+##   ..@ theAlp: num 0
+##   ..@ sigPhi: num 0.952
+##   ..@ sigAlp: num 0.444
+##   ..@ sigDel: num 0.762
+##   ..@ rho   : num [1:12] 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 1e-05 ...
+##   ..@ phi   : Named num [1:20] 4.32 2.53 1.75 2.97 3.46 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ alp   : Named num [1:20] -0.4132 0.6724 -0.0142 -0.6457 0.301 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ del   : Named num [1:20] 0.5635 0.6991 0.7911 -0.0995 -0.5058 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ gam   : Named num [1:20] 1.249 1.451 0.574 0.947 1.36 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:20] &quot;feature_1&quot; &quot;feature_2&quot; &quot;feature_3&quot; &quot;feature_4&quot; ...
+##   ..@ xiPhi : num [1:20] 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 ...
+##   ..@ xiAlp : num [1:20] 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 ...
+##   ..@ xiDel : num [1:20] 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 ...
+##   ..@ eps   : num [1:240] -1.765 3.469 0.393 -1.299 2.01 ...</code></pre>
+<p>But be careful: a call to <code>run_mcmc(new_chain)</code> modifies <code>new_chain@sigRhoStart</code>, <code>new_chain@nuStart</code>, …, <code>new_chain@epsStart</code>. In other words, after running <code>run_mcmc(new_chain)</code>, <code>Starts(new_chain)</code> will no longer return the starting values you began with. If you want to keep track of your original starting values, call <code>Starts(new_chain)</code> before <code>run_mcmc(new_chain)</code>.</p>
+<p>As a last note on starting values, the <code>eps</code> and <code>epsStart</code> slots can almost always be ignored. The <span class="math">\(\epsilon_{n, g}\)</span> parameters don’t need starting values because these are the first to be sampled in the MCMC.</p>
+</div>
+</div>
+<div id="select-a-gpu." class="section level1">
+<h1><span class="header-section-number">8</span> Select a GPU.</h1>
+<p>This section is only relevant if your machine has multiple CUDA-enabled GPU cards. For a single MCMC chain, you have the option to select the GPU you want to use. First, check how many GPUs you have.</p>
+<pre class="sourceCode r"><code class="sourceCode r">count =<span class="st"> </span><span class="kw">getDeviceCount</span>()
+<span class="kw">print</span>(count)</code></pre>
+<pre><code>## [1] 4</code></pre>
+<p>Every GPU has unique index from 0 to <code>getDeviceCount() - 1</code>. To get the index of the current GPU, use <code>getDevice()</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">dev =<span class="st"> </span><span class="kw">getDevice</span>()
+<span class="kw">print</span>(dev)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>Suppose I have a single <code>Chain</code> object <code>my_chain</code> and I want to run it on GPU 2. I can run</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setDevice</span>(<span class="dv">2</span>)
+heterosis_output =<span class="st"> </span><span class="kw">run_mcmc</span>(my_chain)</code></pre>
+<p>If you set <code>verbose</code> to be greater than 0 when creating <code>my_chain</code>, the console will tell you the index of the GPU you’re running.</p>
+<p>Some functions set the GPU index automatically and ignore your calls to <code>setDevice()</code>. Notable examples are</p>
+<ul>
+<li>calls to <code>run_mcmc()</code> with more than one chain and <code>parallel = TRUE</code>.</li>
+<li>calls to <code>heterosis()</code> with <code>diag = &quot;gelman&quot;</code>.</li>
+</ul>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

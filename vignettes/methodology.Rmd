@@ -1,0 +1,115 @@
+---
+title: "`heterosis` package methodology"
+author: Will Landau, Dr. Jarad Niemi
+date: 2015
+output: 
+  rmarkdown::html_vignette:
+    number_sections: true
+    toc: true
+vignette: >
+  \VignetteEngine{knitr::rmarkdown}
+  \VignetteIndexEntry{`heterosis` package methodology}
+  \usepackage[utf8]{inputenc}
+---
+
+\providecommand{\e}{\varepsilon}
+\providecommand{\nv}{{}^{-1}}
+\providecommand{\ov}[1]{\overline{#1}}
+\providecommand{\q}{$\quad$ \newline}
+\providecommand{\rt}{\rightarrow}
+\providecommand{\vc}[1]{\boldsymbol{#1}}
+\providecommand{\wh}[1]{\widehat{#1}}
+
+# Purpose
+
+The `heterosis` package is a tool for analyzing data from certain RNA sequencing experiments. These experiments concern the phenomenon of heterosis, or hybrid vigor, in situations where two genetic lines are inbred to produce a hybrid. An individual gene has
+
+- high-parent heterosis if it is *more* expressed in the hybrid than in either parent. 
+- low-parent heterosis if it is *less* expressed in the hybrid than in either parent.
+- mid-parent heterosis if its expression level in the hybrid is significantly different from its mean expression level in the parents.
+
+The package uses a hierarchical modeling strategy, executed with a slice-sampling-within-Gibbs Markov chain Monte Carlo algorithm, to calculate the posterior probability of each form of heterosis for each gene. These heterosis probabilities enable the user to detect heterosis genes and rank them according to the strength of heterosis.
+
+
+# The hierarchical model
+
+Let $y_{n, g}$ be the fully preprocessed RNA-sequencing read count for sample/library $n$ and feature/gene $g$. The full hierarchical model is as follows.
+
+$$ \begin{align*}
+&y_{n,g} \stackrel{\text{ind}}{\sim} \text{Poisson}(\exp(\e_{n, g} + \eta(n, g))) \\
+& \qquad \e_{n, g} \stackrel{\text{ind}}{\sim} \text{N}(0, \rho_n^2 \gamma_g^2) \\
+& \qquad \qquad \rho_n^2 \stackrel{\text{ind}}{\sim} \text{Inv-Gamma}\left (\text{shape} = \frac{\nu_\rho}{2}, \ \text{scale} =  \frac{\nu_\rho \tau_\rho^2}{2} \right) \\
+& \qquad \qquad \qquad \nu_\rho \stackrel{\text{}}{\sim} \text{U}(0, d_\rho) \\
+& \qquad \qquad \qquad \tau_\rho^2 \stackrel{\text{}}{\sim} \text{Gamma}(\text{shape} = a_\rho, \text{rate} = b_\rho) \\
+& \qquad \qquad \gamma_g^2 \stackrel{\text{ind}}{\sim} \text{Inv-Gamma}\left (\text{shape} = \frac{\nu_\gamma}{2}, \ \text{scale} =  \frac{\nu_\gamma \tau_\gamma^2}{2} \right) \\
+& \qquad \qquad \qquad \nu_\gamma \stackrel{\text{}}{\sim} \text{U}(0, d) \\
+& \qquad \qquad \qquad \tau_\gamma^2 \stackrel{\text{}}{\sim} \text{Gamma}(\text{shape} = a_\gamma, \text{rate} = b_\gamma) \\
+& \qquad \phi_g \stackrel{\text{ind}}{\sim} \text{N}(\theta_\phi, \sigma_\phi^2 \xi_{\phi, g}) \\
+& \qquad \qquad \theta_\phi \stackrel{\text{}}{\sim} \text{N}(0, c_{\phi }^2) \\
+& \qquad \qquad \sigma_\phi \stackrel{\text{}}{\sim} \text{U}(0, s_{\phi}) \\
+& \qquad \qquad \xi_{\phi, g} \stackrel{\text{ind}}{\sim} p(\xi_{\phi, g} \ | \ k_\phi, r_\phi) \\
+& \qquad \alpha_g \stackrel{\text{ind}}{\sim} \text{N}( \theta_\alpha, \sigma_\alpha^2 \xi_{\alpha, g}) \\
+& \qquad \qquad \theta_\alpha \stackrel{\text{}}{\sim} \text{N}(0, c_{\alpha}^2) \\
+& \qquad \qquad \sigma_\alpha \stackrel{\text{}}{\sim} \text{U}(0, s_{\alpha}) \\
+& \qquad \qquad \xi_{\alpha, g} \stackrel{\text{ind}}{\sim} p(\xi_{\alpha, g} \ | \ k_\alpha, r_\alpha) \\
+& \qquad \delta_g \stackrel{\text{ind}}{\sim} \text{N}(\theta_\delta, \sigma_{\delta}^2 \xi_{\delta, g}) \\
+& \qquad \qquad \theta_\delta\stackrel{\text{}}{\sim} \text{N}(0, c_{\delta}^2) \\
+& \qquad \qquad \sigma_\delta \stackrel{\text{}}{\sim} \text{U}(0, s_{\delta}) \\
+& \qquad \qquad \xi_{\delta, g} \stackrel{\text{ind}}{\sim} p(\xi_{\delta, g} \ | \ k_\delta, r_\delta)
+\end{align*} $$ 
+
+where
+
+$$ \begin{align*}
+\eta(n, g) = \begin{cases}
+\phi_g - \alpha_g & \text{ library $n$ is in treatment group 1 (parent 1)} \\
+\phi_g + \delta_g & \text{ library $n$ is in treatment group 2 (hybrid)} \\
+\phi_g + \alpha_g & \text{ library $n$ is in treatment group 3 (parent 2)} \\
+\end{cases}
+\end{align*} $$
+
+In practice, $\tau_\gamma$ 
+
+## Interpretations of model parameters
+
+<dl>
+<dt>$\rho_n$</dt><dd>log (base $e$) normalization factor of sample/library $n$, accounting for sequencing depth, etc.</dd>
+<dt>$\sigma_\rho$</dt><dd>prior standard deviation of the $\rho_n$'s.</dd>
+<dt>$s_\rho$</dt><dd>a constant, usually set to an arbitrary high value.</dd>
+<dt>$\e_{n, g}$</dt><dd>accounts for overdispersion relative to the Poisson likelihood.</dd>
+<dt>$\gamma_g$</dt><dd>the feature/gene-specific standard deviation of $\{\e_{1, g}, \ldots, \e_{N, g}\}$ (where $N$ is the number of samples/libraries). It serves the same purpose as a gene-specific negative binomial dispersion parameter.</dd>
+<dt>$\nu$</dt><dd>an inverse-scaled-chisquare degrees of freedom parameter. The higher it is, the more the $\gamma_g$ parameters "shrink" towards $\tau^2$.</dd>
+<dt>$\tau$</dt><dd>close to the square root of the mean of the $\gamma_g$'s.</dd>
+<dt>$\phi_g$</dt><dd>for feature/gene $g$, the mean of the log expression levels of the parents.</dd>
+<dt>$\theta_\phi$</dt><dd>prior mean of the $\phi_g$'s.</dd>
+<dt>$\sigma_\phi$</dt><dd>prior standard deviation of the $\phi_g$'s.</dd>
+<dt>$\alpha_g$</dt><dd>for feature/gene $g$, half the difference in log expression levels of the parents.</dd>
+<dt>$\theta_\alpha$</dt><dd>prior mean of the $\alpha_g$'s.</dd>
+<dt>$\sigma_\alpha$</dt><dd>prior standard deviation of the $\alpha_g$'s.</dd>
+<dt>$\delta_g$</dt><dd>for feature/gene $g$, the log expression level of hybrid minus the mean of the log expression levels of the parents.</dd>
+<dt>$\theta_\delta$</dt><dd>prior mean of the $\delta_g$'s.</dd>
+<dt>$\sigma_\delta$</dt><dd>prior standard deviation of the $\delta_g$'s.</dd>
+</dl>
+
+## Detecting heterosis genes
+
+The model immediately gives a posterior probability of heterosis for each gene.
+
+<dl>
+<dt>$P(\delta_g > |\alpha_g| \ | \ \text{data})$</dt><dd>Posterior probability of high-parent heterosis.</dd>
+<dt>$P(\delta_g < -|\alpha_g| \ | \ \text{data})$</dt><dd>Posterior probability of low-parent heterosis.</dd>
+<dt>$P(|\delta_g| > \e \ | \ \text{data},\  \e)$</dt><dd>Posterior probability of mid-parent heterosis given a threshold $\e$.</dd>
+</dl>
+
+The `heterosis` package estimates these probabilities using a Markov chain Monte Carlo (MCMC) algorithm. With parameter samples $\alpha_g^{(m)}$ and $\delta_g^{(m)}$ ($m = 1, \ldots, M$) from the MCMC,
+
+$$ \begin{align*}
+P(\delta_g > |\alpha_g| \ | \ \text{data}) &\approx M \nv \sum_{m = 1}^M P(\delta_g^{(m)} > |\alpha_g| \ | \ \text{data}) \\
+P(\delta_g < -|\alpha_g| \ | \ \text{data}) &\approx M \nv \sum_{m = 1}^M P(\delta_g^{(m)} < -|\alpha_g^{(m)}| \ | \ \text{data}) \\
+P(|\delta_g| > \e \ | \ \text{data},\  \e) &\approx M \nv \sum_{m = 1}^M P(|\delta_g^{(m)}| > \e \ | \ \text{data},\  \e) \\
+\end{align*} $$
+
+
+# Fitting the model
+
+To fit the model and estimate heterosis probabilities, the `heterosis` package uses a slice-sampling-within-Gibbs Markov chain Monte Carlo algorithm, which is fully derived and explained in the manuscript. The package returns to the user MCMC parameter samples, heterosis probabilities, and the log full posterior density up to a proportionality constant (a useful convergence diagnostic).
