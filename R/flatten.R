@@ -33,15 +33,14 @@ flatten_chain = function(chain){
   
   for(x in c("omega", "theta"))
     if(length(slot(chain, x))){
-      ret[[x]] = matrix(slot(chain, ret), ncol = chain@L, byrow = T)
-      colnames(ret[[n]]) = paste0(x, "_", 1:chain@L)
+      ret[[x]] = matrix(slot(chain, x), ncol = chain@L, byrow = T)
+      colnames(ret[[x]]) = paste0(x, "_", 1:chain@L)
     }
 
-  for(n in c("beta", "xi"))
-    if(length(slot(chain, n))){
-      ret[[n]] = matrix(slot(chain, n), ncol = chain@L * chain@Greturn, byrow = T)
-      colnames(ret[[n]]) = paste0(n, "_", rep(chain@genes_return, each = chain@Greturn), 
-        "_", rep(chain@genes_return, times = chain@L), sep="")
+  for(x in c("beta", "xi"))
+    if(length(slot(chain, x))){
+      ret[[x]] = matrix(slot(chain, x), ncol = chain@L * chain@Greturn, byrow = T)
+      colnames(ret[[x]]) = paste0(x, "_", rep(1:chain@L, each = chain@L), "_", rep(chain@genes_return, times = chain@L))
     }
 
   if(length(chain@epsilon)){
@@ -75,9 +74,8 @@ flatten_starts = function(starts){
   N = tryCatch(max(length(starts@rho), length(starts@epsilon)/G), warning = function(w) 0, error = function(w) 0)
 
   for(x in c("beta", "xi"))
-    if(length(starts@beta))
-      names(starts@beta) = paste0(x, "_", rep(1:L, each = G), "_", 
-                                                       rep(1:G, times = L))
+    if(length(slot(starts, x)))
+      names(slot(starts, x)) = paste0(x, "_", rep(1:L, each = G), "_", rep(1:G, times = L))
 
   for(x in c("c", "k", "r", "s", "gamma", "omega", "rho", "theta"))
     if(length(slot(starts, x)))
@@ -92,24 +90,24 @@ flatten_starts = function(starts){
     aRho = starts@aRho,
     bGamma = starts@bGamma,
     bRho = starts@bRho,
-    c = starts@c,
+    starts@c,
     dGamma = starts@dGamma,
     dRho = starts@dRho,
-    k = starts@k,
-    r = starts@r,
-    s = starts@s,
+    starts@k,
+    starts@r,
+    starts@s,
 
-    beta = starts@beta,
-    epsilon = starts@epsilon,
-    gamma = starts@gamma,
+    starts@beta,
+    starts@epsilon,
+    starts@gamma,
     nuGamma = starts@nuGamma,
     nuRho = starts@nuRho,
-    omega = starts@omega,
-    rho = starts@rho,
+    starts@omega,
+    starts@rho,
     tauGamma = starts@tauGamma,
     tauRho = starts@tauRho,
-    theta = starts@theta,
-    xi = starts@xi
+    starts@theta,
+    starts@xi
   )
 }
 
@@ -125,11 +123,12 @@ flatten_starts = function(starts){
 flatten_post = function(chain, square = F, updated_only = T){
   post = ifelse(square, "PostMeanSquare", "PostMean")
   faux_starts = Starts()
-  for(x in names(chain)[grep(post, slotNames(chain))])
+  for(x in slotNames(chain)[grep(paste0(post, "$"), slotNames(chain))])
     slot(faux_starts, gsub(post, "", x)) = slot(chain, x)
 
+  u = chain@parameter_sets_update
   cand = parameters()
-  if(updated_only) cand = intersect(cand, names(which(chain@updates)))
+  if(updated_only) cand = intersect(cand, names(u)[as.logical(u)])
   pattern = paste0(cand, collapse = "|")
   flat = flatten(faux_starts)
   flat[grep(pattern, names(flat))]

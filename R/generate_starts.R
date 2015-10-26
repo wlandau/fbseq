@@ -51,7 +51,7 @@ simple_starts = function(chain, counts, design){
 
   theta = apply(beta, 2, mean)
   omega = apply(beta, 2, var)
-  xi = rep(1, ncol(beta))
+  xi = rep(1, ncol(beta)*G)
 
   epsilon = logcounts - t(PROJ %*% t(logcounts))
   gamma = get_nonzeros(apply(epsilon, 1, var, na.rm = T))
