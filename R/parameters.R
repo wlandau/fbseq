@@ -1,62 +1,8 @@
-#' @title Function \code{hyperparameters}
-#' @description Same as \code{parameters()}, except that only the names
-#' of hyperparameters are printed out. Type \code{?parameters} for details.
-#'
-#' @export
-#' @return Character vector of hyperparameter names.
-hyperparameters = function(){
-  return(c("nuRho", "nuGam", "tauRho", "tauGam", "thePhi", "theAlp", "theDel", "sigPhi", "sigAlp", "sigDel"))
-}
-
 #' @title Function \code{parameters}
-#' @description Prints out the full collection of variable names. These are the variables that you can
-#' calculate/update during the MCMC, and they are mostly parameters in the hierarchical model.
+#' @description Prints out the full collection of variable names. See the methodology vignette for details.
 #'
 #' @export
-#' @return Character vector of variable names.
-#' 
-#' @details When you call \code{Configs(returns = x, updates = y, ...)},
-#' \code{x} and \code{y} are vectors of strings. \code{x} names the 
-#' variables to return from the MCMC, and \code{y} names
-#' the variables to calculate/update during the MCMC.
-#' These variables are mostly parameters in the hierarchical model
-#' we're using, and they are explicitly defined in the paper. 
-#' In this program, their names show up as follows.
-#' 
-#' \describe{
-#'   \item{"nuRho"}{\eqn{\nu_\rho}, a hyperparameter controlling overdispersion. You can 
-#' think of it as an inverse chi-square degrees of freedom parameter. Intuitively, it's 
-#' positively related to the degree to which the \eqn{\rho_n} parameters "shrink
-#' towards \eqn{\tau_\rho}.}
-#'   \item{"nuGam"}{\eqn{\nu_\gamma}, a hyperparameter controlling overdispersion. You can 
-#' think of it as an inverse chi-square degrees of freedom parameter. Intuitively, it's 
-#' positively related to the degree to which the \eqn{\gamma_g} parameters "shrink
-#' towards \eqn{\tau_\gamma}.}
-#'  \item{"tauRho"}{\eqn{\tau_\rho}, a hyperparameter controlling overdispersion. It controls 
-#' the mean of the \eqn{\rho_n} parameters.}
-#'  \item{"tauGam"}{\eqn{\tau_\gamma}, a hyperparameter controlling overdispersion. It controls 
-#' the mean of the \eqn{\gamma_g} parameters. This parameter should be set constant at 1.}
-#' \item{"thePhi"}{\eqn{\theta_\phi}, the prior mean of the \eqn{\phi_g} parameters.}
-#' \item{"theAlp"}{\eqn{\theta_\alpha}, the prior mean of the \eqn{\alpha_g} parameters.}
-#' \item{"theDel"}{\eqn{\theta_\delta}, the prior mean of the \eqn{\delta_g} parameters.}
-#' \item{"sigPhi"}{\eqn{\sigma_\phi}, the prior standard deviation of the \eqn{\phi_g} parameters.}
-#' \item{"sigAlp"}{\eqn{\sigma_\alpha}, the prior standard deviation of the \eqn{\alpha_g} parameters.}
-#' \item{"sigDel"}{\eqn{\sigma_\delta}, the prior standard deviation of the \eqn{\delta_g} parameters.}
-#' \item{"phi"}{The \eqn{\phi_g} parameters, which serve as the feature/gene-specific
-#' parental mean expression levels on the log (base e) scale.}
-#' \item{"alp"}{The \eqn{\alpha_g} parameters, which serve as the feature/gene-specific
-#' half-parental differences in expression level on the log (base e) scale.}
-#' \item{"del"}{The \eqn{\delta_g} parameters, which serve as the feature/gene-specific
-#' differences in expression level between the hybrid and the \eqn{\phi_g}'s
-#'  on the log (base e) scale.}
-#' \item{"rho"}{The \eqn{\rho_n} parameters, which serve as sample/library-specific normalization
-#' factors on the log (base e) scale.}
-#' \item{"gam"}{The \eqn{\gamma_g} parameters, the feature/gene-specific standard deviations 
-#' of the \eqn{\epsilon_{n, g}} parameters. Conceptually, they are related to gene-specific
-#' overdispersions.}
-#' \item{"eps"}{The \eqn{\epsilon_{n, g}} parameters, included in the model to account
-#' for overdispersion.}
-#' }
+#' @return Character vector of parameter names.
 parameters = function(){
-  return(c(hyperparameters(), "phi", "alp", "del", "rho", "gam", "xiPhi", "xiAlp", "xiDel", "eps"))
+  c("beta", "epsilon", "gamma", "nuGamma", "nuRho", "omega", "rho", "tauGamma", "tauRho", "theta", "xi")
 }

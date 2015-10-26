@@ -12,21 +12,20 @@ NULL
 #' then the function will return a \code{Chain} object with those slots. Note: \code{data}
 #' should only be a list within internal functions of the package. It is not recommended that
 #' the user assign \code{data} to be a list.
-#' @param group Experimental design. A vector of integers,
-#' one for each RNA-seq sample/library, denoting the genetic
-#' variety of that sample. You must use 1 for parent 1, 2 for parent 2,
-#' and 3 for the hybrid.
+#' @param design Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+#' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+#' gene-specific variables.
 #' @param configs A \code{Configs} object of MCMC control parameters.
 #' @param starts A \code{Starts} object of model parameter starting values.
 Chain = function(
   data, 
-  group, 
+  design, 
   configs = Configs(),
   starts = Starts()
 ){
   chain = new("Chain")
 
-  if(class(data) == "list"){
+  if(class(data) == "list" & !is.data.frame(data)){
     for(n in intersect(names(data), slotNames(chain)))
        slot(chain, n) = data[[n]]
     return(chain)
@@ -34,11 +33,11 @@ Chain = function(
 
   counts = as.matrix(data)
   stopifnot(all(is.finite(counts)))
-  chain = plug_in_chain(chain, configs = Configs(), starts = Starts())
-  chain = plug_in_chain(chain, configs = configs, starts = starts)
-  chain = fill_easy_gaps(chain, counts, group)
-  chain = simple_starts(chain, counts, group)
-  if(chain@returns["tauGam"] || chain@updates["tauGam"]) warning("TauGam should be set constant at 1. Sampling tauGam will prevent the MCMC from converging, and returning even a constant tauGam will muddle effective sample size diagnostics. Control tauGam with the returns, updates, returns_skip, and updates_skip slots in your Configs object. See the package vignettes for details.")
+  chain = plug_in_chain(chain, design, configs = Configs(), starts = Starts())
+  chain = plug_in_chain(chain, design, configs = configs, starts = starts)
+  chain = fill_easy_gaps(chain, counts, design)
+  chain = simple_starts(chain, counts, design)
+  if(chain@returns["tauGamma"] || chain@updates["tauGamma"]) warning("TauGamma should be set constant at 1. Sampling tauGamma will prevent the MCMC from converging, and returning even a constant tauGamma will muddle effective sample size diagnostics. Control tauGamma with the returns, updates, returns_skip, and updates_skip slots in your Configs object. See the package vignettes for details.")
   chain
 }
 
@@ -50,33 +49,32 @@ Chain = function(
 #' @return a \code{Chain} object 
 #'
 #' @param chain a \code{Chain} object
+#' @param design Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+#' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+#' gene-specific variables.
 #' @param configs A \code{Configs} object of MCMC control parameters.
 #' @param starts A \code{Starts} object of model parameter starting values.
-plug_in_chain = function(chain, configs, starts){
-  chain@M = as.integer(configs@iterations)
-  priors = paste0(c("phi", "alp", "del"), "Prior")
-  subtract = c("returns", "updates", priors)
+plug_in_chain = function(chain, design, configs, starts){
+  chain@iterations = as.integer(configs@iterations)
+  subtract = c("parameter_sets_return", "parameter_sets_update", "priors")
   for(n in setdiff(intersect(slotNames(chain), slotNames(configs)), subtract))
     slot(chain, n) = as(slot(configs, n), class(slot(chain, n)))
 
-  for(n in c("returns", "updates")){
+  for(n in c("parameter_sets_return", "parameter_sets_update")){
     slot(chain, n) = as.integer(parameters() %in% slot(configs, n))
     names(slot(chain, n)) = parameters()
   }
 
+  chain@priors = ifelse(configs@priors %in% alternate_priors(), which(alternate_priors() == configs@priors), 0)
+  if(length(chain@priors) == 1) chain@priors = rep(chain@priors, ncol(design))
+  stopifnot(length(chain@priors) == ncol(design))
+
   for(n in slotNames(chain)){
     if(grepl("Start", n))
       slot(chain, n) = as(slot(starts, gsub("Start", "", n)), class(slot(chain, n)))
-    else if(n %in% slotNames(starts) && !(paste(n, "Start", sep = "") %in% slotNames(chain)))
+    else if(n %in% slotNames(starts) && !(paste0(n, "Start") %in% slotNames(chain)))
       slot(chain, n) = as(slot(starts, n), class(slot(chain, n)))
   }
-  
-  for(n in priors)
-    if(slot(configs, n) %in% alternate_priors()){
-      slot(chain, n) = which(alternate_priors() == slot(configs, n))
-    } else {
-      slot(chain, n) = as.integer(0)
-    }
 
   return(chain)
 }
@@ -89,63 +87,60 @@ plug_in_chain = function(chain, configs, starts){
 #'
 #' @param chain a \code{Chain} object
 #' @param counts Matrix of RNA-seq read counts.
-#' @param group Experimental design. A vector of integers,
-#' one for each RNA-seq sample/library, denoting the genetic
-#' variety of that sample. You must use 1 for parent 1, 2 for parent 2,
-#' and 3 for the hybrid.
-fill_easy_gaps = function(chain, counts, group){
+#' @param design Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+#' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+#' gene-specific variables.
+fill_easy_gaps = function(chain, counts, design){
+  stopifnot(ncol(counts) == nrow(design))
+  stopifnot(all(sort(unique(as.vector(design))) == c(-1, 0, 1)))
+
   chain@counts = as.integer(counts)
-  chain@group = as.integer(group)
-
-  chain@sums_n = as.integer(apply(counts, 2, sum))
   chain@sums_g = as.integer(apply(counts, 1, sum))
+  chain@sums_n = as.integer(apply(counts, 2, sum))
+  chain@design = as.integer(design)
+  chain@G = G = nrow(counts)
+  chain@Greturn = Greturn = length(chain@genes_return)
+  chain@GreturnEpsilon = GreturnEpsilon = length(chain@genes_return_epsilon)
+  chain@L = L = ncol(design)
+  chain@N = N = nrow(design)
+  chain@Nreturn = Nreturn = length(chain@libraries_return)
+  chain@NreturnEpsilon = NreturnEpsilon = length(chain@libraries_return_epsilon)
 
-  chain@N = ncol(counts)
-  chain@G = nrow(counts)
+  lengths = c(
+    beta = L*Greturn,
+    epsilon = NreturnEpsilon*GreturnEpsilon,
+    gamma = Greturn,
+    nuGamma = 1,
+    nuRho = 1,
+    omega = L,
+    rho = Nreturn,
+    tauGamma = 1,
+    tauRho = 1,
+    theta = L,
+    xi = L*Greturn)
 
-  if(!length(chain@samples_return)) chain@samples_return = sample.int(chain@N, 1)
-  if(!length(chain@features_return)) chain@features_return = sample.int(chain@G, 1)
+  for(s in names(lengths))
+    if(as.logical(chain@parameter_sets_return[s]))
+      slot(chain, s) = rep(0, chain@iterations*lengths[s])
 
-  if(!length(chain@samples_return_eps)) chain@samples_return_eps = sample.int(chain@N, 1)
-  if(!length(chain@features_return_eps)) chain@features_return_eps = sample.int(chain@G, 1)
+  lengths = c(
+    beta = L*G,
+    epsilon = N*G,
+    gamma = G,
+    nuGamma = 1,
+    nuRho = 1,
+    omega = L,
+    rho = N,
+    tauGamma = 1,
+    tauRho = 1,
+    theta = L,
+    xi = L*G)
 
-  for(n in paste0("samples_return", c("", "_eps")))
-    slot(chain, n) = slot(chain, n)[1 <= slot(chain, n) & slot(chain, n) <= chain@N]
-
-  for(n in paste0("features_return", c("", "_eps")))
-    slot(chain, n) = slot(chain, n)[1 <= slot(chain, n) & slot(chain, n) <= chain@G]
-
-  for(n in paste0(paste0(c("samples", "features"), "_return"), c("", "", "_eps", "_eps")))
-    slot(chain, n) = sort(slot(chain, n))
-
-  chain@Nreturn = length(chain@samples_return)
-  chain@Greturn = length(chain@features_return)
-
-  chain@NreturnEps = length(chain@samples_return_eps)
-  chain@GreturnEps = length(chain@features_return_eps)
-
-  for(n in c("hph", "lph", "mph"))
-    slot(chain, n) = rep(0, chain@G)
-
-  for(n in c(hyperparameters()))
-    if(as.logical(chain@returns[n]))
-      slot(chain, n) = rep(0, chain@M)
-
-  if(as.logical(chain@returns["rho"])) chain@rho = rep(0, chain@M * chain@Nreturn)
-  if(as.logical(chain@returns["eps"])) chain@eps = rep(0, chain@M * chain@NreturnEps * chain@GreturnEps)
-
-  for(n in c("phi", "alp", "del", "gam", "xiPhi", "xiAlp", "xiDel"))
-    if(as.logical(chain@returns[n]))
-      slot(chain, n) = rep(0, chain@M * chain@Greturn)
-
-  for(post in c("PostMean", "PostMeanSq")){
-    for(s in paste0(hyperparameters(), post))
-      slot(chain, s) = 0
-    for(s in paste0(c("phi", "alp", "del", "gam", "xiPhi", "xiAlp", "xiDel"), post))
-      slot(chain, s) = rep(0, chain@G)
-    slot(chain, paste0("rho", post)) = rep(0, chain@N)
-    slot(chain, paste0("eps", post)) = rep(0, chain@N * chain@G)
-  }
+  for(post in c("PostMean", "PostMeanSquare"))
+    for(s in names(lengths)){
+      n = paste0(s, post)
+      slot(chain, n) = rep(0, lengths[n])
+    }
 
   return(chain)
 }

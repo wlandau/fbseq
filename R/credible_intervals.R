@@ -28,17 +28,14 @@ credible_intervals = function(chain, level = 0.95){
   upperCI = upperCInorm
   
   useGamma = NULL
-  for(parm in c("nu", "tau", "rho", "gam", "sig", "xi"))
+  for(parm in c("gamma", "nu", "omega", "rho", "tau", "xi"))
     useGamma = c(useGamma, grep(parm, names(Mean)))
 
   lowerCI[useGamma] = lowerCIgamma[useGamma]
   upperCI[useGamma] = upperCIgamma[useGamma]
 
   if(is.finite(upperCI["nuRho"])) upperCI["nuRho"] = min(upperCI["nuRho"], chain@dRho)
-  if(is.finite(upperCI["nuGam"])) upperCI["nuGam"] = min(upperCI["nuGam"], chain@dGam)
-  if(is.finite(upperCI["sigPhi"])) upperCI["sigPhi"] = min(upperCI["sigPhi"], chain@sPhi)
-  if(is.finite(upperCI["sigAlp"]))  upperCI["sigAlp"] = min(upperCI["sigAlp"], chain@sAlp)
-  if(is.finite(upperCI["sigDel"])) upperCI["sigDel"] = min(upperCI["sigDel"], chain@sDel)
+  if(is.finite(upperCI["nuGamma"])) upperCI["nuGamma"] = min(upperCI["nuGamma"], chain@dGam)
 
   out = data.frame(Mean, lowerCI, upperCI)
   colnames(out) = c("mean", paste0(c("lower", "upper"), "_ci_", level))

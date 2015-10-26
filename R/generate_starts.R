@@ -1,3 +1,15 @@
+#' @title Function \code{get_nonzeros}
+#' @description Helper function for \code{simple_starts()}.
+#' @export
+#' @return x with no zeros
+#' @param x argument
+get_nonzeros = function(x){
+  stopifnot(any(x > 0))
+  x1 = x[x > 0]
+  x[x <= 0] = sample(x1, sum(x <= 0), replace = T)
+  x
+}
+
 #' @title Function \code{nu_tau}
 #' @description Helper function for \code{simple_starts()}.
 #' @export
@@ -23,66 +35,48 @@ nu_tau = function(x){
 #' @param chain \code{Chain} object whose starting values to fill.
 #' @param counts A data frame/matrix of RNA-seq read counts or list of slots. If a list,
 #' then the function will return a \code{Chain} object with those slots.
-#' @param group Experimental design. A vector of integers,
-#' one for each RNA-seq sample/library, denoting the genetic
-#' variety of that sample. You must use 1 for parent 1, 2 for parent 2,
-#' and 3 for the hybrid.
-simple_starts = function(chain, counts, group){
+#' @param design Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+#' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+#' gene-specific variables.
+simple_starts = function(chain, counts, design){
   N = dim(counts)[2]
   G = dim(counts)[1]
 
   counts = as.matrix(counts)
   logcounts = log(counts + 1)
 
-  rotation = 0.5 * cbind(
-    c(1, 1, 0), 
-    c(0, -1, 1), 
-    c(-1, 0, 1))
+  OLS = solve(t(design) %*% design) %*%  t(design)
+  PROJ = design %*% OLS
+  beta = t(OLS %*% t(logcounts))
 
-  n = table(group)[as.character(1:3)]
-  mu = sapply(1:3, function(i) rowMeans(matrix(logcounts[, group == i], ncol = n[i])))
-  rotated = mu %*% rotation
+  theta = apply(beta, 2, mean)
+  omega = apply(beta, 2, var)
+  xi = rep(1, ncol(beta))
 
-  phi = rotated[,1]
-  alp = rotated[,2]
-  del = rotated[,3]
-
-  thePhi = mean(phi)
-  theAlp = mean(alp)
-  theDel = mean(del)
-
-  sigPhi = sd(phi)
-  sigAlp = sd(alp)
-  sigDel = sd(del)
-
-  xiPhi = rep(1, G)
-  xiAlp = rep(1, G)
-  xiDel = rep(1, G)
-
-  eps = logcounts - mu[, group]
-
-  gam = apply(eps, 1, sd, na.rm = T)
-  if(all(gam == 0)) gam = 1/rgamma(G, 1)
-  if(any(gam == 0)) gam[gam == 0] = min(gam[gam != 0])
-  gammat = matrix(rep(gam, times = N), ncol = N)
-
-  rho = apply(eps/gammat, 2, sd, na.rm = T)
-  if(all(rho == 0)) rho = 1/rgamma(N, 10)
-  if(any(rho == 0)) rho[rho == 0] = min(rho[rho != 0])
-
-  eps = as.numeric(eps)
-
+  epsilon = logcounts - t(PROJ %*% t(logcounts))
+  gamma = get_nonzeros(apply(epsilon, 1, var, na.rm = T))
+  gammamat = matrix(rep(gamma, times = N), ncol = N)
+  rho = get_nonzeros(apply(epsilon/sqrt(gammamat), 2, var, na.rm = T))
+  
   nt = nu_tau(rho)
   nuRho = nt$nu
   tauRho = nt$tau
 
-  nt = nu_tau(gam)
+  nt = nu_tau(gamma)
   nuGam = nt$nu
-  tauGam = nt$tau
+  tauGamma = nt$tau
+
+  for(n in c("c", "k", "r", "s")){
+    if(length(slot(chain, n)) == 0)
+      slot(chain, n) = slot(Starts(), n)
+    if(length(slot(chain, n)) == 1)
+      slot(chain, n) = rep(slot(chain, n), ncol(design))
+    stopifnot(length(slot(chain, n)) == ncol(design))
+  }
 
   for(n in slotNames(chain))
     if(grepl("Start", n) && !length(slot(chain, n)))
-      slot(chain, n) = get(gsub("Start", "", n))
+      slot(chain, n) = as.numeric(get(gsub("Start", "", n)))
 
   return(chain)
 }
@@ -109,7 +103,6 @@ dispersed_set = function(chain, parm, lower = NA, upper = NA){
   n = length(Mean)
   Min = pmax(rep(lower, n), Mean - 3*Sd, na.rm = T)
   Max = pmin(rep(upper, n), Mean + 3*Sd, na.rm = T) 
-#  ifelse(runif(n) < 0.5, Min, Max)
   runif(n, Min, Max)
 }
 
@@ -127,10 +120,8 @@ dispersed_set = function(chain, parm, lower = NA, upper = NA){
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
   configs = Configs(chain)
-  lower = c(nuRho = 0, nuGam = 0, tauRho = 0, tauGam = 0, sigPhi = 0, sigAlp = 0, sigDel = 0,
-                  rho = 0, gam = 0, xiPhi = 0, xiAlp = 0, xiDel = 0)
-  upper = c(nuRho = chain@dRho, nuGam = chain@dGam, 
-                  sigPhi = chain@sPhi, sigAlp = chain@sAlp, sigDel = chain@sDel)
+  lower = c(gamma = 0, nuRho = 0, nuGam = 0, omega = 0, rho = 0, tauRho = 0, tauGamma = 0, xi = 0)
+  upper = c(nuRho = chain@dRho, nuGam = chain@dGamma)
 
   for(v in configs@updates)
     slot(chain, paste0(v, "Start")) = dispersed_set(chain, v, lower[v], upper[v])

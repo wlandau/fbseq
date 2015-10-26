@@ -4,108 +4,67 @@
 #' objects from scratch.
 #' @exportClass Starts
 #' 
-#' @slot dRho initialization constant
-#' @slot dGam initialization constant
-#' @slot aRho initialization constant
-#' @slot aGam initialization constant
-#' @slot bRho initialization constant
-#' @slot bGam initialization constant
-#' @slot cPhi initialization constant
-#' @slot cAlp initialization constant
-#' @slot cDel initialization constant
-#' @slot sPhi initialization constant
-#' @slot sAlp initialization constant
-#' @slot sDel initialization constant
-#' @slot kPhi initialization constant
-#' @slot kAlp initialization constant
-#' @slot kDel initialization constant
-#' @slot rPhi initialization constant
-#' @slot rAlp initialization constant
-#' @slot rDel initialization constant
-#' @slot nuRho model parameter 
-#' @slot nuGam model parameter 
-#' @slot tauRho model parameter
-#' @slot tauGam model parameter 
-#' @slot thePhi model parameter 
-#' @slot theAlp model parameter 
-#' @slot theDel model parameter 
-#' @slot sigPhi model parameter 
-#' @slot sigAlp model parameter 
-#' @slot sigDel model parameter 
-#' @slot phi model parameter 
-#' @slot alp model parameter 
-#' @slot del model parameter
-#' @slot rho model parameter
-#' @slot gam model parameter 
-#' @slot xiPhi model parameter
-#' @slot xiAlp model parameter
-#' @slot xiDel model parameter
-#' @slot eps model parameter 
+#' @slot aRho initialization constant 
+#' @slot aGamma initialization constant  
+#' @slot bRho initialization constant 
+#' @slot bGamma initialization constant 
+#' @slot c initialization constants 
+#' @slot dRho initialization constant 
+#' @slot dGamma initialization constant 
+#' @slot k initialization constants 
+#' @slot r initialization constants 
+#' @slot s initialization constants 
+#' 
+#' @slot beta MCMC starting values
+#' @slot epsilon MCMC starting values
+#' @slot gamma MCMC starting values
+#' @slot nuGamma MCMC starting values
+#' @slot nuRho MCMC starting values
+#' @slot omega MCMC starting values
+#' @slot rho MCMC starting values
+#' @slot tauGamma MCMC starting values
+#' @slot tauRho MCMC starting values
+#' @slot theta MCMC starting values
+#' @slot xi MCMC starting values
 setClass("Starts", 
   slots = list(
-    dRho = "numeric",
-    dGam = "numeric",
     aRho = "numeric",
-    aGam = "numeric", 
+    aGamma = "numeric",
     bRho = "numeric",
-    bGam = "numeric",
-    cPhi = "numeric",
-    cAlp = "numeric",
-    cDel = "numeric",
-    sPhi = "numeric",
-    sAlp = "numeric",
-    sDel = "numeric",
-    kPhi = "numeric",
-    kAlp = "numeric",
-    kDel = "numeric",
-    rPhi = "numeric",
-    rAlp = "numeric",
-    rDel = "numeric",
+    bGamma = "numeric",
+    c = "numeric",
+    dRho = "numeric",
+    dGamma = "numeric",
+    k = "numeric",
+    r = "numeric",
+    s = "numeric",
 
+    beta = "numeric",
+    epsilon = "numeric",
+    gamma = "numeric",
+    nuGamma = "numeric",
     nuRho = "numeric",
-    nuGam = "numeric",
+    omega = "numeric",
+    rho = "numeric",
+    tauGamma = "numeric",
     tauRho = "numeric",
-    tauGam = "numeric",
-
-    thePhi = "numeric",
-    theDel = "numeric",
-    theAlp = "numeric",
-
-    sigPhi = "numeric",
-    sigAlp = "numeric",
-    sigDel = "numeric", 
-
-    phi = "numeric",
-    alp = "numeric",
-    del = "numeric",
-    rho = "numeric", 
-    gam = "numeric",
-    xiPhi = "numeric", 
-    xiAlp = "numeric", 
-    xiDel = "numeric", 
-    eps = "numeric"
+    theta = "numeric",
+    xi = "numeric"
   ),
 
   prototype = list(
-    dRho = 1e3,
-    dGam = 1e3,
-    aRho = 2, 
-    aGam = 2, 
+    aRho = 1,
+    aGamma = 1,
     bRho = 1,
-    bGam = 1,
-    cPhi = 10,
-    cAlp = 10,
-    cDel = 10,
-    sPhi = 1000,
-    sAlp = 1000,
-    sDel = 1000,
-    kPhi = 5,
-    kAlp = 5,
-    kDel = 5,
-    rPhi = 5,
-    rAlp = 5,
-    rDel = 5,
-    tauGam = 1
+    bGamma = 1,
+    c = 10,
+    dRho = 1000,
+    dGamma = 1000,
+    k = 5,
+    r = 5,
+    s = 100,
+
+    tauGamma = 1
   )
 )
 

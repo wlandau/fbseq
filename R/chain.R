@@ -6,320 +6,196 @@
 #'
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
-#' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
 #' @slot max_attempts Maximum number of retries for assessing convergence and generating enough effective samples.
 #' Can be set to Inf to run indefinitely.
 #' @slot nchains_diag number of independent chains to run (including this one) to use
 #' convergence diagnostics that require multiple chains. 
-#' @slot psrf Gelman-Rubin potential scale reduction factors, if running \code{run_gelman_mcmc()}
+#' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
 #' 
-#' @slot counts vector of RNA-seq read counts. Type \code{matrix(chain@@counts, ncol = chain@@N)}
-#' to recover the original RNA-seq count data matrix with features/genes
-#' as rows and samples/libraries as columns with .
-#' @slot group Experimental design. A vector of integers,
-#' one for each RNA-seq sample/library, denoting the genetic
-#' variety of that sample. You must use 1 for parent 1, 2 for parent 2,
-#' and 3 for the hybrid.
-#' 
-#' @slot sums_n Sample/library-specific sums of counts.
-#' @slot sums_g Feature/gene-specific sums of counts.
-#' 
-#' @slot returns named integer vector of 0/1 values naming
-#' the variables whose MCMC samples you want to return.
-#' @slot updates named integer vector of 0/1 values naming 
-#' the variables to compute/update during the MCMC.
-#' 
-#' @slot samples_return indices of RNA-seq samples/libraries whose parameter samples you want to return.
-#' @slot features_return indices of features/genes whose parameter samples you want to return.
-#'
-#' @slot samples_return_eps Indices of RNA-seq samples/libraries n for which epsilon_{n, g} is updated/returned.
-#' @slot features_return_eps Indices of features/genes g for which epsilon_{n, g} is updated/returned.
-#' 
-#' @slot M number of MCMC iterations (not including burnin or thinning)
-#' @slot N number of RNA-seq samples/libraries
-#' @slot G number of features/genes
-#'
-#' @slot Nreturn length of slot \code{samples_return}.
-#' @slot Greturn length of slot \code{features_return}.
-#'
-#' @slot NreturnEps length of slot \code{samples_return_eps}.
-#' @slot GreturnEps length of slot \code{features_return_eps}.
-#'
-#' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each chain
-#' @slot mphtol tolerance theshold for mid-parent heterosis (on a log base e scale)
+#' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
+#' @slot genes_return Indices of genes whose parameter samples you want to return.
+#' Applies to all gene-specific parameters except for the epsilons.
+#' @slot genes_return_epsilon Indices of genes g for which epsilon_{n, g} is updated/returned.
+#' @slot iterations Number of MCMC iterations (not including burnin or thinning)
+#' @slot libraries_return Indices of RNA-seq libraries whose parameter samples you want to return.
+#' @slot libraries_return_epsilon Indices of RNA-seq libraries n for which epsilon_{n, g} is updated/returned.
+#' Applies to all library-specific parameters except for the epsilons.
+#' @slot parameter_sets_return Character vector naming the variables whose MCMC samples 
+#' you want to return
+#' @slot parameter_sets_update Character vector naming the variables to calculate/update
+#' during the MCMC.
+#' @slot priors Names of the family of priors on the betas after integrating out the xi's. 
+#' Can be any value returned by \code{alternate_priors()}. All other values will default to the normal prior.
 #' @slot thin MCMC thinning interval, number of iterations to skip in between iterations to return.
-#' @slot verbose number of times to print out progress during burnin and the actual MCMC.
+#' @slot verbose Number of times to print out progress during burnin and the actual MCMC.
 #' If \code{verbose} > 0, then progress messages will also print during setup and cleanup.
-#' @slot seeds Random number generator seeds.
-#'
-#' @slot hph gene/feature-specific high-parent heterosis probabilities. The order of the 
-#' probabilities respects the ordering of features/genes in the original RNA-seq dataset.
-#' @slot lph gene/feature-specific low-parent heterosis probabilities. The order of the 
-#' probabilities respects the ordering of features/genes in the original RNA-seq dataset.
-#' @slot mph gene/feature-specific mid-parent heterosis probabilities. The order of the 
-#' probabilities respects the ordering of features/genes in the original RNA-seq dataset.
 #' 
-#' @slot phiPrior Integer indicating the family of priors on the phi_g's after integrating out the xi_phi's. 
-#' The integer is either 0 for normal or the index of the corresponding prior in the 
-#' return value of \code{alternate_priors()}.
-#' @slot alpPrior Integer indicating the family of priors on the alp_g's after integrating out the xi_alp's. 
-#' The integer is either 0 for normal or the index of the corresponding prior in the 
-#' return value of \code{alternate_priors()}.
-#' @slot delPrior Integer indicating the family of priors on the del_g's after integrating out the xi_del's. 
-#' The integer is either 0 for normal or the index of the corresponding prior in the 
-#' return value of \code{alternate_priors()}.
-#'
-#' @slot dRho initialization constant
-#' @slot aRho initialization constant
-#' @slot bRho initialization constant
-#' @slot dGam initialization constant
-#' @slot aGam initialization constant
-#' @slot bGam initialization constant
-#' @slot cPhi initialization constant
-#' @slot cAlp initialization constant
-#' @slot cDel initialization constant
-#' @slot sPhi initialization constant
-#' @slot sAlp initialization constant
-#' @slot sDel initialization constant
-#' @slot kPhi initialization constant
-#' @slot kAlp initialization constant
-#' @slot kDel initialization constant
-#' @slot rPhi initialization constant
-#' @slot rAlp initialization constant
-#' @slot rDel initialization constant
+#' @slot counts RNA-seq count data, flattened from a matrix
+#' @slot countSums_g gene-specific count sums
+#' @slot countSums_n library-specific count sums
+#' @slot design Gene-specific design, flattened from the design matrix. Must contain only 0's, 1's, and -1's.
+#' Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+#' gene-specific variables.
+#' @slot G number of genes
+#' @slot Greturn number of genes to return gene-specific MCMC parameter samples for (except the epsilons)
+#' @slot GreturnEpsilon number of genes to return gene-specific MCMC epsilon parameter samples
+#' @slot L number of columns in the original design matrix
+#' @slot N number of libraries
+#' @slot Nreturn number of libraries to return library-specific MCMC parameter samples for (except the epsilons)
+#' @slot NreturnEpsilon number of libraries to return library-specific MCMC epsilon parameter samples
+#' @slot psrf Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the 
+#' actual MCMC parameter samples are not returned)
+#' @slot seeds vector of N*G random number generator seeds
 #' 
-#' @slot nuRho vector of model parameter samples
-#' @slot nuGam vector of model parameter samples
-#' @slot tauRho vector of model parameter samples
-#' @slot tauGam vector of model parameter samples
-#' @slot thePhi vector of model parameter samples
-#' @slot theAlp vector of model parameter samples
-#' @slot theDel vector of model parameter samples
-#' @slot sigPhi vector of model parameter samples
-#' @slot sigAlp vector of model parameter samples
-#' @slot sigDel vector of model parameter samples
+#' @slot aRho initialization constant 
+#' @slot aGamma initialization constant  
+#' @slot bRho initialization constant 
+#' @slot bGamma initialization constant 
+#' @slot c initialization constants 
+#' @slot dRho initialization constant 
+#' @slot dGamma initialization constant 
+#' @slot k initialization constants 
+#' @slot r initialization constants 
+#' @slot s initialization constants 
 #' 
-#' @slot phi vector of model parameter samples
-#' @slot alp vector of model parameter samples
-#' @slot del vector of model parameter samples
-#' @slot rho vector of model parameter samples
-#' @slot gam vector of model parameter samples
-#' @slot xiPhi vector of model parameter samples
-#' @slot xiAlp vector of model parameter samples
-#' @slot xiDel vector of model parameter samples
-#' @slot eps vector of model parameter samples (flattened from a 2D array)
+#' @slot beta MCMC parameter samples
+#' @slot epsilon MCMC parameter samples
+#' @slot gamma MCMC parameter samples
+#' @slot nuGamma MCMC parameter samples
+#' @slot nuRho MCMC parameter samples
+#' @slot omega MCMC parameter samples
+#' @slot rho MCMC parameter samples
+#' @slot tauGamma MCMC parameter samples
+#' @slot tauRho MCMC parameter samples
+#' @slot theta MCMC parameter samples
+#' @slot xi MCMC parameter samples
 #' 
-#' @slot nuRhoStart vector of starting values
-#' @slot nuGamStart vector of starting values
-#' @slot tauRhoStart vector of starting values
-#' @slot tauGamStart vector of starting values
-#' @slot thePhiStart vector of starting values
-#' @slot theAlpStart vector of starting values
-#' @slot theDelStart vector of starting values
-#' @slot sigPhiStart vector of starting values
-#' @slot sigAlpStart vector of starting values
-#' @slot sigDelStart vector of starting values
-#'
-#' @slot phiStart vector of starting values
-#' @slot alpStart vector of starting values
-#' @slot delStart vector of starting values
-#' @slot rhoStart vector of starting values
-#' @slot gamStart vector of starting values
-#' @slot xiPhiStart vector of starting values
-#' @slot xiAlpStart vector of starting values
-#' @slot xiDelStart vector of starting values
-#' @slot epsStart vector of starting values (flattened from a 2D array)
-#'
-#' @slot nuRhoPostMean vector of posterior means after burnin
-#' @slot nuGamPostMean vector of posterior means after burnin
-#' @slot tauRhoPostMean vector of posterior means after burnin
-#' @slot tauGamPostMean vector of posterior means after burnin
-#' @slot thePhiPostMean vector of posterior means after burnin
-#' @slot theAlpPostMean vector of posterior means after burnin
-#' @slot theDelPostMean vector of posterior means after burnin
-#' @slot sigPhiPostMean vector of posterior means after burnin
-#' @slot sigAlpPostMean vector of posterior means after burnin
-#' @slot sigDelPostMean vector of posterior means after burnin
-#'
-#' @slot phiPostMean vector of posterior means after burnin
-#' @slot alpPostMean vector of posterior means after burnin
-#' @slot delPostMean vector of posterior means after burnin
-#' @slot rhoPostMean vector of posterior means after burnin
-#' @slot gamPostMean vector of posterior means after burnin
-#' @slot xiPhiPostMean vector of posterior means after burnin
-#' @slot xiAlpPostMean vector of posterior means after burnin
-#' @slot xiDelPostMean vector of posterior means after burnin
-#' @slot epsPostMean vector of posterior means after burnin (flattened from a 2D array)
-#'
-#' @slot nuRhoPostMeanSq vector of posterior means of squares after burnin
-#' @slot nuGamPostMeanSq vector of posterior means of squares after burnin
-#' @slot tauRhoPostMeanSq vector of posterior means of squares after burnin
-#' @slot tauGamPostMeanSq vector of posterior means of squares after burnin
-#' @slot thePhiPostMeanSq vector of posterior means of squares after burnin
-#' @slot theAlpPostMeanSq vector of posterior means of squares after burnin
-#' @slot theDelPostMeanSq vector of posterior means of squares after burnin
-#' @slot sigPhiPostMeanSq vector of posterior means of squares after burnin
-#' @slot sigAlpPostMeanSq vector of posterior means of squares after burnin
-#' @slot sigDelPostMeanSq vector of posterior means of squares after burnin
-#'
-#' @slot phiPostMeanSq vector of posterior means of squares after burnin
-#' @slot alpPostMeanSq vector of posterior means of squares after burnin
-#' @slot delPostMeanSq vector of posterior means of squares after burnin
-#' @slot rhoPostMeanSq vector of posterior means of squares after burnin
-#' @slot gamPostMeanSq vector of posterior means of squares after burnin
-#' @slot xiPhiPostMeanSq vector of posterior means of squares after burnin
-#' @slot xiAlpPostMeanSq vector of posterior means of squares after burnin
-#' @slot xiDelPostMeanSq vector of posterior means of squares after burnin
-#' @slot epsPostMeanSq vector of posterior means of squares after burnin (flattened from a 2D array)
+#' @slot betaStart MCMC starting values
+#' @slot epsilonStart MCMC starting values
+#' @slot gammaStart MCMC starting values
+#' @slot nuRhoStart MCMC starting values
+#' @slot nuGammaStart MCMC starting values
+#' @slot omegaStart MCMC starting values
+#' @slot rhoStart MCMC starting values
+#' @slot tauRhoStart MCMC starting values
+#' @slot tauGammaStart MCMC starting values
+#' @slot thetaStart MCMC starting values
+#' @slot xiStart MCMC starting values
+#' 
+#' @slot betaPostMean estimated posterior means
+#' @slot epsilonPostMean estimated posterior means
+#' @slot gammaPostMean estimated posterior means
+#' @slot nuRhoPostMean estimated posterior mean
+#' @slot nuGammaPostMean estimated posterior mean
+#' @slot omegaPostMean estimated posterior means
+#' @slot rhoPostMean estimated posterior means
+#' @slot tauRhoPostMean estimated posterior mean
+#' @slot tauGammaPostMean estimated posterior mean
+#' @slot thetaPostMean estimated posterior means
+#' @slot xiPostMean estimated posterior means
+#' 
+#' @slot betaPostMeanSquare estimated posterior means of the squares of parameters
+#' @slot epsilonPostMeanSquare estimated posterior means of the squares of parameters
+#' @slot gammaPostMeanSquare estimated posterior means of the squares of parameters
+#' @slot nuRhoPostMeanSquare estimated posterior mean of the square of the parameter
+#' @slot nuGammaPostMeanSquare estimated posterior mean of the square of the parameter 
+#' @slot omegaPostMeanSquare estimated posterior means of the squares of parameters
+#' @slot rhoPostMeanSquare estimated posterior means of the squares of parameters
+#' @slot tauRhoPostMeanSquare estimated posterior mean of the square of the parameter
+#' @slot tauGammaPostMeanSquare estimated posterior mean of the square of the parameter
+#' @slot thetaPostMeanSquare estimated posterior means of the squares of parameters
+#' @slot xiPostMeanSquareestimated posterior means of the squares of parameters
 setClass("Chain",
   slots = list(
     diag = "character",
     ess = "integer",
-    psrf_tol = "numeric",
     max_attempts = "numeric",
     nchains_diag = "integer",
-    psrf = "numeric",
-
-    counts = "integer",
-    group = "integer",
-
-    sums_n = "integer",
-    sums_g = "integer",
-
-    returns = "integer",
-    updates = "integer",
-
-    samples_return = "integer",
-    features_return = "integer",
-
-    samples_return_eps = "integer",
-    features_return_eps = "integer",
-
-    M = "integer",
-    N = "integer",
-    G = "integer",
-
-    Nreturn = "integer",
-    Greturn = "integer",
-
-    NreturnEps = "integer",
-    GreturnEps = "integer",
+    psrf_tol = "numeric",
 
     burnin = "integer",
+    genes_return = "integer",
+    genes_return_epsilon = "integer",
+    iterations = "integer",
+    libraries_return = "integer",
+    libraries_return_epsilon = "integer",
+    parameter_sets_return = "integer",
+    parameter_sets_update = "integer",
+    priors = "integer",
     thin = "integer",
     verbose = "integer",
+
+    counts = "integer",
+    countSums_g = "integer",
+    countSums_n = "integer",
+    design = "integer",
+    G = "integer",
+    Greturn = "integer",
+    GreturnEpsilon = "integer",
+    L = "integer",
+    N = "integer",
+    Nreturn = "integer",
+    NreturnEpsilon = "integer",
+    psrf = "numeric",
     seeds = "integer",
-    mphtol = "numeric",
 
-    hph = "numeric",
-    lph = "numeric",
-    mph = "numeric",
-
-    phiPrior = "integer",
-    alpPrior = "integer",
-    delPrior = "integer",
-
-    dRho = "numeric",
-    dGam = "numeric",
     aRho = "numeric",
-    aGam = "numeric",
+    aGamma = "numeric",
     bRho = "numeric",
-    bGam = "numeric",
-    cPhi = "numeric",
-    cAlp = "numeric",
-    cDel = "numeric",
-    sPhi = "numeric",
-    sAlp = "numeric",
-    sDel = "numeric",
-    kPhi = "numeric",
-    kAlp = "numeric",
-    kDel = "numeric",
-    rPhi = "numeric",
-    rAlp = "numeric",
-    rDel = "numeric",
+    bGamma = "numeric",
+    c = "numeric",
+    dRho = "numeric",
+    dGamma = "numeric",
+    k = "numeric",
+    r = "numeric",
+    s = "numeric",
 
+    beta = "numeric",
+    epsilon = "numeric",
+    gamma = "numeric",
+    nuGamma = "numeric",
     nuRho = "numeric",
-    nuGam = "numeric",
-    tauRho = "numeric",
-    tauGam = "numeric",
-    thePhi = "numeric",
-    theAlp = "numeric",
-    theDel = "numeric",
-    sigPhi = "numeric",
-    sigAlp = "numeric",
-    sigDel = "numeric",
-
-    phi = "numeric",
-    alp = "numeric",
-    del = "numeric",  
+    omega = "numeric",
     rho = "numeric",
-    gam = "numeric",
-    xiPhi = "numeric",
-    xiAlp = "numeric",
-    xiDel = "numeric",
-    eps = "numeric",
+    tauGamma = "numeric",
+    tauRho = "numeric",
+    theta = "numeric",
+    xi = "numeric",
 
+    betaStart = "numeric",
+    epsilonStart = "numeric",
+    gammaStart = "numeric",
     nuRhoStart = "numeric",
-    nuGamStart = "numeric",
-    tauRhoStart = "numeric",
-    tauGamStart = "numeric",
-    thePhiStart = "numeric",
-    theAlpStart = "numeric",
-    theDelStart = "numeric",
-    sigPhiStart = "numeric",
-    sigAlpStart = "numeric",
-    sigDelStart = "numeric",
-
-    phiStart = "numeric",
-    alpStart = "numeric",
-    delStart = "numeric",
+    nuGammaStart = "numeric",
+    omegaStart = "numeric",
     rhoStart = "numeric",
-    gamStart = "numeric",
-    xiPhiStart = "numeric",
-    xiAlpStart = "numeric",
-    xiDelStart = "numeric",
-    epsStart = "numeric",
+    tauRhoStart = "numeric",
+    tauGammaStart = "numeric",
+    thetaStart = "numeric",
+    xiStart = "numeric",
 
+    betaPostMean = "numeric",
+    epsilonPostMean = "numeric",
+    gammaPostMean = "numeric",
     nuRhoPostMean = "numeric",
-    nuGamPostMean = "numeric",
-    tauRhoPostMean = "numeric",
-    tauGamPostMean = "numeric",
-    thePhiPostMean = "numeric",
-    theAlpPostMean = "numeric",
-    theDelPostMean = "numeric",
-    sigPhiPostMean = "numeric",
-    sigAlpPostMean = "numeric",
-    sigDelPostMean = "numeric",
-
-    phiPostMean = "numeric",
-    alpPostMean = "numeric",
-    delPostMean = "numeric",
+    nuGammaPostMean = "numeric",
+    omegaPostMean = "numeric",
     rhoPostMean = "numeric",
-    gamPostMean = "numeric",
-    xiPhiPostMean = "numeric",
-    xiAlpPostMean = "numeric",
-    xiDelPostMean = "numeric",
-    epsPostMean = "numeric", 
+    tauRhoPostMean = "numeric",
+    tauGammaPostMean = "numeric",
+    thetaPostMean = "numeric",
+    xiPostMean = "numeric",
 
-    nuRhoPostMeanSq = "numeric",
-    nuGamPostMeanSq = "numeric",
-    tauRhoPostMeanSq = "numeric",
-    tauGamPostMeanSq = "numeric",
-    thePhiPostMeanSq = "numeric",
-    theAlpPostMeanSq = "numeric",
-    theDelPostMeanSq = "numeric",
-    sigPhiPostMeanSq = "numeric",
-    sigAlpPostMeanSq = "numeric",
-    sigDelPostMeanSq = "numeric",
-
-    phiPostMeanSq = "numeric",
-    alpPostMeanSq = "numeric",
-    delPostMeanSq = "numeric",
-    rhoPostMeanSq = "numeric",
-    gamPostMeanSq = "numeric",
-    xiPhiPostMeanSq = "numeric",
-    xiAlpPostMeanSq = "numeric",
-    xiDelPostMeanSq = "numeric",
-    epsPostMeanSq = "numeric"
+    betaPostMeanSquare = "numeric",
+    epsilonPostMeanSquare = "numeric",
+    gammaPostMeanSquare = "numeric",
+    nuRhoPostMeanSquare = "numeric",
+    nuGammaPostMeanSquare = "numeric",
+    omegaPostMeanSquare = "numeric",
+    rhoPostMeanSquare = "numeric",
+    tauRhoPostMeanSquare = "numeric",
+    tauGammaPostMeanSquare = "numeric",
+    thetaPostMeanSquare = "numeric",
+    xiPostMeanSquare = "numeric"
   )
 )
