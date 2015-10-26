@@ -71,7 +71,7 @@ flatten_chain = function(chain){
 flatten_starts = function(starts){
 
   G = tryCatch(length(starts@gamma), warning = function(w) 0, error = function(w) 0)
-  L = length(starts@beta)/ifelse(G, G, 1))
+  L = length(starts@beta)/ifelse(G, G, 1)
   N = tryCatch(max(length(starts@rho), length(starts@epsilon)/G), warning = function(w) 0, error = function(w) 0)
 
   for(x in c("beta", "xi"))
@@ -109,7 +109,7 @@ flatten_starts = function(starts){
     tauGamma = starts@tauGamma,
     tauRho = starts@tauRho,
     theta = starts@theta,
-    xi = starts@xi,
+    xi = starts@xi
   )
 }
 

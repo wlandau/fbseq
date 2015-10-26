@@ -16,275 +16,177 @@ by feeding one into \code{single_chain()}.
 
 \item{\code{ess}}{Minimum effective sample size for all parameters}
 
-\item{\code{psrf_tol}}{upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")}
-
 \item{\code{max_attempts}}{Maximum number of retries for assessing convergence and generating enough effective samples.
 Can be set to Inf to run indefinitely.}
 
 \item{\code{nchains_diag}}{number of independent chains to run (including this one) to use
 convergence diagnostics that require multiple chains.}
 
-\item{\code{psrf}}{Gelman-Rubin potential scale reduction factors, if running \code{run_gelman_mcmc()}}
+\item{\code{psrf_tol}}{upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")}
 
-\item{\code{counts}}{vector of RNA-seq read counts. Type \code{matrix(chain@counts, ncol = chain@N)}
-to recover the original RNA-seq count data matrix with features/genes
-as rows and samples/libraries as columns with .}
+\item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
 
-\item{\code{group}}{Experimental design. A vector of integers,
-one for each RNA-seq sample/library, denoting the genetic
-variety of that sample. You must use 1 for parent 1, 2 for parent 2,
-and 3 for the hybrid.}
+\item{\code{genes_return}}{Indices of genes whose parameter samples you want to return.
+Applies to all gene-specific parameters except for the epsilons.}
 
-\item{\code{sums_n}}{Sample/library-specific sums of counts.}
+\item{\code{genes_return_epsilon}}{Indices of genes g for which epsilon_{n, g} is updated/returned.}
 
-\item{\code{sums_g}}{Feature/gene-specific sums of counts.}
+\item{\code{iterations}}{Number of MCMC iterations (not including burnin or thinning)}
 
-\item{\code{returns}}{named integer vector of 0/1 values naming
-the variables whose MCMC samples you want to return.}
+\item{\code{libraries_return}}{Indices of RNA-seq libraries whose parameter samples you want to return.}
 
-\item{\code{updates}}{named integer vector of 0/1 values naming
-the variables to compute/update during the MCMC.}
+\item{\code{libraries_return_epsilon}}{Indices of RNA-seq libraries n for which epsilon_{n, g} is updated/returned.
+Applies to all library-specific parameters except for the epsilons.}
 
-\item{\code{samples_return}}{indices of RNA-seq samples/libraries whose parameter samples you want to return.}
+\item{\code{parameter_sets_return}}{Character vector naming the variables whose MCMC samples
+you want to return}
 
-\item{\code{features_return}}{indices of features/genes whose parameter samples you want to return.}
+\item{\code{parameter_sets_update}}{Character vector naming the variables to calculate/update
+during the MCMC.}
 
-\item{\code{samples_return_eps}}{Indices of RNA-seq samples/libraries n for which epsilon_{n, g} is updated/returned.}
-
-\item{\code{features_return_eps}}{Indices of features/genes g for which epsilon_{n, g} is updated/returned.}
-
-\item{\code{M}}{number of MCMC iterations (not including burnin or thinning)}
-
-\item{\code{N}}{number of RNA-seq samples/libraries}
-
-\item{\code{G}}{number of features/genes}
-
-\item{\code{Nreturn}}{length of slot \code{samples_return}.}
-
-\item{\code{Greturn}}{length of slot \code{features_return}.}
-
-\item{\code{NreturnEps}}{length of slot \code{samples_return_eps}.}
-
-\item{\code{GreturnEps}}{length of slot \code{features_return_eps}.}
-
-\item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each chain}
-
-\item{\code{mphtol}}{tolerance theshold for mid-parent heterosis (on a log base e scale)}
+\item{\code{priors}}{Names of the family of priors on the betas after integrating out the xi's.
+Can be any value returned by \code{alternate_priors()}. All other values will default to the normal prior.}
 
 \item{\code{thin}}{MCMC thinning interval, number of iterations to skip in between iterations to return.}
 
-\item{\code{verbose}}{number of times to print out progress during burnin and the actual MCMC.
+\item{\code{verbose}}{Number of times to print out progress during burnin and the actual MCMC.
 If \code{verbose} > 0, then progress messages will also print during setup and cleanup.}
 
-\item{\code{seeds}}{Random number generator seeds.}
+\item{\code{counts}}{RNA-seq count data, flattened from a matrix}
 
-\item{\code{hph}}{gene/feature-specific high-parent heterosis probabilities. The order of the
-probabilities respects the ordering of features/genes in the original RNA-seq dataset.}
+\item{\code{countSums_g}}{gene-specific count sums}
 
-\item{\code{lph}}{gene/feature-specific low-parent heterosis probabilities. The order of the
-probabilities respects the ordering of features/genes in the original RNA-seq dataset.}
+\item{\code{countSums_n}}{library-specific count sums}
 
-\item{\code{mph}}{gene/feature-specific mid-parent heterosis probabilities. The order of the
-probabilities respects the ordering of features/genes in the original RNA-seq dataset.}
+\item{\code{design}}{Gene-specific design, flattened from the design matrix. Must contain only 0's, 1's, and -1's.
+Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+gene-specific variables.}
 
-\item{\code{phiPrior}}{Integer indicating the family of priors on the phi_g's after integrating out the xi_phi's.
-The integer is either 0 for normal or the index of the corresponding prior in the
-return value of \code{alternate_priors()}.}
+\item{\code{G}}{number of genes}
 
-\item{\code{alpPrior}}{Integer indicating the family of priors on the alp_g's after integrating out the xi_alp's.
-The integer is either 0 for normal or the index of the corresponding prior in the
-return value of \code{alternate_priors()}.}
+\item{\code{Greturn}}{number of genes to return gene-specific MCMC parameter samples for (except the epsilons)}
 
-\item{\code{delPrior}}{Integer indicating the family of priors on the del_g's after integrating out the xi_del's.
-The integer is either 0 for normal or the index of the corresponding prior in the
-return value of \code{alternate_priors()}.}
+\item{\code{GreturnEpsilon}}{number of genes to return gene-specific MCMC epsilon parameter samples}
 
-\item{\code{dRho}}{initialization constant}
+\item{\code{L}}{number of columns in the original design matrix}
+
+\item{\code{N}}{number of libraries}
+
+\item{\code{Nreturn}}{number of libraries to return library-specific MCMC parameter samples for (except the epsilons)}
+
+\item{\code{NreturnEpsilon}}{number of libraries to return library-specific MCMC epsilon parameter samples}
+
+\item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the
+actual MCMC parameter samples are not returned)}
+
+\item{\code{seeds}}{vector of N*G random number generator seeds}
 
 \item{\code{aRho}}{initialization constant}
 
+\item{\code{aGamma}}{initialization constant}
+
 \item{\code{bRho}}{initialization constant}
 
-\item{\code{dGam}}{initialization constant}
+\item{\code{bGamma}}{initialization constant}
 
-\item{\code{aGam}}{initialization constant}
+\item{\code{c}}{initialization constants}
 
-\item{\code{bGam}}{initialization constant}
+\item{\code{dRho}}{initialization constant}
 
-\item{\code{cPhi}}{initialization constant}
+\item{\code{dGamma}}{initialization constant}
 
-\item{\code{cAlp}}{initialization constant}
+\item{\code{k}}{initialization constants}
 
-\item{\code{cDel}}{initialization constant}
+\item{\code{r}}{initialization constants}
 
-\item{\code{sPhi}}{initialization constant}
+\item{\code{s}}{initialization constants}
 
-\item{\code{sAlp}}{initialization constant}
+\item{\code{beta}}{MCMC parameter samples}
 
-\item{\code{sDel}}{initialization constant}
+\item{\code{epsilon}}{MCMC parameter samples}
 
-\item{\code{kPhi}}{initialization constant}
+\item{\code{gamma}}{MCMC parameter samples}
 
-\item{\code{kAlp}}{initialization constant}
+\item{\code{nuGamma}}{MCMC parameter samples}
 
-\item{\code{kDel}}{initialization constant}
+\item{\code{nuRho}}{MCMC parameter samples}
 
-\item{\code{rPhi}}{initialization constant}
+\item{\code{omega}}{MCMC parameter samples}
 
-\item{\code{rAlp}}{initialization constant}
+\item{\code{rho}}{MCMC parameter samples}
 
-\item{\code{rDel}}{initialization constant}
+\item{\code{tauGamma}}{MCMC parameter samples}
 
-\item{\code{nuRho}}{vector of model parameter samples}
+\item{\code{tauRho}}{MCMC parameter samples}
 
-\item{\code{nuGam}}{vector of model parameter samples}
+\item{\code{theta}}{MCMC parameter samples}
 
-\item{\code{tauRho}}{vector of model parameter samples}
+\item{\code{xi}}{MCMC parameter samples}
 
-\item{\code{tauGam}}{vector of model parameter samples}
+\item{\code{betaStart}}{MCMC starting values}
 
-\item{\code{thePhi}}{vector of model parameter samples}
+\item{\code{epsilonStart}}{MCMC starting values}
 
-\item{\code{theAlp}}{vector of model parameter samples}
+\item{\code{gammaStart}}{MCMC starting values}
 
-\item{\code{theDel}}{vector of model parameter samples}
+\item{\code{nuRhoStart}}{MCMC starting values}
 
-\item{\code{sigPhi}}{vector of model parameter samples}
+\item{\code{nuGammaStart}}{MCMC starting values}
 
-\item{\code{sigAlp}}{vector of model parameter samples}
+\item{\code{omegaStart}}{MCMC starting values}
 
-\item{\code{sigDel}}{vector of model parameter samples}
+\item{\code{rhoStart}}{MCMC starting values}
 
-\item{\code{phi}}{vector of model parameter samples}
+\item{\code{tauRhoStart}}{MCMC starting values}
 
-\item{\code{alp}}{vector of model parameter samples}
+\item{\code{tauGammaStart}}{MCMC starting values}
 
-\item{\code{del}}{vector of model parameter samples}
+\item{\code{thetaStart}}{MCMC starting values}
 
-\item{\code{rho}}{vector of model parameter samples}
+\item{\code{xiStart}}{MCMC starting values}
 
-\item{\code{gam}}{vector of model parameter samples}
+\item{\code{betaPostMean}}{estimated posterior means}
 
-\item{\code{xiPhi}}{vector of model parameter samples}
+\item{\code{epsilonPostMean}}{estimated posterior means}
 
-\item{\code{xiAlp}}{vector of model parameter samples}
+\item{\code{gammaPostMean}}{estimated posterior means}
 
-\item{\code{xiDel}}{vector of model parameter samples}
+\item{\code{nuRhoPostMean}}{estimated posterior mean}
 
-\item{\code{eps}}{vector of model parameter samples (flattened from a 2D array)}
+\item{\code{nuGammaPostMean}}{estimated posterior mean}
 
-\item{\code{nuRhoStart}}{vector of starting values}
+\item{\code{omegaPostMean}}{estimated posterior means}
 
-\item{\code{nuGamStart}}{vector of starting values}
+\item{\code{rhoPostMean}}{estimated posterior means}
 
-\item{\code{tauRhoStart}}{vector of starting values}
+\item{\code{tauRhoPostMean}}{estimated posterior mean}
 
-\item{\code{tauGamStart}}{vector of starting values}
+\item{\code{tauGammaPostMean}}{estimated posterior mean}
 
-\item{\code{thePhiStart}}{vector of starting values}
+\item{\code{thetaPostMean}}{estimated posterior means}
 
-\item{\code{theAlpStart}}{vector of starting values}
+\item{\code{xiPostMean}}{estimated posterior means}
 
-\item{\code{theDelStart}}{vector of starting values}
+\item{\code{betaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{sigPhiStart}}{vector of starting values}
+\item{\code{epsilonPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{sigAlpStart}}{vector of starting values}
+\item{\code{gammaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{sigDelStart}}{vector of starting values}
+\item{\code{nuRhoPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
-\item{\code{phiStart}}{vector of starting values}
+\item{\code{nuGammaPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
-\item{\code{alpStart}}{vector of starting values}
+\item{\code{omegaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{delStart}}{vector of starting values}
+\item{\code{rhoPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{rhoStart}}{vector of starting values}
+\item{\code{tauRhoPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
-\item{\code{gamStart}}{vector of starting values}
+\item{\code{tauGammaPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
-\item{\code{xiPhiStart}}{vector of starting values}
+\item{\code{thetaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{xiAlpStart}}{vector of starting values}
-
-\item{\code{xiDelStart}}{vector of starting values}
-
-\item{\code{epsStart}}{vector of starting values (flattened from a 2D array)}
-
-\item{\code{nuRhoPostMean}}{vector of posterior means after burnin}
-
-\item{\code{nuGamPostMean}}{vector of posterior means after burnin}
-
-\item{\code{tauRhoPostMean}}{vector of posterior means after burnin}
-
-\item{\code{tauGamPostMean}}{vector of posterior means after burnin}
-
-\item{\code{thePhiPostMean}}{vector of posterior means after burnin}
-
-\item{\code{theAlpPostMean}}{vector of posterior means after burnin}
-
-\item{\code{theDelPostMean}}{vector of posterior means after burnin}
-
-\item{\code{sigPhiPostMean}}{vector of posterior means after burnin}
-
-\item{\code{sigAlpPostMean}}{vector of posterior means after burnin}
-
-\item{\code{sigDelPostMean}}{vector of posterior means after burnin}
-
-\item{\code{phiPostMean}}{vector of posterior means after burnin}
-
-\item{\code{alpPostMean}}{vector of posterior means after burnin}
-
-\item{\code{delPostMean}}{vector of posterior means after burnin}
-
-\item{\code{rhoPostMean}}{vector of posterior means after burnin}
-
-\item{\code{gamPostMean}}{vector of posterior means after burnin}
-
-\item{\code{xiPhiPostMean}}{vector of posterior means after burnin}
-
-\item{\code{xiAlpPostMean}}{vector of posterior means after burnin}
-
-\item{\code{xiDelPostMean}}{vector of posterior means after burnin}
-
-\item{\code{epsPostMean}}{vector of posterior means after burnin (flattened from a 2D array)}
-
-\item{\code{nuRhoPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{nuGamPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{tauRhoPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{tauGamPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{thePhiPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{theAlpPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{theDelPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{sigPhiPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{sigAlpPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{sigDelPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{phiPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{alpPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{delPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{rhoPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{gamPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{xiPhiPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{xiAlpPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{xiDelPostMeanSq}}{vector of posterior means of squares after burnin}
-
-\item{\code{epsPostMeanSq}}{vector of posterior means of squares after burnin (flattened from a 2D array)}
+\item{\code{xiPostMeanSquareestimated}}{posterior means of the squares of parameters}
 }}
 

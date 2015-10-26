@@ -56,13 +56,10 @@ run_gelman_mcmc = function(chain){
     all_psrf = calc_gelman(chain_list)
     for(i in 1:chain@nchains_diag) chain_list[[i]]@psrf = all_psrf
     psrf = all_psrf[grepl(pattern, names(all_psrf))]
-    hyper = intersect(c(hyperparameters()), names(psrf))
 
     if(chain@verbose) {
-      print("Summary of Gelman factors for hyperparameters, alphas, and deltas:")
+      print("Summary of Gelman factors for hyperparameters and betas:")
       print(summary(psrf))
-      print("Gelman factors for hyperparameters:")      
-      print(psrf[hyper])
       print("Highest 10 Gelman factors:")   
       print(sort(psrf, decreasing = T)[1:10])
       low = signif(mean(psrf < chain@psrf_tol)* 100, 5)

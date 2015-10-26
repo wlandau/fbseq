@@ -12,11 +12,9 @@
 #' and hyperparameters.
 #' @param libraries number of libraries/libraries in the data
 #' @param genes number of genes/genes in the data
-#' @param group Experimental design. A vector of integers,
-#' one for each RNA-seq sample/library, denoting the genetic
-#' variety of that sample. You must use 1 for parent 1, 2 for the hybrid,
-#' and 3 for parent 2.
-#' @param priors Name of the family of priors on the betas. Must be length 1 or ncol(design). 
+#' @param design Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+#' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+#' gene-specific variables.
 #' Can be among "Laplace", "t", or "horseshoe". All other values will default to the normal prior.
 generate_data = function(libraries = 12, genes = 3.5e4, 
           design = cbind(rep(1, libraries), rep(c(1, -1, 1), each = floor(libraries/3)), rep(c(-1, 1, 1), each = floor(libraries/3))),

@@ -4,7 +4,7 @@
 \alias{simple_starts}
 \title{Function \code{simple_starts}}
 \usage{
-simple_starts(chain, counts, group)
+simple_starts(chain, counts, design)
 }
 \arguments{
 \item{chain}{\code{Chain} object whose starting values to fill.}
@@ -12,10 +12,9 @@ simple_starts(chain, counts, group)
 \item{counts}{A data frame/matrix of RNA-seq read counts or list of slots. If a list,
 then the function will return a \code{Chain} object with those slots.}
 
-\item{group}{Experimental design. A vector of integers,
-one for each RNA-seq sample/library, denoting the genetic
-variety of that sample. You must use 1 for parent 1, 2 for parent 2,
-and 3 for the hybrid.}
+\item{design}{Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+gene-specific variables.}
 }
 \value{
 a \code{Chain} object with a full set of MCMC starting values.

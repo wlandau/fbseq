@@ -16,7 +16,7 @@ instead of posterior means}
 parameters that were updated in the MCMC.}
 }
 \value{
-an array of MCMC parameter samples.
+an array of MCMC parameter libraries.
 }
 \description{
 Flattens posterior means or posterior means of squares

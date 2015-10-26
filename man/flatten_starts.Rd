@@ -10,7 +10,7 @@ flatten_starts(starts)
 \item{starts}{a \code{Starts} object.}
 }
 \value{
-an array of MCMC parameter samples.
+an array of MCMC parameter libraries.
 }
 \description{
 Flattens a \code{Starts} object.

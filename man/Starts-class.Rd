@@ -12,78 +12,46 @@ objects from scratch.
 \section{Slots}{
 
 \describe{
-\item{\code{dRho}}{initialization constant}
-
-\item{\code{dGam}}{initialization constant}
-
 \item{\code{aRho}}{initialization constant}
 
-\item{\code{aGam}}{initialization constant}
+\item{\code{aGamma}}{initialization constant}
 
 \item{\code{bRho}}{initialization constant}
 
-\item{\code{bGam}}{initialization constant}
+\item{\code{bGamma}}{initialization constant}
 
-\item{\code{cPhi}}{initialization constant}
+\item{\code{c}}{initialization constants}
 
-\item{\code{cAlp}}{initialization constant}
+\item{\code{dRho}}{initialization constant}
 
-\item{\code{cDel}}{initialization constant}
+\item{\code{dGamma}}{initialization constant}
 
-\item{\code{sPhi}}{initialization constant}
+\item{\code{k}}{initialization constants}
 
-\item{\code{sAlp}}{initialization constant}
+\item{\code{r}}{initialization constants}
 
-\item{\code{sDel}}{initialization constant}
+\item{\code{s}}{initialization constants}
 
-\item{\code{kPhi}}{initialization constant}
+\item{\code{beta}}{MCMC starting values}
 
-\item{\code{kAlp}}{initialization constant}
+\item{\code{epsilon}}{MCMC starting values}
 
-\item{\code{kDel}}{initialization constant}
+\item{\code{gamma}}{MCMC starting values}
 
-\item{\code{rPhi}}{initialization constant}
+\item{\code{nuGamma}}{MCMC starting values}
 
-\item{\code{rAlp}}{initialization constant}
+\item{\code{nuRho}}{MCMC starting values}
 
-\item{\code{rDel}}{initialization constant}
+\item{\code{omega}}{MCMC starting values}
 
-\item{\code{nuRho}}{model parameter}
+\item{\code{rho}}{MCMC starting values}
 
-\item{\code{nuGam}}{model parameter}
+\item{\code{tauGamma}}{MCMC starting values}
 
-\item{\code{tauRho}}{model parameter}
+\item{\code{tauRho}}{MCMC starting values}
 
-\item{\code{tauGam}}{model parameter}
+\item{\code{theta}}{MCMC starting values}
 
-\item{\code{thePhi}}{model parameter}
-
-\item{\code{theAlp}}{model parameter}
-
-\item{\code{theDel}}{model parameter}
-
-\item{\code{sigPhi}}{model parameter}
-
-\item{\code{sigAlp}}{model parameter}
-
-\item{\code{sigDel}}{model parameter}
-
-\item{\code{phi}}{model parameter}
-
-\item{\code{alp}}{model parameter}
-
-\item{\code{del}}{model parameter}
-
-\item{\code{rho}}{model parameter}
-
-\item{\code{gam}}{model parameter}
-
-\item{\code{xiPhi}}{model parameter}
-
-\item{\code{xiAlp}}{model parameter}
-
-\item{\code{xiDel}}{model parameter}
-
-\item{\code{eps}}{model parameter}
+\item{\code{xi}}{MCMC starting values}
 }}
 

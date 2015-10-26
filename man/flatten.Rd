@@ -12,10 +12,10 @@ flatten(obj)
 \value{
 one of the following, depending on the class of the argument object.
 \describe{
-  \item{\code{Chain} argument}{a data frame parameter samples.}
+  \item{\code{Chain} argument}{a data frame parameter libraries.}
   \item{\code{Starts} argument}{a named numeric vector of starting values. If
-\code{eps} is set in \code{obj}, then one of \code{rho}, \code{phi}, \code{alp},
-or \code{gam} must be set too.}
+\code{epsilon} is set in \code{obj}, then one of \code{rho}, \code{phi}, \code{alp},
+or \code{gamma} must be set too.}
 }
 }
 \description{

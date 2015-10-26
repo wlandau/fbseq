@@ -21,8 +21,7 @@ Concatenate 2 \code{Chain} objects that are chronologically adjacent.
 If you run \code{chain1} and if \code{chain2 = run_mcmc(chain1)}, then you can call
 \code{concatenate(chain1, chain2)} to combine them. The parameter samples
 will be combined, the starting values will be the same as for chain2, and
-\code{concatenate(chain1, chain2)@M = chain1@M + chain2@M}. Also,
-\code{concatenate(chain1, chain2)@hph = (chain1@M * chain1@hph + chain2@M * chain2@hph) / (chain1@M + chain2@M)}
+\code{concatenate(chain1, chain2)@iterations = chain1@iterations + chain2@iterations}.
 The other heterosis probabilities are similarly combined.
 }
 

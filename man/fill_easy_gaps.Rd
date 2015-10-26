@@ -4,17 +4,16 @@
 \alias{fill_easy_gaps}
 \title{Function \code{fill_easy_gaps}}
 \usage{
-fill_easy_gaps(chain, counts, group)
+fill_easy_gaps(chain, counts, design)
 }
 \arguments{
 \item{chain}{a \code{Chain} object}
 
 \item{counts}{Matrix of RNA-seq read counts.}
 
-\item{group}{Experimental design. A vector of integers,
-one for each RNA-seq sample/library, denoting the genetic
-variety of that sample. You must use 1 for parent 1, 2 for parent 2,
-and 3 for the hybrid.}
+\item{design}{Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+gene-specific variables.}
 }
 \value{
 a \code{Chain} object

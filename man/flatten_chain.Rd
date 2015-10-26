@@ -10,7 +10,7 @@ flatten_chain(chain)
 \item{chain}{a \code{Chain} object.}
 }
 \value{
-an array of MCMC parameter samples.
+an array of MCMC parameter libraries.
 }
 \description{
 Flattens a \code{Chain} object.

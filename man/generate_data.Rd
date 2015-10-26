@@ -4,49 +4,36 @@
 \alias{generate_data}
 \title{Function \code{generate_data}}
 \usage{
-generate_data(samples = 12, features = 35000, group = c(rep(1:3, each =
-  floor(samples/3)), rep(3, samples\%\%3)), starts = Starts(nuRho = 5, nuGam =
-  5, tauRho = 0.1, thePhi = 3, theAlp = 0, theDel = 0, sigPhi = 1, sigAlp = 0.5,
-  sigDel = 0.5), phiPrior = "normal", alpPrior = "normal",
-  delPrior = "normal")
+generate_data(libraries = 12, genes = 35000, design = cbind(rep(1,
+  libraries), rep(c(1, -1, 1), each = floor(libraries/3)), rep(c(-1, 1, 1), each
+  = floor(libraries/3))), starts = Starts(nuGamma = 5, nuRho = 5, omega = c(1,
+  0.5, 0.5), tauGamma = 1, tauRho = 0.1, theta = c(3, 0, 0)))
 }
 \arguments{
-\item{samples}{number of samples/libraries in the data}
+\item{libraries}{number of libraries/libraries in the data}
 
-\item{features}{number of features/genes in the data}
+\item{genes}{number of genes/genes in the data}
+
+\item{starts}{A \code{Starts} object containing the necessary initialization constants
+and hyperparameters.}
 
 \item{group}{Experimental design. A vector of integers,
 one for each RNA-seq sample/library, denoting the genetic
 variety of that sample. You must use 1 for parent 1, 2 for the hybrid,
 and 3 for parent 2.}
 
-\item{starts}{A \code{Starts} object containing the necessary initialization constants
-and hyperparameters.}
-
-\item{phiPrior}{Name of the family of priors on the phi_g's after integrating out the xi_phi's.
-Can be "Laplace", "t", or "horseshoe". All other values will default to the normal prior.}
-
-\item{alpPrior}{Name of the family of priors on the alp_g's after integrating out the xi_alp's.
-Can be "Laplace", "t", or "horseshoe". All other values will default to the normal prior.}
-
-\item{delPrior}{Name of the family of priors on the del_g's after integrating out the xi_del's.
-Can be "Laplace", "t", or "horseshoe". All other values will default to the normal prior.}
+\item{priors}{Name of the family of priors on the betas. Must be length 1 or ncol(design).
+Can be among "Laplace", "t", or "horseshoe". All other values will default to the normal prior.}
 }
 \value{
 a list
 \describe{
   \item{\code{counts}}{The generated RNA-seq counts matrix.}
-  \item{\code{group}}{The group structure.}
+  \item{\code{design}}{The design matrix for gene-specific effects.}
   \item{\code{truth}}{A \code{Starts} object containing the values used to simulate the data}
 }
 }
 \description{
 Simulates heterosis data from prespecified hyperparameters.
-Intended for testing and demonstration only.
-Default hyperparameters are available as default arguments.
-}
-\details{
-Each feature/gene must have at least one nonzero count per genetic variety.
-The offending zero-count genes are replaced with bootstrap samples of the other genes.
 }
 
