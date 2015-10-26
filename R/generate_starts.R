@@ -63,7 +63,7 @@ simple_starts = function(chain, counts, design){
   tauRho = nt$tau
 
   nt = nu_tau(gamma)
-  nuGam = nt$nu
+  nuGamma = nt$nu
   tauGamma = nt$tau
 
   for(n in c("c", "k", "r", "s")){

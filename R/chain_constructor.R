@@ -37,7 +37,7 @@ Chain = function(
   chain = plug_in_chain(chain, design, configs = configs, starts = starts)
   chain = fill_easy_gaps(chain, counts, design)
   chain = simple_starts(chain, counts, design)
-  if(chain@returns["tauGamma"] || chain@updates["tauGamma"]) warning("TauGamma should be set constant at 1. Sampling tauGamma will prevent the MCMC from converging, and returning even a constant tauGamma will muddle effective sample size diagnostics. Control tauGamma with the returns, updates, returns_skip, and updates_skip slots in your Configs object. See the package vignettes for details.")
+  if(chain@parameter_sets_return["tauGamma"] || chain@parameter_sets_update["tauGamma"]) warning("TauGamma should be set constant at 1. Sampling tauGamma will prevent the MCMC from converging, and returning even a constant tauGamma will muddle effective sample size diagnostics. Control tauGamma with the returns, updates, returns_skip, and updates_skip slots in your Configs object. See the package vignettes for details.")
   chain
 }
 
@@ -65,7 +65,7 @@ plug_in_chain = function(chain, design, configs, starts){
     names(slot(chain, n)) = parameters()
   }
 
-  chain@priors = ifelse(configs@priors %in% alternate_priors(), which(alternate_priors() == configs@priors), 0)
+  chain@priors = ifelse(configs@priors %in% alternate_priors(), which(alternate_priors() == configs@priors), as.integer(0))
   if(length(chain@priors) == 1) chain@priors = rep(chain@priors, ncol(design))
   stopifnot(length(chain@priors) == ncol(design))
 
@@ -92,11 +92,11 @@ plug_in_chain = function(chain, design, configs, starts){
 #' gene-specific variables.
 fill_easy_gaps = function(chain, counts, design){
   stopifnot(ncol(counts) == nrow(design))
-  stopifnot(all(sort(unique(as.vector(design))) == c(-1, 0, 1)))
+  stopifnot(all(unique(as.vector(design)) %in% c(-1, 0, 1)))
 
   chain@counts = as.integer(counts)
-  chain@sums_g = as.integer(apply(counts, 1, sum))
-  chain@sums_n = as.integer(apply(counts, 2, sum))
+  chain@countSums_g = as.integer(apply(counts, 1, sum))
+  chain@countSums_n = as.integer(apply(counts, 2, sum))
   chain@design = as.integer(design)
   chain@G = G = nrow(counts)
   chain@Greturn = Greturn = length(chain@genes_return)
@@ -139,8 +139,8 @@ fill_easy_gaps = function(chain, counts, design){
   for(post in c("PostMean", "PostMeanSquare"))
     for(s in names(lengths)){
       n = paste0(s, post)
-      slot(chain, n) = rep(0, lengths[n])
+      slot(chain, n) = rep(0, lengths[s])
     }
 
-  return(chain)
+  chain
 }
