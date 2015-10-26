@@ -1,0 +1,12 @@
+.DS_Store
+.git
+.gitignore
+.Rapp.history
+.Rbuildignore
+.Rhistory
+Rbuildignore
+README.md
+vignettes/methodology.html
+vignettes/methodology.log
+vignettes/tutorial.html
+vignettes/tutorial.log
