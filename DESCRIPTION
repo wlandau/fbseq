@@ -16,7 +16,7 @@ Imports:
     pracma,
     R.utils
 Suggests:
-    heterosisCUDA,
+    fbseqCUDA,
     knitr
 VignetteBuilder: knitr
 License: GPL (>= 3)

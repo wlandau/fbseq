@@ -14,7 +14,7 @@ NULL
 #' if \code{chain} is the output from a previous call to \code{run_mcmc(...)},
 #' then the function will continue the MCMC from where it left off.
 run_fixed_mcmc = function(chain){
-  check_heterosisCUDA()
+  check_fbseqCUDA()
   chain@seeds = sample.int(1e3 * chain@N * chain@G, chain@N * chain@G)
-  heterosisCUDA::heterosisCUDA(chain)
+  fbseqCUDA::fbseqCUDA(chain)
 }

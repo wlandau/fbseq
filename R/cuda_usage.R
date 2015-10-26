@@ -1,10 +1,10 @@
-#' @title Function \code{check_heterosisCUDA}
-#' @description Checks that package \code{heterosisCUDA} is installed. 
+#' @title Function \code{check_fbseqCUDA}
+#' @description Checks that package \code{fbseqCUDA} is installed. 
 #' If the package is not installed, the function quits in error.
 #' @export
-check_heterosisCUDA = function(){
-  if(!requireNamespace("heterosisCUDA", quietly = T))
-    stop("this function requires a CUDA-capable NVIDIA GPU, a working installation of CUDA with the correct drivers, and the heterosisCUDA package.")
+check_fbseqCUDA = function(){
+  if(!requireNamespace("fbseqCUDA", quietly = T))
+    stop("this function requires a CUDA-capable NVIDIA GPU, a working installation of CUDA with the correct drivers, and the fbseqCUDA package.")
 }
 
 #' @title Function \code{getDevice}
@@ -13,8 +13,8 @@ check_heterosisCUDA = function(){
 #' @return Integer index of the current CUDA-capable GPU, which is >= 0 and 
 #' < number of devices.
 getDevice = function(){
-  check_heterosisCUDA()
-  heterosisCUDA::RgetDevice()
+  check_fbseqCUDA()
+  fbseqCUDA::RgetDevice()
 }
 
 #' @title Function \code{getDeviceCount}
@@ -22,8 +22,8 @@ getDevice = function(){
 #' @export
 #' @return Number of CUDA-capable GPUs.
 getDeviceCount = function(){
-  check_heterosisCUDA()
-  heterosisCUDA::RgetDeviceCount()
+  check_fbseqCUDA()
+  fbseqCUDA::RgetDeviceCount()
 }
 
 #' @title Function \code{setDevice}
@@ -33,6 +33,6 @@ getDeviceCount = function(){
 #' < number of devices.
 #' @param device Integer index of a CUDA-capable GPU. Must be >= 0 < number of GPUs.
 setDevice = function(device){
-  check_heterosisCUDA()
-  heterosisCUDA::RsetDevice(as.integer(device))
+  check_fbseqCUDA()
+  fbseqCUDA::RsetDevice(as.integer(device))
 }
