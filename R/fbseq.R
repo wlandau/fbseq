@@ -1,7 +1,7 @@
 #' @include effectiveSampleSize.R run_gelman_mcmc.R
 NULL
 
-#' @title Function \code{heterosis}
+#' @title Function \code{fbseq}
 #' @description Top-level function. Runs an MCMC with the runtime
 #' parameters specified in the \code{Chain} object
 #' 
@@ -11,7 +11,7 @@ NULL
 #' from where you left off.
 #'
 #' @param chain object of type \code{Chain}. See the package vignette for details.
-heterosis = function(chain){
+fbseq = function(chain){
   if(chain@diag == "gelman"){
     chain = run_gelman_mcmc(chain)
   } else {
