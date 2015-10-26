@@ -187,6 +187,6 @@ actual MCMC parameter samples are not returned)}
 
 \item{\code{thetaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{xiPostMeanSquareestimated}}{posterior means of the squares of parameters}
+\item{\code{xiPostMeanSquare}}{posterior means of the squares of parameters}
 }}
 

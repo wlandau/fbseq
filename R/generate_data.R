@@ -43,5 +43,5 @@ generate_data = function(libraries = 12, genes = 3.5e4,
   colnames(counts) = paste("library_", 1:libraries, sep="")
 
   starts@epsilon = as.vector(epsilon)
-  return(list(counts = counts, group = group, truth = starts))
+  return(list(counts = counts, design = design, truth = starts))
 }

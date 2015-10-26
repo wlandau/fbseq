@@ -104,7 +104,7 @@
 #' @slot tauRhoPostMeanSquare estimated posterior mean of the square of the parameter
 #' @slot tauGammaPostMeanSquare estimated posterior mean of the square of the parameter
 #' @slot thetaPostMeanSquare estimated posterior means of the squares of parameters
-#' @slot xiPostMeanSquareestimated posterior means of the squares of parameters
+#' @slot xiPostMeanSquare posterior means of the squares of parameters
 setClass("Chain",
   slots = list(
     diag = "character",
