@@ -14,7 +14,6 @@ a \code{Chain} object
 }
 \description{
 Reruns an already-run \code{Chain} object until
-at least \code{chain@iterations} effective samples are obtained for each returned
-parameter.
+at least \code{chain@iterations} effective samples are obtained for each returned hyperparameter.
 }
 

@@ -30,6 +30,9 @@
 #' @slot verbose Number of times to print out progress during burnin and the actual MCMC.
 #' If \code{verbose} > 0, then progress messages will also print during setup and cleanup.
 #' 
+#' @slot psrf Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the 
+#' actual MCMC parameter samples are not returned)
+#'
 #' @slot counts RNA-seq count data, flattened from a matrix
 #' @slot countSums_g gene-specific count sums
 #' @slot countSums_n library-specific count sums
@@ -43,8 +46,6 @@
 #' @slot N number of libraries
 #' @slot Nreturn number of libraries to return library-specific MCMC parameter samples for (except the epsilons)
 #' @slot NreturnEpsilon number of libraries to return library-specific MCMC epsilon parameter samples
-#' @slot psrf Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the 
-#' actual MCMC parameter samples are not returned)
 #' @slot seeds vector of N*G random number generator seeds
 #' 
 #' @slot aRho initialization constant 
@@ -73,36 +74,36 @@
 #' @slot betaStart MCMC starting values
 #' @slot epsilonStart MCMC starting values
 #' @slot gammaStart MCMC starting values
-#' @slot nuRhoStart MCMC starting values
 #' @slot nuGammaStart MCMC starting values
+#' @slot nuRhoStart MCMC starting values
 #' @slot omegaStart MCMC starting values
 #' @slot rhoStart MCMC starting values
-#' @slot tauRhoStart MCMC starting values
 #' @slot tauGammaStart MCMC starting values
+#' @slot tauRhoStart MCMC starting values
 #' @slot thetaStart MCMC starting values
 #' @slot xiStart MCMC starting values
 #' 
 #' @slot betaPostMean estimated posterior means
 #' @slot epsilonPostMean estimated posterior means
 #' @slot gammaPostMean estimated posterior means
-#' @slot nuRhoPostMean estimated posterior mean
 #' @slot nuGammaPostMean estimated posterior mean
+#' @slot nuRhoPostMean estimated posterior mean
 #' @slot omegaPostMean estimated posterior means
 #' @slot rhoPostMean estimated posterior means
-#' @slot tauRhoPostMean estimated posterior mean
 #' @slot tauGammaPostMean estimated posterior mean
+#' @slot tauRhoPostMean estimated posterior mean
 #' @slot thetaPostMean estimated posterior means
 #' @slot xiPostMean estimated posterior means
 #' 
 #' @slot betaPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot epsilonPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot gammaPostMeanSquare estimated posterior means of the squares of parameters
-#' @slot nuRhoPostMeanSquare estimated posterior mean of the square of the parameter
 #' @slot nuGammaPostMeanSquare estimated posterior mean of the square of the parameter 
+#' @slot nuRhoPostMeanSquare estimated posterior mean of the square of the parameter
 #' @slot omegaPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot rhoPostMeanSquare estimated posterior means of the squares of parameters
-#' @slot tauRhoPostMeanSquare estimated posterior mean of the square of the parameter
 #' @slot tauGammaPostMeanSquare estimated posterior mean of the square of the parameter
+#' @slot tauRhoPostMeanSquare estimated posterior mean of the square of the parameter
 #' @slot thetaPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot xiPostMeanSquare posterior means of the squares of parameters
 setClass("Chain",
@@ -125,6 +126,8 @@ setClass("Chain",
     thin = "integer",
     verbose = "integer",
 
+    psrf = "numeric",
+
     counts = "integer",
     countSums_g = "integer",
     countSums_n = "integer",
@@ -136,16 +139,15 @@ setClass("Chain",
     N = "integer",
     Nreturn = "integer",
     NreturnEpsilon = "integer",
-    psrf = "numeric",
     seeds = "integer",
 
-    aRho = "numeric",
     aGamma = "numeric",
-    bRho = "numeric",
+    aRho = "numeric",
     bGamma = "numeric",
+    bRho = "numeric",
     c = "numeric",
-    dRho = "numeric",
     dGamma = "numeric",
+    dRho = "numeric",
     k = "numeric",
     r = "numeric",
     s = "numeric",
@@ -165,36 +167,36 @@ setClass("Chain",
     betaStart = "numeric",
     epsilonStart = "numeric",
     gammaStart = "numeric",
-    nuRhoStart = "numeric",
     nuGammaStart = "numeric",
+    nuRhoStart = "numeric",
     omegaStart = "numeric",
     rhoStart = "numeric",
-    tauRhoStart = "numeric",
     tauGammaStart = "numeric",
+    tauRhoStart = "numeric",
     thetaStart = "numeric",
     xiStart = "numeric",
 
     betaPostMean = "numeric",
     epsilonPostMean = "numeric",
     gammaPostMean = "numeric",
-    nuRhoPostMean = "numeric",
     nuGammaPostMean = "numeric",
+    nuRhoPostMean = "numeric",
     omegaPostMean = "numeric",
     rhoPostMean = "numeric",
-    tauRhoPostMean = "numeric",
     tauGammaPostMean = "numeric",
+    tauRhoPostMean = "numeric",
     thetaPostMean = "numeric",
     xiPostMean = "numeric",
 
     betaPostMeanSquare = "numeric",
     epsilonPostMeanSquare = "numeric",
     gammaPostMeanSquare = "numeric",
-    nuRhoPostMeanSquare = "numeric",
     nuGammaPostMeanSquare = "numeric",
+    nuRhoPostMeanSquare = "numeric",
     omegaPostMeanSquare = "numeric",
     rhoPostMeanSquare = "numeric",
-    tauRhoPostMeanSquare = "numeric",
     tauGammaPostMeanSquare = "numeric",
+    tauRhoPostMeanSquare = "numeric",
     thetaPostMeanSquare = "numeric",
     xiPostMeanSquare = "numeric"
   )

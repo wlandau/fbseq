@@ -52,6 +52,9 @@ Can be any value returned by \code{alternate_priors()}. All other values will de
 \item{\code{verbose}}{Number of times to print out progress during burnin and the actual MCMC.
 If \code{verbose} > 0, then progress messages will also print during setup and cleanup.}
 
+\item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the
+actual MCMC parameter samples are not returned)}
+
 \item{\code{counts}}{RNA-seq count data, flattened from a matrix}
 
 \item{\code{countSums_g}}{gene-specific count sums}
@@ -75,9 +78,6 @@ gene-specific variables.}
 \item{\code{Nreturn}}{number of libraries to return library-specific MCMC parameter samples for (except the epsilons)}
 
 \item{\code{NreturnEpsilon}}{number of libraries to return library-specific MCMC epsilon parameter samples}
-
-\item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the
-actual MCMC parameter samples are not returned)}
 
 \item{\code{seeds}}{vector of N*G random number generator seeds}
 
@@ -129,17 +129,17 @@ actual MCMC parameter samples are not returned)}
 
 \item{\code{gammaStart}}{MCMC starting values}
 
-\item{\code{nuRhoStart}}{MCMC starting values}
-
 \item{\code{nuGammaStart}}{MCMC starting values}
+
+\item{\code{nuRhoStart}}{MCMC starting values}
 
 \item{\code{omegaStart}}{MCMC starting values}
 
 \item{\code{rhoStart}}{MCMC starting values}
 
-\item{\code{tauRhoStart}}{MCMC starting values}
-
 \item{\code{tauGammaStart}}{MCMC starting values}
+
+\item{\code{tauRhoStart}}{MCMC starting values}
 
 \item{\code{thetaStart}}{MCMC starting values}
 
@@ -151,17 +151,17 @@ actual MCMC parameter samples are not returned)}
 
 \item{\code{gammaPostMean}}{estimated posterior means}
 
-\item{\code{nuRhoPostMean}}{estimated posterior mean}
-
 \item{\code{nuGammaPostMean}}{estimated posterior mean}
+
+\item{\code{nuRhoPostMean}}{estimated posterior mean}
 
 \item{\code{omegaPostMean}}{estimated posterior means}
 
 \item{\code{rhoPostMean}}{estimated posterior means}
 
-\item{\code{tauRhoPostMean}}{estimated posterior mean}
-
 \item{\code{tauGammaPostMean}}{estimated posterior mean}
+
+\item{\code{tauRhoPostMean}}{estimated posterior mean}
 
 \item{\code{thetaPostMean}}{estimated posterior means}
 
@@ -173,17 +173,17 @@ actual MCMC parameter samples are not returned)}
 
 \item{\code{gammaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{nuRhoPostMeanSquare}}{estimated posterior mean of the square of the parameter}
-
 \item{\code{nuGammaPostMeanSquare}}{estimated posterior mean of the square of the parameter}
+
+\item{\code{nuRhoPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
 \item{\code{omegaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
 \item{\code{rhoPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{tauRhoPostMeanSquare}}{estimated posterior mean of the square of the parameter}
-
 \item{\code{tauGammaPostMeanSquare}}{estimated posterior mean of the square of the parameter}
+
+\item{\code{tauRhoPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
 \item{\code{thetaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 

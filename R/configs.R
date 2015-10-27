@@ -97,7 +97,7 @@ Configs = function(obj = NULL, ...){
     for(n in setdiff(intersect(slotNames(configs), slotNames(obj)), subtract))
       slot(configs, n) = slot(obj, n)
 
-    for(n in c("parameter_sets_return", "parameter_sets_updates"))
+    for(n in c("parameter_sets_return", "parameter_sets_update"))
       slot(configs, n) = names(slot(obj, n))[as.logical(slot(obj, n))]
 
     configs@priors = ifelse(obj@priors > 0, alternate_priors()[obj@priors], "normal")

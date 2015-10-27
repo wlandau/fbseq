@@ -3,15 +3,14 @@ NULL
 
 #' @title Function \code{effectiveSampleSize}
 #' @description Reruns an already-run \code{Chain} object until 
-#' at least \code{chain@@iterations} effective samples are obtained for each returned
-#' parameter. 
+#' at least \code{chain@@iterations} effective samples are obtained for each returned hyperparameter.
 #' @export
 #' @return a \code{Chain} object
 #' @param chain a \code{Chain} object
 effectiveSampleSize = function(chain){
   i = 0
   iterations = chain@iterations
-  while(i < chain@iterationsax_attempts){
+  while(i < chain@max_attempts){
     i = i + 1
     flat = flatten(chain)
 
@@ -21,14 +20,13 @@ effectiveSampleSize = function(chain){
     }    
 
     ess = effectiveSize(mcmc(flat))
-    hyper = intersect(c("nuGamma", "nuRho", "omega", "tauGamma", "tauRho", "theta"), names(ess))
+    pattern = paste(c("nu", "omega", "tau", "theta"), collapse = "|")
+    ess = ess[grep(pattern, names(ess))]
 
     if(chain@verbose) {
-      print(paste0("Attempt ", i, " of ", chain@iterationsax_attempts, ": trying to obtain ", chain@ess, " effective samples for every parameter with returned samples."))
+      print(paste0("Attempt ", i, " of ", chain@max_attempts, ": trying to obtain ", chain@ess, " effective samples for every parameter with returned samples."))
       print("Summary of effective sample sizes of returned parameters:")
       print(summary(ess))
-      print("Effective sample sizes of returned hyperparameters:")      
-      print(ess[hyper])
     }
 
     min_ess = round(min(ess), 3)
@@ -45,6 +43,6 @@ effectiveSampleSize = function(chain){
     chain = concatenate(chain, new_chain)
   }
 
-  warning(paste("In effectiveSampleSize(), chain@iterationsax_attempts =", chain@iterationsax_attempts, "reached."))
+  warning(paste("In effectiveSampleSize(), chain@max_attempts =", chain@max_attempts, "reached."))
   chain
 }
