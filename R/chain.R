@@ -64,8 +64,8 @@
 #' @slot gamma MCMC parameter samples
 #' @slot nuGamma MCMC parameter samples
 #' @slot nuRho MCMC parameter samples
-#' @slot omega MCMC parameter samples
 #' @slot rho MCMC parameter samples
+#' @slot sigmaSquared MCMC parameter samples
 #' @slot tauGamma MCMC parameter samples
 #' @slot tauRho MCMC parameter samples
 #' @slot theta MCMC parameter samples
@@ -76,8 +76,8 @@
 #' @slot gammaStart MCMC starting values
 #' @slot nuGammaStart MCMC starting values
 #' @slot nuRhoStart MCMC starting values
-#' @slot omegaStart MCMC starting values
 #' @slot rhoStart MCMC starting values
+#' @slot sigmaSquaredStart MCMC starting values
 #' @slot tauGammaStart MCMC starting values
 #' @slot tauRhoStart MCMC starting values
 #' @slot thetaStart MCMC starting values
@@ -88,8 +88,8 @@
 #' @slot gammaPostMean estimated posterior means
 #' @slot nuGammaPostMean estimated posterior mean
 #' @slot nuRhoPostMean estimated posterior mean
-#' @slot omegaPostMean estimated posterior means
 #' @slot rhoPostMean estimated posterior means
+#' @slot sigmaSquaredPostMean estimated posterior means
 #' @slot tauGammaPostMean estimated posterior mean
 #' @slot tauRhoPostMean estimated posterior mean
 #' @slot thetaPostMean estimated posterior means
@@ -100,8 +100,8 @@
 #' @slot gammaPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot nuGammaPostMeanSquare estimated posterior mean of the square of the parameter 
 #' @slot nuRhoPostMeanSquare estimated posterior mean of the square of the parameter
-#' @slot omegaPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot rhoPostMeanSquare estimated posterior means of the squares of parameters
+#' @slot sigmaSquaredPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot tauGammaPostMeanSquare estimated posterior mean of the square of the parameter
 #' @slot tauRhoPostMeanSquare estimated posterior mean of the square of the parameter
 #' @slot thetaPostMeanSquare estimated posterior means of the squares of parameters
@@ -157,8 +157,8 @@ setClass("Chain",
     gamma = "numeric",
     nuGamma = "numeric",
     nuRho = "numeric",
-    omega = "numeric",
     rho = "numeric",
+    sigmaSquared = "numeric",
     tauGamma = "numeric",
     tauRho = "numeric",
     theta = "numeric",
@@ -169,8 +169,8 @@ setClass("Chain",
     gammaStart = "numeric",
     nuGammaStart = "numeric",
     nuRhoStart = "numeric",
-    omegaStart = "numeric",
     rhoStart = "numeric",
+    sigmaSquaredStart = "numeric",
     tauGammaStart = "numeric",
     tauRhoStart = "numeric",
     thetaStart = "numeric",
@@ -181,8 +181,8 @@ setClass("Chain",
     gammaPostMean = "numeric",
     nuGammaPostMean = "numeric",
     nuRhoPostMean = "numeric",
-    omegaPostMean = "numeric",
     rhoPostMean = "numeric",
+    sigmaSquaredPostMean = "numeric",
     tauGammaPostMean = "numeric",
     tauRhoPostMean = "numeric",
     thetaPostMean = "numeric",
@@ -193,8 +193,8 @@ setClass("Chain",
     gammaPostMeanSquare = "numeric",
     nuGammaPostMeanSquare = "numeric",
     nuRhoPostMeanSquare = "numeric",
-    omegaPostMeanSquare = "numeric",
     rhoPostMeanSquare = "numeric",
+    sigmaSquaredPostMeanSquare = "numeric",
     tauGammaPostMeanSquare = "numeric",
     tauRhoPostMeanSquare = "numeric",
     thetaPostMeanSquare = "numeric",

@@ -50,7 +50,7 @@ simple_starts = function(chain, counts, design){
   beta = t(OLS %*% t(logcounts))
 
   theta = apply(beta, 2, mean)
-  omega = apply(beta, 2, var)
+  sigmaSquared = apply(beta, 2, var)
   xi = rep(1, ncol(beta)*G)
 
   epsilon = logcounts - t(PROJ %*% t(logcounts))
@@ -120,8 +120,8 @@ dispersed_set = function(chain, parm, lower = NA, upper = NA){
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
   configs = Configs(chain)
-  lower = c(gamma = 0, nuRho = 0, nuGam = 0, omega = 0, rho = 0, tauRho = 0, tauGamma = 0, xi = 0)
-  upper = c(nuRho = chain@dRho, nuGam = chain@dGamma)
+  lower = c(gamma = 0, nuRho = 0, nuGam = 0, sigmaSquared = 0, rho = 0, tauRho = 0, tauGamma = 0, xi = 0)
+  upper = c(nuRho = chain@dRho, nuGam = chain@dGamma, sigmaSquared = chain@s^2)
 
   for(v in configs@parameter_sets_update)
     slot(chain, paste0(v, "Start")) = dispersed_set(chain, v, lower[v], upper[v])

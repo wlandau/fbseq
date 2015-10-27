@@ -28,7 +28,7 @@ credible_intervals = function(chain, level = 0.95){
   upperCI = upperCInorm
   
   useGamma = NULL
-  for(parm in c("gamma", "nu", "omega", "rho", "tau", "xi"))
+  for(parm in c("gamma", "nu", "rho", "sigmaSquared", "tau", "xi"))
     useGamma = c(useGamma, grep(parm, names(Mean)))
 
   lowerCI[useGamma] = lowerCIgamma[useGamma]

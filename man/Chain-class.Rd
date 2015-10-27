@@ -111,9 +111,9 @@ gene-specific variables.}
 
 \item{\code{nuRho}}{MCMC parameter samples}
 
-\item{\code{omega}}{MCMC parameter samples}
-
 \item{\code{rho}}{MCMC parameter samples}
+
+\item{\code{sigmaSquared}}{MCMC parameter samples}
 
 \item{\code{tauGamma}}{MCMC parameter samples}
 
@@ -133,9 +133,9 @@ gene-specific variables.}
 
 \item{\code{nuRhoStart}}{MCMC starting values}
 
-\item{\code{omegaStart}}{MCMC starting values}
-
 \item{\code{rhoStart}}{MCMC starting values}
+
+\item{\code{sigmaSquaredStart}}{MCMC starting values}
 
 \item{\code{tauGammaStart}}{MCMC starting values}
 
@@ -155,9 +155,9 @@ gene-specific variables.}
 
 \item{\code{nuRhoPostMean}}{estimated posterior mean}
 
-\item{\code{omegaPostMean}}{estimated posterior means}
-
 \item{\code{rhoPostMean}}{estimated posterior means}
+
+\item{\code{sigmaSquaredPostMean}}{estimated posterior means}
 
 \item{\code{tauGammaPostMean}}{estimated posterior mean}
 
@@ -177,9 +177,9 @@ gene-specific variables.}
 
 \item{\code{nuRhoPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
-\item{\code{omegaPostMeanSquare}}{estimated posterior means of the squares of parameters}
-
 \item{\code{rhoPostMeanSquare}}{estimated posterior means of the squares of parameters}
+
+\item{\code{sigmaSquaredPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
 \item{\code{tauGammaPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 

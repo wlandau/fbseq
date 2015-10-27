@@ -20,8 +20,8 @@
 #' @slot gamma MCMC starting values
 #' @slot nuGamma MCMC starting values
 #' @slot nuRho MCMC starting values
-#' @slot omega MCMC starting values
 #' @slot rho MCMC starting values
+#' @slot sigmaSquared MCMC starting values
 #' @slot tauGamma MCMC starting values
 #' @slot tauRho MCMC starting values
 #' @slot theta MCMC starting values
@@ -44,8 +44,8 @@ setClass("Starts",
     gamma = "numeric",
     nuGamma = "numeric",
     nuRho = "numeric",
-    omega = "numeric",
     rho = "numeric",
+    sigmaSquared = "numeric",
     tauGamma = "numeric",
     tauRho = "numeric",
     theta = "numeric",

@@ -42,9 +42,9 @@ objects from scratch.
 
 \item{\code{nuRho}}{MCMC starting values}
 
-\item{\code{omega}}{MCMC starting values}
-
 \item{\code{rho}}{MCMC starting values}
+
+\item{\code{sigmaSquared}}{MCMC starting values}
 
 \item{\code{tauGamma}}{MCMC starting values}
 

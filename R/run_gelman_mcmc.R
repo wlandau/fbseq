@@ -45,7 +45,7 @@ run_gelman_mcmc = function(chain){
   for(i in 2:chain@nchains_diag) chain_list[[i]] = disperse_starts(pilot_chain)
  
   attempt = 0
-  pattern = paste(c("beta", "nu", "omega", "tau", "theta"), collapse = "|")
+  pattern = paste(c("beta", "nu",  "sigmaSquared", "tau", "theta"), collapse = "|")
 
   while(attempt < chain@max_attempts){
     attempt = attempt + 1
