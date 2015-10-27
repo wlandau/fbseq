@@ -96,13 +96,15 @@ simple_starts = function(chain, counts, design){
 #' @param lower lower bound for nonnegative parameters.
 #' @param upper upper bound for nonnegative parameters.
 dispersed_set = function(chain, parm, lower = NA, upper = NA){
+  if(!length(lower)) lower = NA
+  if(!length(upper)) upper = NA
   m = chain@iterations
   Mean = slot(chain, paste0(parm, "PostMean"))
   MeanSquare = slot(chain, paste0(parm, "PostMeanSquare"))
   Sd =  sqrt(m*(MeanSquare - Mean^2)/(m - 1))
   n = length(Mean)
-  Min = pmax(rep(lower, n), Mean - 3*Sd, na.rm = T)
-  Max = pmin(rep(upper, n), Mean + 3*Sd, na.rm = T) 
+  Min = pmax(rep(lower, n/length(lower)), Mean - 3*Sd, na.rm = T)
+  Max = pmin(rep(upper, n/length(upper)), Mean + 3*Sd, na.rm = T) 
   runif(n, Min, Max)
 }
 
@@ -120,11 +122,11 @@ dispersed_set = function(chain, parm, lower = NA, upper = NA){
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
   configs = Configs(chain)
-  lower = c(gamma = 0, nuRho = 0, nuGam = 0, sigmaSquared = 0, rho = 0, tauRho = 0, tauGamma = 0, xi = 0)
-  upper = c(nuRho = chain@dRho, nuGam = chain@dGamma, sigmaSquared = chain@s^2)
+  lower = list(gamma = 0, nuRho = 0, nuGam = 0, sigmaSquared = 0, rho = 0, tauRho = 0, tauGamma = 0, xi = 0)
+  upper = list(nuRho = chain@dRho, nuGam = chain@dGamma, sigmaSquared = chain@s^2)
 
   for(v in configs@parameter_sets_update)
-    slot(chain, paste0(v, "Start")) = dispersed_set(chain, v, lower[v], upper[v])
+    slot(chain, paste0(v, "Start")) = dispersed_set(chain, v, lower[[v]], upper[[v]])
 
   chain
 }
