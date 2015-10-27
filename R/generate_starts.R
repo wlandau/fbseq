@@ -123,7 +123,7 @@ disperse_starts = function(chain){
   lower = c(gamma = 0, nuRho = 0, nuGam = 0, omega = 0, rho = 0, tauRho = 0, tauGamma = 0, xi = 0)
   upper = c(nuRho = chain@dRho, nuGam = chain@dGamma)
 
-  for(v in configs@updates)
+  for(v in configs@parameter_sets_update)
     slot(chain, paste0(v, "Start")) = dispersed_set(chain, v, lower[v], upper[v])
 
   chain
