@@ -8,15 +8,15 @@ NULL
 #' @param chain_list list of \code{Chain} objects
 calc_gelman = function(chain_list){
   stopifnot(length(chain_list) > 1)
-  stopifnot(length(unique(sapply(chain_list, function(ch) ch@M))) == 1)
+  stopifnot(length(unique(sapply(chain_list, function(chain) chain@iterations))) == 1)
 
   Mean = sapply(chain_list, flatten_post)
-  MeanSq = sapply(chain_list, flatten_post, square = T)
+  MeanSquare = sapply(chain_list, flatten_post, square = T)
 
   m = length(chain_list)
-  n = chain_list[[1]]@M
+  n = chain_list[[1]]@iterations
 
-  SjSq =  n*(MeanSq - Mean^2)/(n - 1)
+  SjSq =  n*(MeanSquare - Mean^2)/(n - 1)
   W = rowMeans(SjSq)
   B = n*apply(Mean, 1, var)
   sqrt((n-1 + B/W)/n)
@@ -54,6 +54,7 @@ run_gelman_mcmc = function(chain){
     chain_list = lapply(chain_list, run_fixed_mcmc)
 
     all_psrf = calc_gelman(chain_list)
+    all_psrf[!is.finite(all_psrf)] = 0
     for(i in 1:chain@nchains_diag) chain_list[[i]]@psrf = all_psrf
     psrf = all_psrf[grepl(pattern, names(all_psrf))]
 
@@ -69,14 +70,14 @@ run_gelman_mcmc = function(chain){
     }
 
     if(any(psrf > chain@psrf_tol, na.rm = T)){
-      chain_list = lapply(chain_list, function(ch){ch@burnin = as.integer(0); ch})
+      chain_list = lapply(chain_list, function(chain){chain@burnin = as.integer(0); chain})
     } else {
       break
     }
   }
 
   chain = chain_list[[1]]
-  iterations = chain@M
+  iterations = chain@iterations
   for(i in 2:chain@nchains_diag) chain = concatenate(chain_list[[i]], chain)
   if(attempt == chain@max_attempts) warning(paste("In run_gelman_mcmc(), chain@max_attempts =", chain@max_attempts, "reached."))
   chain

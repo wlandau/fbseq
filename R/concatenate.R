@@ -24,7 +24,7 @@ concatenate = function(chain1, chain2){
     slot(chain, p) = (chain1@iterations * slot(chain1, p) + chain2@iterations * slot(chain2, p))/(chain1@iterations + chain2@iterations)
 
   for(p in parameters())
-    if(chain@returns[p])
+    if(chain@parameter_sets_return[p])
       slot(chain, p) = c(slot(chain1, p), slot(chain2, p))
 
   chain

@@ -96,10 +96,10 @@ simple_starts = function(chain, counts, design){
 #' @param lower lower bound for nonnegative parameters.
 #' @param upper upper bound for nonnegative parameters.
 dispersed_set = function(chain, parm, lower = NA, upper = NA){
-  m = chain@M
+  m = chain@iterations
   Mean = slot(chain, paste0(parm, "PostMean"))
-  MeanSq = slot(chain, paste0(parm, "PostMeanSq"))
-  Sd =  sqrt(m*(MeanSq - Mean^2)/(m - 1))
+  MeanSquare = slot(chain, paste0(parm, "PostMeanSquare"))
+  Sd =  sqrt(m*(MeanSquare - Mean^2)/(m - 1))
   n = length(Mean)
   Min = pmax(rep(lower, n), Mean - 3*Sd, na.rm = T)
   Max = pmin(rep(upper, n), Mean + 3*Sd, na.rm = T) 
