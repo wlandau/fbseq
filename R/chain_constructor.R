@@ -12,7 +12,7 @@ NULL
 #' then the function will return a \code{Chain} object with those slots. Note: \code{data}
 #' should only be a list within internal functions of the package. It is not recommended that
 #' the user assign \code{data} to be a list.
-#' @param design Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+#' @param design Gene-specific design matrix.
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' gene-specific variables.
 #' @param configs A \code{Configs} object of MCMC control parameters.
@@ -49,7 +49,7 @@ Chain = function(
 #' @return a \code{Chain} object 
 #'
 #' @param chain a \code{Chain} object
-#' @param design Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+#' @param design Gene-specific design matrix. 
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' gene-specific variables.
 #' @param configs A \code{Configs} object of MCMC control parameters.
@@ -87,7 +87,7 @@ plug_in_chain = function(chain, design, configs, starts){
 #'
 #' @param chain a \code{Chain} object
 #' @param counts Matrix of RNA-seq read counts.
-#' @param design Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+#' @param design Gene-specific design matrix. 
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' gene-specific variables.
 fill_easy_gaps = function(chain, counts, design){

@@ -61,7 +61,7 @@ actual MCMC parameter samples are not returned)}
 
 \item{\code{countSums_n}}{library-specific count sums}
 
-\item{\code{design}}{Gene-specific design, flattened from the design matrix. Must contain only 0's, 1's, and -1's.
+\item{\code{design}}{Gene-specific design, flattened from the design matrix.
 Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 gene-specific variables.}
 

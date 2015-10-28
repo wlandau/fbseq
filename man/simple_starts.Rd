@@ -12,7 +12,7 @@ simple_starts(chain, counts, design)
 \item{counts}{A data frame/matrix of RNA-seq read counts or list of slots. If a list,
 then the function will return a \code{Chain} object with those slots.}
 
-\item{design}{Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+\item{design}{Gene-specific design matrix.
 Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 gene-specific variables.}
 }

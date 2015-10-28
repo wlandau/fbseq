@@ -9,7 +9,7 @@ plug_in_chain(chain, design, configs, starts)
 \arguments{
 \item{chain}{a \code{Chain} object}
 
-\item{design}{Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+\item{design}{Gene-specific design matrix.
 Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 gene-specific variables.}
 

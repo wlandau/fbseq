@@ -14,7 +14,7 @@ generate_data(libraries = 12, genes = 35000, design = cbind(rep(1,
 
 \item{genes}{number of genes/genes in the data}
 
-\item{design}{Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+\item{design}{Gene-specific design matrix.
 Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 gene-specific variables.
 Can be among "Laplace", "t", or "horseshoe". All other values will default to the normal prior.}

@@ -35,7 +35,7 @@ nu_tau = function(x){
 #' @param chain \code{Chain} object whose starting values to fill.
 #' @param counts A data frame/matrix of RNA-seq read counts or list of slots. If a list,
 #' then the function will return a \code{Chain} object with those slots.
-#' @param design Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+#' @param design Gene-specific design matrix.
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' gene-specific variables.
 simple_starts = function(chain, counts, design){

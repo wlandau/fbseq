@@ -36,6 +36,7 @@ credible_intervals = function(chain, level = 0.95){
 
   if(is.finite(upperCI["nuRho"])) upperCI["nuRho"] = min(upperCI["nuRho"], chain@dRho)
   if(is.finite(upperCI["nuGamma"])) upperCI["nuGamma"] = min(upperCI["nuGamma"], chain@dGam)
+  if(is.finite(upperCI["sigmaSquared"])) upperCI["sigmaSquared"] = min(upperCI["sigmaSquared"], chain@s^2)
 
   out = data.frame(Mean, lowerCI, upperCI)
   colnames(out) = c("mean", paste0(c("lower", "upper"), "_ci_", level))

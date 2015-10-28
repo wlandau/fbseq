@@ -12,7 +12,7 @@
 #' and hyperparameters.
 #' @param libraries number of libraries/libraries in the data
 #' @param genes number of genes/genes in the data
-#' @param design Gene-specific design matrix. Must contain only 0's, 1's, and -1's.
+#' @param design Gene-specific design matrix.
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' gene-specific variables.
 #' Can be among "Laplace", "t", or "horseshoe". All other values will default to the normal prior.
