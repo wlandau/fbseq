@@ -39,6 +39,8 @@
 #' @slot design Gene-specific design, flattened from the design matrix. Must contain only 0's, 1's, and -1's.
 #' Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' gene-specific variables.
+#' @slot designUnique Matrix of unique nonzero elements of \code{design}. Vacent entries are 0.
+#' @slot designUniqueN for each column index \code{l}, number of unique nonzero elements of \code{design[, l]}.
 #' @slot G number of genes
 #' @slot Greturn number of genes to return gene-specific MCMC parameter samples for (except the epsilons)
 #' @slot GreturnEpsilon number of genes to return gene-specific MCMC epsilon parameter samples
@@ -131,7 +133,9 @@ setClass("Chain",
     counts = "integer",
     countSums_g = "integer",
     countSums_n = "integer",
-    design = "integer",
+    design = "numeric",
+    designUnique = "numeric",
+    designUniqueN = "integer",
     G = "integer",
     Greturn = "integer",
     GreturnEpsilon = "integer",

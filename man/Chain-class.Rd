@@ -65,6 +65,10 @@ actual MCMC parameter samples are not returned)}
 Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 gene-specific variables.}
 
+\item{\code{designUnique}}{Matrix of unique nonzero elements of \code{design}. Vacent entries are 0.}
+
+\item{\code{designUniqueN}}{for each column index \code{l}, number of unique nonzero elements of \code{design[, l]}.}
+
 \item{\code{G}}{number of genes}
 
 \item{\code{Greturn}}{number of genes to return gene-specific MCMC parameter samples for (except the epsilons)}

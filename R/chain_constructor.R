@@ -92,12 +92,21 @@ plug_in_chain = function(chain, design, configs, starts){
 #' gene-specific variables.
 fill_easy_gaps = function(chain, counts, design){
   stopifnot(ncol(counts) == nrow(design))
-  stopifnot(all(unique(as.vector(design)) %in% c(-1, 0, 1)))
+
+  designUnique = apply(design, 2, function(x){
+    out = sort(unique(x[x != 0]))
+    c(out, rep(0, dim(design)[1] - length(out)))
+  })
+
+  designUniqueN = as.integer(apply(design, 2, function(x){length(unique(x[x != 0]))}))
+  if(any(!designUniqueN)) stop("every column in the design matrix must have nonzero elements.")
 
   chain@counts = as.integer(counts)
   chain@countSums_g = as.integer(apply(counts, 1, sum))
   chain@countSums_n = as.integer(apply(counts, 2, sum))
-  chain@design = as.integer(design)
+  chain@design = as.numeric(design)
+  chain@designUnique = as.numeric(designUnique)
+  chain@designUniqueN = as.integer(designUniqueN)
   chain@G = G = nrow(counts)
   chain@Greturn = Greturn = length(chain@genes_return)
   chain@GreturnEpsilon = GreturnEpsilon = length(chain@genes_return_epsilon)
