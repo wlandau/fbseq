@@ -27,7 +27,7 @@ flatten = function(obj){
 flatten_chain = function(chain){
   ret = list()
 
-  for(x in c("nuGamma", "tauGamma", "nuRho", "tauRho"))
+  for(x in c("nuGamma", "nuRho", "tauGamma", "tauRho"))
     if(length(slot(chain, x)))
       ret[[x]] = slot(chain, x)
   
