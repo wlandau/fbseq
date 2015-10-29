@@ -9,9 +9,9 @@ plug_in_chain(chain, design, configs, starts)
 \arguments{
 \item{chain}{a \code{Chain} object}
 
-\item{design}{Gene-specific design matrix.
+\item{design}{Design matrix.
 Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-gene-specific variables.}
+sets of gene-specific variables.}
 
 \item{configs}{A \code{Configs} object of MCMC control parameters.}
 

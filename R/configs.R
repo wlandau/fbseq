@@ -14,6 +14,7 @@ NULL
 #' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
 #' 
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
+#' @slot effects_update values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
 #' Applies to all gene-specific parameters except for the epsilons.
 #' @slot genes_return_epsilon Indices of genes g for which epsilon_{n, g} is updated/returned.
@@ -39,6 +40,7 @@ setClass("Configs",
     psrf_tol = "numeric",
 
     burnin = "numeric",
+    effects_update = "numeric",
     genes_return = "numeric",
     genes_return_epsilon = "numeric",
     iterations = "numeric",

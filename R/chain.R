@@ -13,6 +13,7 @@
 #' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
 #' 
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
+#' @slot effects_update values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
 #' Applies to all gene-specific parameters except for the epsilons.
 #' @slot genes_return_epsilon Indices of genes g for which epsilon_{n, g} is updated/returned.
@@ -36,15 +37,16 @@
 #' @slot counts RNA-seq count data, flattened from a matrix
 #' @slot countSums_g gene-specific count sums
 #' @slot countSums_n library-specific count sums
-#' @slot design Gene-specific design, flattened from the design matrix.
+#' @slot design Design, flattened from the design matrix.
 #' Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-#' gene-specific variables.
+#' sets of gene-specific variables.
 #' @slot designUnique Matrix of unique nonzero elements of \code{design}. Vacent entries are 0.
 #' @slot designUniqueN for each column index \code{l}, number of unique nonzero elements of \code{design[, l]}.
 #' @slot G number of genes
 #' @slot Greturn number of genes to return gene-specific MCMC parameter samples for (except the epsilons)
 #' @slot GreturnEpsilon number of genes to return gene-specific MCMC epsilon parameter samples
 #' @slot L number of columns in the original design matrix
+#' @slot Lupdate number of values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot N number of libraries
 #' @slot Nreturn number of libraries to return library-specific MCMC parameter samples for (except the epsilons)
 #' @slot NreturnEpsilon number of libraries to return library-specific MCMC epsilon parameter samples
@@ -117,6 +119,7 @@ setClass("Chain",
     psrf_tol = "numeric",
 
     burnin = "integer",
+    effects_update = "integer",
     genes_return = "integer",
     genes_return_epsilon = "integer",
     iterations = "integer",
@@ -140,6 +143,7 @@ setClass("Chain",
     Greturn = "integer",
     GreturnEpsilon = "integer",
     L = "integer",
+    Lupdate = "integer",
     N = "integer",
     Nreturn = "integer",
     NreturnEpsilon = "integer",

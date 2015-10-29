@@ -12,9 +12,9 @@ then the function will return a \code{Chain} object with those slots. Note: \cod
 should only be a list within internal functions of the package. It is not recommended that
 the user assign \code{data} to be a list.}
 
-\item{design}{Gene-specific design matrix.
+\item{design}{Design matrix.
 Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-gene-specific variables.}
+sets of gene-specific variables.}
 
 \item{configs}{A \code{Configs} object of MCMC control parameters.}
 

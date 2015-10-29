@@ -11,9 +11,9 @@ fill_easy_gaps(chain, counts, design)
 
 \item{counts}{Matrix of RNA-seq read counts.}
 
-\item{design}{Gene-specific design matrix.
+\item{design}{Design matrix.
 Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-gene-specific variables.}
+sets of gene-specific variables.}
 }
 \value{
 a \code{Chain} object

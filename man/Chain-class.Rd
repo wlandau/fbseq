@@ -26,6 +26,8 @@ convergence diagnostics that require multiple chains.}
 
 \item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
 
+\item{\code{effects_update}}{values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.}
+
 \item{\code{genes_return}}{Indices of genes whose parameter samples you want to return.
 Applies to all gene-specific parameters except for the epsilons.}
 
@@ -61,9 +63,9 @@ actual MCMC parameter samples are not returned)}
 
 \item{\code{countSums_n}}{library-specific count sums}
 
-\item{\code{design}}{Gene-specific design, flattened from the design matrix.
+\item{\code{design}}{Design, flattened from the design matrix.
 Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-gene-specific variables.}
+sets of gene-specific variables.}
 
 \item{\code{designUnique}}{Matrix of unique nonzero elements of \code{design}. Vacent entries are 0.}
 
@@ -76,6 +78,8 @@ gene-specific variables.}
 \item{\code{GreturnEpsilon}}{number of genes to return gene-specific MCMC epsilon parameter samples}
 
 \item{\code{L}}{number of columns in the original design matrix}
+
+\item{\code{Lupdate}}{number of values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.}
 
 \item{\code{N}}{number of libraries}
 

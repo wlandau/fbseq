@@ -12,9 +12,9 @@ NULL
 #' then the function will return a \code{Chain} object with those slots. Note: \code{data}
 #' should only be a list within internal functions of the package. It is not recommended that
 #' the user assign \code{data} to be a list.
-#' @param design Gene-specific design matrix.
+#' @param design Design matrix.
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-#' gene-specific variables.
+#' sets of gene-specific variables.
 #' @param configs A \code{Configs} object of MCMC control parameters.
 #' @param starts A \code{Starts} object of model parameter starting values.
 Chain = function(
@@ -49,9 +49,9 @@ Chain = function(
 #' @return a \code{Chain} object 
 #'
 #' @param chain a \code{Chain} object
-#' @param design Gene-specific design matrix. 
+#' @param design Design matrix. 
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-#' gene-specific variables.
+#' sets of gene-specific variables.
 #' @param configs A \code{Configs} object of MCMC control parameters.
 #' @param starts A \code{Starts} object of model parameter starting values.
 plug_in_chain = function(chain, design, configs, starts){
@@ -87,9 +87,9 @@ plug_in_chain = function(chain, design, configs, starts){
 #'
 #' @param chain a \code{Chain} object
 #' @param counts Matrix of RNA-seq read counts.
-#' @param design Gene-specific design matrix. 
+#' @param design Design matrix. 
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-#' gene-specific variables.
+#' sets of gene-specific variables.
 fill_easy_gaps = function(chain, counts, design){
   stopifnot(ncol(counts) == nrow(design))
 
@@ -101,6 +101,8 @@ fill_easy_gaps = function(chain, counts, design){
   designUniqueN = as.integer(apply(design, 2, function(x){length(unique(x[x != 0]))}))
   if(any(!designUniqueN)) stop("every column in the design matrix must have nonzero elements.")
 
+  if(!length(chain@effects_update)) chain@effects_update = 1:ncol(design)
+
   chain@counts = as.integer(counts)
   chain@countSums_g = as.integer(apply(counts, 1, sum))
   chain@countSums_n = as.integer(apply(counts, 2, sum))
@@ -111,6 +113,7 @@ fill_easy_gaps = function(chain, counts, design){
   chain@Greturn = Greturn = length(chain@genes_return)
   chain@GreturnEpsilon = GreturnEpsilon = length(chain@genes_return_epsilon)
   chain@L = L = ncol(design)
+  chain@Lupdate = length(chain@effects_update)
   chain@N = N = nrow(design)
   chain@Nreturn = Nreturn = length(chain@libraries_return)
   chain@NreturnEpsilon = NreturnEpsilon = length(chain@libraries_return_epsilon)
