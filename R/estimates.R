@@ -14,7 +14,6 @@ NULL
 #' @param chain a \code{Chain} object
 #' @param level level of the credible intervals from 0 to 1
 estimates = function(chain, level = 0.95){
-  list(probs = data.frame(hph = chain@hph, lph = chain@lph, mph = chain@mph),
-        params = credible_intervals(chain, level),
+  list(params = credible_intervals(chain, level),
         psrf = chain@psrf)
 }
