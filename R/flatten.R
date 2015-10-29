@@ -40,7 +40,7 @@ flatten_chain = function(chain){
   for(x in c("beta", "xi"))
     if(length(slot(chain, x))){
       ret[[x]] = matrix(slot(chain, x), ncol = chain@L * chain@Greturn, byrow = T)
-      colnames(ret[[x]]) = paste0(x, "_", rep(1:chain@L, each = chain@L), "_", rep(chain@genes_return, times = chain@L))
+      colnames(ret[[x]]) = paste0(x, "_", rep(1:chain@L, each = chain@Greturn), "_", rep(chain@genes_return, times = chain@L))
     }
 
   if(length(chain@epsilon)){
