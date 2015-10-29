@@ -13,7 +13,7 @@ NULL
 credible_intervals = function(chain, level = 0.95){
   Mean = flatten_post(chain)
   MeanSq = flatten_post(chain, square = T)
-  Sd =  sqrt(chain@M*(MeanSq - Mean^2)/(chain@M - 1))
+  Sd =  sqrt(chain@iterations*(MeanSq - Mean^2)/(chain@iterations - 1))
   p = 1 - (1 - level)/2
 
   lowerCInorm = qnorm(1 - p, mean = Mean, sd = Sd)
@@ -35,7 +35,7 @@ credible_intervals = function(chain, level = 0.95){
   upperCI[useGamma] = upperCIgamma[useGamma]
 
   if(is.finite(upperCI["nuRho"])) upperCI["nuRho"] = min(upperCI["nuRho"], chain@dRho)
-  if(is.finite(upperCI["nuGamma"])) upperCI["nuGamma"] = min(upperCI["nuGamma"], chain@dGam)
+  if(is.finite(upperCI["nuGamma"])) upperCI["nuGamma"] = min(upperCI["nuGamma"], chain@dGamma)
   if(is.finite(upperCI["sigmaSquared"])) upperCI["sigmaSquared"] = min(upperCI["sigmaSquared"], chain@s^2)
 
   out = data.frame(Mean, lowerCI, upperCI)
