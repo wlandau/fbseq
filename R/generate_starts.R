@@ -55,6 +55,8 @@ simple_starts = function(chain, counts, design){
 
   epsilon = logcounts - t(PROJ %*% t(logcounts))
   rho = colMeans(epsilon)
+  omegaSquared = var(rho)  
+
   rhomat = matrix(rep(rho, each = G), ncol = N)
   gamma = get_nonzeros(apply(epsilon - rhomat, 1, var, na.rm = T))
 
