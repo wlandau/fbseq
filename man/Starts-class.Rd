@@ -12,19 +12,13 @@ objects from scratch.
 \section{Slots}{
 
 \describe{
-\item{\code{aRho}}{initialization constant}
+\item{\code{a}}{initialization constant}
 
-\item{\code{aGamma}}{initialization constant}
-
-\item{\code{bRho}}{initialization constant}
-
-\item{\code{bGamma}}{initialization constant}
+\item{\code{b}}{initialization constant}
 
 \item{\code{c}}{initialization constants}
 
-\item{\code{dRho}}{initialization constant}
-
-\item{\code{dGamma}}{initialization constant}
+\item{\code{d}}{initialization constant}
 
 \item{\code{h}}{log-scale normalization factors}
 
@@ -34,23 +28,23 @@ objects from scratch.
 
 \item{\code{s}}{initialization constants}
 
+\item{\code{w}}{initialization constants}
+
 \item{\code{beta}}{MCMC starting values}
 
 \item{\code{epsilon}}{MCMC starting values}
 
 \item{\code{gamma}}{MCMC starting values}
 
-\item{\code{nuGamma}}{MCMC starting values}
+\item{\code{nu}}{MCMC starting values}
 
-\item{\code{nuRho}}{MCMC starting values}
+\item{\code{omegaSquared}}{MCMC starting values}
 
 \item{\code{rho}}{MCMC starting values}
 
 \item{\code{sigmaSquared}}{MCMC starting values}
 
-\item{\code{tauGamma}}{MCMC starting values}
-
-\item{\code{tauRho}}{MCMC starting values}
+\item{\code{tau}}{MCMC starting values}
 
 \item{\code{theta}}{MCMC starting values}
 

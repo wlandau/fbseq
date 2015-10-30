@@ -52,63 +52,56 @@
 #' @slot NreturnEpsilon number of libraries to return library-specific MCMC epsilon parameter samples
 #' @slot seeds vector of N*G random number generator seeds
 #' 
-#' @slot aRho initialization constant 
-#' @slot aGamma initialization constant  
-#' @slot bRho initialization constant 
-#' @slot bGamma initialization constant 
+#' @slot a initialization constant  
+#' @slot b initialization constant 
 #' @slot c initialization constants 
-#' @slot dRho initialization constant 
-#' @slot dGamma initialization constant 
-#' @slot h log-scale normalization factors
+#' @slot d initialization constant 
 #' @slot k initialization constants 
 #' @slot r initialization constants 
 #' @slot s initialization constants 
+#' @slot w initialization constants 
 #' 
 #' @slot beta MCMC parameter samples
 #' @slot epsilon MCMC parameter samples
 #' @slot gamma MCMC parameter samples
-#' @slot nuGamma MCMC parameter samples
-#' @slot nuRho MCMC parameter samples
+#' @slot nu MCMC parameter samples
+#' @slot omegaSquared MCMC parameter samples
 #' @slot rho MCMC parameter samples
 #' @slot sigmaSquared MCMC parameter samples
-#' @slot tauGamma MCMC parameter samples
-#' @slot tauRho MCMC parameter samples
+#' @slot tau MCMC parameter samples
 #' @slot theta MCMC parameter samples
 #' @slot xi MCMC parameter samples
 #' 
 #' @slot betaStart MCMC starting values
 #' @slot epsilonStart MCMC starting values
 #' @slot gammaStart MCMC starting values
-#' @slot nuGammaStart MCMC starting values
-#' @slot nuRhoStart MCMC starting values
+#' @slot nuStart MCMC starting values
+#' @slot omegaSquaredStart MCMC starting values
 #' @slot rhoStart MCMC starting values
 #' @slot sigmaSquaredStart MCMC starting values
-#' @slot tauGammaStart MCMC starting values
-#' @slot tauRhoStart MCMC starting values
+#' @slot tauStart MCMC starting values
 #' @slot thetaStart MCMC starting values
 #' @slot xiStart MCMC starting values
 #' 
 #' @slot betaPostMean estimated posterior means
 #' @slot epsilonPostMean estimated posterior means
 #' @slot gammaPostMean estimated posterior means
-#' @slot nuGammaPostMean estimated posterior mean
-#' @slot nuRhoPostMean estimated posterior mean
+#' @slot nuPostMean estimated posterior mean
+#' @slot omegaSquaredPostMean estimated posterior means
 #' @slot rhoPostMean estimated posterior means
 #' @slot sigmaSquaredPostMean estimated posterior means
-#' @slot tauGammaPostMean estimated posterior mean
-#' @slot tauRhoPostMean estimated posterior mean
+#' @slot tauPostMean estimated posterior mean
 #' @slot thetaPostMean estimated posterior means
 #' @slot xiPostMean estimated posterior means
 #' 
 #' @slot betaPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot epsilonPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot gammaPostMeanSquare estimated posterior means of the squares of parameters
-#' @slot nuGammaPostMeanSquare estimated posterior mean of the square of the parameter 
-#' @slot nuRhoPostMeanSquare estimated posterior mean of the square of the parameter
+#' @slot nuPostMeanSquare estimated posterior mean of the square of the parameter 
+#' @slot omegaSquaredPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot rhoPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot sigmaSquaredPostMeanSquare estimated posterior means of the squares of parameters
-#' @slot tauGammaPostMeanSquare estimated posterior mean of the square of the parameter
-#' @slot tauRhoPostMeanSquare estimated posterior mean of the square of the parameter
+#' @slot tauPostMeanSquare estimated posterior mean of the square of the parameter
 #' @slot thetaPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot xiPostMeanSquare posterior means of the squares of parameters
 setClass("Chain",
@@ -150,63 +143,56 @@ setClass("Chain",
     NreturnEpsilon = "integer",
     seeds = "integer",
 
-    aGamma = "numeric",
-    aRho = "numeric",
-    bGamma = "numeric",
-    bRho = "numeric",
+    a = "numeric",
+    b = "numeric",
     c = "numeric",
-    dGamma = "numeric",
-    dRho = "numeric",
-    h = "numeric",
+    d = "numeric",
     k = "numeric",
     r = "numeric",
     s = "numeric",
+    w = "numeric",
 
     beta = "numeric",
     epsilon = "numeric",
     gamma = "numeric",
-    nuGamma = "numeric",
-    nuRho = "numeric",
+    nu = "numeric",
+    omegaSquared = "numeric",
     rho = "numeric",
     sigmaSquared = "numeric",
-    tauGamma = "numeric",
-    tauRho = "numeric",
+    tau = "numeric",
     theta = "numeric",
     xi = "numeric",
 
     betaStart = "numeric",
     epsilonStart = "numeric",
     gammaStart = "numeric",
-    nuGammaStart = "numeric",
-    nuRhoStart = "numeric",
+    nuStart = "numeric",
+    omegaSquaredStart = "numeric",
     rhoStart = "numeric",
     sigmaSquaredStart = "numeric",
-    tauGammaStart = "numeric",
-    tauRhoStart = "numeric",
+    tauStart = "numeric",
     thetaStart = "numeric",
     xiStart = "numeric",
 
     betaPostMean = "numeric",
     epsilonPostMean = "numeric",
     gammaPostMean = "numeric",
-    nuGammaPostMean = "numeric",
-    nuRhoPostMean = "numeric",
+    nuPostMean = "numeric",
+    omegaSquaredPostMean = "numeric",
     rhoPostMean = "numeric",
     sigmaSquaredPostMean = "numeric",
-    tauGammaPostMean = "numeric",
-    tauRhoPostMean = "numeric",
+    tauPostMean = "numeric",
     thetaPostMean = "numeric",
     xiPostMean = "numeric",
 
     betaPostMeanSquare = "numeric",
     epsilonPostMeanSquare = "numeric",
     gammaPostMeanSquare = "numeric",
-    nuGammaPostMeanSquare = "numeric",
-    nuRhoPostMeanSquare = "numeric",
+    nuPostMeanSquare = "numeric",
+    omegaSquaredPostMeanSquare = "numeric",
     rhoPostMeanSquare = "numeric",
     sigmaSquaredPostMeanSquare = "numeric",
-    tauGammaPostMeanSquare = "numeric",
-    tauRhoPostMeanSquare = "numeric",
+    tauPostMeanSquare = "numeric",
     thetaPostMeanSquare = "numeric",
     xiPostMeanSquare = "numeric"
   )

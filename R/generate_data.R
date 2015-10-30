@@ -18,7 +18,7 @@
 #' Can be among "Laplace", "t", or "horseshoe". All other values will default to the normal prior.
 generate_data = function(libraries = 12, genes = 3.5e4, 
           design = cbind(rep(1, libraries), rep(c(1, -1, 1), each = floor(libraries/3)), rep(c(-1, 1, 1), each = floor(libraries/3))),
-          starts = Starts(nuGamma = 20, nuRho = 20, sigmaSquared = c(1, 0.25, 0.25), tauGamma = 1, tauRho = 0.1, theta = c(3, 0, 0))){
+          starts = Starts(nu = 10, omegaSquared = 0.01, sigmaSquared = c(1, 0.25, 0.25), tau = 1, theta = c(3, 0, 0))){
 
   stopifnot(libraries >= 3)
 
@@ -27,15 +27,14 @@ generate_data = function(libraries = 12, genes = 3.5e4,
   for(l in 1:ncol(design))
     starts@beta = c(starts@beta, rnorm(genes, starts@theta[l], sqrt(starts@sigmaSquared[l])))
   
-  starts@h = runif(libraries, -0.5, 0.5)
-  starts@gamma = 1/rgamma(genes, shape = starts@nuGamma/2, 
-    rate = starts@nuGamma*starts@tauGamma/2)
-  starts@rho = 1/rgamma(libraries, shape = starts@nuRho/2, 
-    rate = starts@nuRho*starts@tauRho/2)
+  starts@gamma = 1/rgamma(genes, shape = starts@nu/2, 
+    rate = starts@nu*starts@tau/2)
 
+  starts@rho = rnorm(libraries, 0, sqrt(starts@omegaSquared))
   rhomat = matrix(rep(starts@rho, each = genes), ncol = libraries)
+
   gammat = matrix(rep(starts@gamma, times = libraries), ncol = libraries)
-  epsilon = matrix(rnorm(libraries*genes, 0, sqrt(rhomat*gammat)), ncol = libraries)
+  epsilon = matrix(rnorm(libraries*genes, rhomat, sqrt(gammat)), ncol = libraries)
 
   beta = matrix(starts@beta, nrow = genes)
   lambda = t(design %*% t(beta))

@@ -89,21 +89,13 @@ sets of gene-specific variables.}
 
 \item{\code{seeds}}{vector of N*G random number generator seeds}
 
-\item{\code{aRho}}{initialization constant}
+\item{\code{a}}{initialization constant}
 
-\item{\code{aGamma}}{initialization constant}
-
-\item{\code{bRho}}{initialization constant}
-
-\item{\code{bGamma}}{initialization constant}
+\item{\code{b}}{initialization constant}
 
 \item{\code{c}}{initialization constants}
 
-\item{\code{dRho}}{initialization constant}
-
-\item{\code{dGamma}}{initialization constant}
-
-\item{\code{h}}{log-scale normalization factors}
+\item{\code{d}}{initialization constant}
 
 \item{\code{k}}{initialization constants}
 
@@ -111,23 +103,23 @@ sets of gene-specific variables.}
 
 \item{\code{s}}{initialization constants}
 
+\item{\code{w}}{initialization constants}
+
 \item{\code{beta}}{MCMC parameter samples}
 
 \item{\code{epsilon}}{MCMC parameter samples}
 
 \item{\code{gamma}}{MCMC parameter samples}
 
-\item{\code{nuGamma}}{MCMC parameter samples}
+\item{\code{nu}}{MCMC parameter samples}
 
-\item{\code{nuRho}}{MCMC parameter samples}
+\item{\code{omegaSquared}}{MCMC parameter samples}
 
 \item{\code{rho}}{MCMC parameter samples}
 
 \item{\code{sigmaSquared}}{MCMC parameter samples}
 
-\item{\code{tauGamma}}{MCMC parameter samples}
-
-\item{\code{tauRho}}{MCMC parameter samples}
+\item{\code{tau}}{MCMC parameter samples}
 
 \item{\code{theta}}{MCMC parameter samples}
 
@@ -139,17 +131,15 @@ sets of gene-specific variables.}
 
 \item{\code{gammaStart}}{MCMC starting values}
 
-\item{\code{nuGammaStart}}{MCMC starting values}
+\item{\code{nuStart}}{MCMC starting values}
 
-\item{\code{nuRhoStart}}{MCMC starting values}
+\item{\code{omegaSquaredStart}}{MCMC starting values}
 
 \item{\code{rhoStart}}{MCMC starting values}
 
 \item{\code{sigmaSquaredStart}}{MCMC starting values}
 
-\item{\code{tauGammaStart}}{MCMC starting values}
-
-\item{\code{tauRhoStart}}{MCMC starting values}
+\item{\code{tauStart}}{MCMC starting values}
 
 \item{\code{thetaStart}}{MCMC starting values}
 
@@ -161,17 +151,15 @@ sets of gene-specific variables.}
 
 \item{\code{gammaPostMean}}{estimated posterior means}
 
-\item{\code{nuGammaPostMean}}{estimated posterior mean}
+\item{\code{nuPostMean}}{estimated posterior mean}
 
-\item{\code{nuRhoPostMean}}{estimated posterior mean}
+\item{\code{omegaSquaredPostMean}}{estimated posterior means}
 
 \item{\code{rhoPostMean}}{estimated posterior means}
 
 \item{\code{sigmaSquaredPostMean}}{estimated posterior means}
 
-\item{\code{tauGammaPostMean}}{estimated posterior mean}
-
-\item{\code{tauRhoPostMean}}{estimated posterior mean}
+\item{\code{tauPostMean}}{estimated posterior mean}
 
 \item{\code{thetaPostMean}}{estimated posterior means}
 
@@ -183,17 +171,15 @@ sets of gene-specific variables.}
 
 \item{\code{gammaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{nuGammaPostMeanSquare}}{estimated posterior mean of the square of the parameter}
+\item{\code{nuPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
-\item{\code{nuRhoPostMeanSquare}}{estimated posterior mean of the square of the parameter}
+\item{\code{omegaSquaredPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
 \item{\code{rhoPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
 \item{\code{sigmaSquaredPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
-\item{\code{tauGammaPostMeanSquare}}{estimated posterior mean of the square of the parameter}
-
-\item{\code{tauRhoPostMeanSquare}}{estimated posterior mean of the square of the parameter}
+\item{\code{tauPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
 \item{\code{thetaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 

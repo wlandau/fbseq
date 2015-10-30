@@ -37,7 +37,6 @@ Chain = function(
   chain = plug_in_chain(chain, design, configs = configs, starts = starts)
   chain = fill_easy_gaps(chain, counts, design)
   chain = simple_starts(chain, counts, design)
-  if(chain@parameter_sets_return["tauGamma"] || chain@parameter_sets_update["tauGamma"]) warning("TauGamma should be set constant at 1. Sampling tauGamma will prevent the MCMC from converging, and returning even a constant tauGamma will muddle effective sample size diagnostics. Control tauGamma with the returns, updates, returns_skip, and updates_skip slots in your Configs object. See the package vignettes for details.")
   chain
 }
 
@@ -126,12 +125,11 @@ fill_easy_gaps = function(chain, counts, design){
     beta = L*Greturn,
     epsilon = NreturnEpsilon*GreturnEpsilon,
     gamma = Greturn,
-    nuGamma = 1,
-    nuRho = 1,
+    nu = 1,
+    omegaSquared = 1,
     rho = Nreturn,
     sigmaSquared = L,
-    tauGamma = 1,
-    tauRho = 1,
+    tau = 1,
     theta = L,
     xi = L*Greturn)
 
@@ -143,12 +141,11 @@ fill_easy_gaps = function(chain, counts, design){
     beta = L*G,
     epsilon = N*G,
     gamma = G,
-    nuGamma = 1,
-    nuRho = 1,
+    nu = 1,
+    omegaSquared = 1,
     rho = N,
     sigmaSquared = L,
-    tauGamma = 1,
-    tauRho = 1,
+    tau = 1,
     theta = L,
     xi = L*G)
 

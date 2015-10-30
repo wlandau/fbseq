@@ -27,7 +27,7 @@ flatten = function(obj){
 flatten_chain = function(chain){
   ret = list()
 
-  for(x in c("nuGamma", "nuRho", "tauGamma", "tauRho"))
+  for(x in c("nu", "omegaSquared", "tau"))
     if(length(slot(chain, x)))
       ret[[x]] = slot(chain, x)
   
@@ -77,7 +77,7 @@ flatten_starts = function(starts){
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste0(x, "_", rep(1:L, each = G), "_", rep(1:G, times = L))
 
-  for(x in c("c", "k", "r", "s", "gamma", "rho", "sigmaSquared", "theta"))
+  for(x in c("c", "k", "r", "s", "gamma", "omegaSquared", "rho", "sigmaSquared", "theta"))
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste(x, 1:length(slot(starts, x)), sep = "_")
 
@@ -86,26 +86,23 @@ flatten_starts = function(starts){
                                                        rep(1:G, times = N), sep="")
 
   c(
-    aGamma = starts@aGamma,
-    aRho = starts@aRho,
-    bGamma = starts@bGamma,
-    bRho = starts@bRho,
+    a = starts@a,
+    b = starts@b,
     starts@c,
-    dGamma = starts@dGamma,
-    dRho = starts@dRho,
+    d = starts@d,
     starts@k,
     starts@r,
     starts@s,
+    starts@w,
 
     starts@beta,
     starts@epsilon,
     starts@gamma,
-    nuGamma = starts@nuGamma,
-    nuRho = starts@nuRho,
+    nu = starts@nu,
+    starts@omegaSquared,
     starts@rho,
     starts@sigmaSquared,
-    tauGamma = starts@tauGamma,
-    tauRho = starts@tauRho,
+    tau = starts@tau,
     starts@theta,
     starts@xi
   )
