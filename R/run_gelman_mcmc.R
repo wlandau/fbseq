@@ -61,12 +61,12 @@ run_gelman_mcmc = function(chain){
     if(chain@verbose) {
       print("Summary of Gelman factors for hyperparameters and betas:")
       print(summary(psrf))
-      print("Highest 10 Gelman factors:")   
+      print("Highest 10:")   
       print(sort(psrf, decreasing = T)[1:10])
       low = signif(mean(psrf < chain@psrf_tol)* 100, 5)
-      print(paste0(low, "% of Gelman factors are less than ", chain@psrf_tol, " (threshold)."))
+      print(paste0(low, "% are less than ", chain@psrf_tol, " (threshold)."))
       high = sum(psrf > chain@psrf_tol)
-      print(paste0(high, " Gelman factors are greater than ", chain@psrf_tol, "."))
+      print(paste0(high, " are greater than ", chain@psrf_tol, "."))
     }
 
     if(any(psrf > chain@psrf_tol, na.rm = T)){

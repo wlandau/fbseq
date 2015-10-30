@@ -105,6 +105,9 @@ Configs = function(obj = NULL, ...){
     configs@priors = ifelse(obj@priors > 0, alternate_priors()[obj@priors], "normal")
   }
 
-  if(!any(configs@priors %in% alternate_priors())) configs@parameter_sets_return = setdiff(configs@parameter_sets_return, "xi")
+  if(!any(configs@priors %in% alternate_priors())){
+    configs@parameter_sets_return = setdiff(configs@parameter_sets_return, "xi")
+    configs@parameter_sets_update = setdiff(configs@parameter_sets_update, "xi")
+  }
   return(configs)
 }
