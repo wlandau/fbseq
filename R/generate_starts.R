@@ -54,19 +54,13 @@ simple_starts = function(chain, counts, design){
   xi = rep(1, ncol(beta)*G)
 
   epsilon = logcounts - t(PROJ %*% t(logcounts))
-  chain@h = h = colMeans(epsilon)
-  hmat = matrix(rep(h, each = G), ncol = N)
-  gamma = get_nonzeros(apply(epsilon - hmat, 1, var, na.rm = T))
-  gammamat = matrix(rep(gamma, times = N), ncol = N)
-  rho = get_nonzeros(apply((epsilon - hmat)/sqrt(gammamat), 2, var, na.rm = T))
-  
-  nt = nu_tau(rho)
-  nuRho = nt$nu
-  tauRho = nt$tau
+  rho = colMeans(epsilon)
+  rhomat = matrix(rep(rho, each = G), ncol = N)
+  gamma = get_nonzeros(apply(epsilon - rhomat, 1, var, na.rm = T))
 
   nt = nu_tau(gamma)
-  nuGamma = nt$nu
-  tauGamma = nt$tau
+  nu = nt$nu
+  tau = nt$tau
 
   for(n in c("c", "k", "r", "s")){
     if(length(slot(chain, n)) == 0)
@@ -130,8 +124,8 @@ dispersed_set = function(chain, parm, lower = NA, upper = NA){
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
   configs = Configs(chain)
-  lower = list(gamma = 0, nuRho = 0, nuGam = 0, sigmaSquared = 0, rho = 0, tauRho = 0, tauGamma = 0, xi = 0)
-  upper = list(nuRho = chain@dRho, nuGam = chain@dGamma, sigmaSquared = chain@s^2)
+  lower = list(nu = 0, omegaSquared = 0, sigmaSquared = 0, tau = 0, xi = 0)
+  upper = list(nu = chain@d, omegaSquared = chain@w^2, sigmaSquared = chain@s^2)
 
   for(v in configs@parameter_sets_update)
     slot(chain, paste0(v, "Start")) = dispersed_set(chain, v, lower[[v]], upper[[v]])

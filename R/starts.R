@@ -4,69 +4,59 @@
 #' objects from scratch.
 #' @exportClass Starts
 #' 
-#' @slot aRho initialization constant 
-#' @slot aGamma initialization constant  
-#' @slot bRho initialization constant 
-#' @slot bGamma initialization constant 
+#' @slot a initialization constant  
+#' @slot b initialization constant 
 #' @slot c initialization constants 
-#' @slot dRho initialization constant 
-#' @slot dGamma initialization constant 
+#' @slot d initialization constant 
 #' @slot h log-scale normalization factors
 #' @slot k initialization constants 
 #' @slot r initialization constants 
 #' @slot s initialization constants 
+#' @slot w initialization constants 
 #' 
 #' @slot beta MCMC starting values
 #' @slot epsilon MCMC starting values
 #' @slot gamma MCMC starting values
-#' @slot nuGamma MCMC starting values
-#' @slot nuRho MCMC starting values
+#' @slot nu MCMC starting values
+#' @slot omegaSquared MCMC starting values
 #' @slot rho MCMC starting values
 #' @slot sigmaSquared MCMC starting values
-#' @slot tauGamma MCMC starting values
-#' @slot tauRho MCMC starting values
+#' @slot tau MCMC starting values
 #' @slot theta MCMC starting values
 #' @slot xi MCMC starting values
 setClass("Starts", 
   slots = list(
-    aGamma = "numeric",
-    aRho = "numeric",
-    bGamma = "numeric",
-    bRho = "numeric",
+    a = "numeric",
+    b = "numeric",
     c = "numeric",
-    dGamma = "numeric",
-    dRho = "numeric",
+    d = "numeric",
     h = "numeric",
     k = "numeric",
     r = "numeric",
     s = "numeric",
+    w = "numeric",
 
     beta = "numeric",
     epsilon = "numeric",
     gamma = "numeric",
-    nuGamma = "numeric",
-    nuRho = "numeric",
+    nu = "numeric",
+    omegaSquared = "numeric",
     rho = "numeric",
     sigmaSquared = "numeric",
-    tauGamma = "numeric",
-    tauRho = "numeric",
+    tau = "numeric",
     theta = "numeric",
     xi = "numeric"
   ),
 
   prototype = list(
-    aGamma = 1,
-    aRho = 1,
-    bGamma = 1,
-    bRho = 1,
+    a = 1,
+    b = 1,
     c = 10,
-    dGamma = 1000,
-    dRho = 1000,
+    d = 1000,
     k = 5,
     r = 5,
     s = 100,
-
-    tauGamma = 1
+    w = 100
   )
 )
 
