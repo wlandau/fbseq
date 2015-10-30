@@ -37,7 +37,8 @@ Chain = function(
   chain = plug_in_chain(chain, design, configs = configs, starts = starts)
   chain = fill_easy_gaps(chain, counts, design)
   chain = simple_starts(chain, counts, design)
-  if(chain@parameter_sets_return["tauGamma"] || chain@parameter_sets_update["tauGamma"]) warning("TauGamma should be set constant at 1. Sampling tauGamma will prevent the MCMC from converging, and returning even a constant tauGamma will muddle effective sample size diagnostics. Control tauGamma with the returns, updates, returns_skip, and updates_skip slots in your Configs object. See the package vignettes for details.")
+  bad = c("psi", "omegaSquared", "tauGamma")
+  if(any(chain@parameter_sets_return[bad] | chain@parameter_sets_update[bad])) paste0("returning or updating any one of ", paste0(bad, collapse = ", "), "could prevent or slow down convergence.")
   chain
 }
 
