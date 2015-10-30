@@ -54,7 +54,7 @@ simple_starts = function(chain, counts, design){
   xi = rep(1, ncol(beta)*G)
 
   epsilon = logcounts - t(PROJ %*% t(logcounts))
-  chain@psi = psi = colMeans(epsilon)
+  psi = colMeans(epsilon)
   omegaSquared = var(psi)
   psimat = matrix(rep(psi, each = G), ncol = N)
   gamma = get_nonzeros(apply(epsilon - psimat, 1, var, na.rm = T))
