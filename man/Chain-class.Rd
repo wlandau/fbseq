@@ -103,13 +103,13 @@ sets of gene-specific variables.}
 
 \item{\code{dGamma}}{initialization constant}
 
-\item{\code{h}}{log-scale normalization factors}
-
 \item{\code{k}}{initialization constants}
 
 \item{\code{r}}{initialization constants}
 
 \item{\code{s}}{initialization constants}
+
+\item{\code{w}}{initialization constants}
 
 \item{\code{beta}}{MCMC parameter samples}
 
@@ -120,6 +120,10 @@ sets of gene-specific variables.}
 \item{\code{nuGamma}}{MCMC parameter samples}
 
 \item{\code{nuRho}}{MCMC parameter samples}
+
+\item{\code{omegaSquared}}{MCMC parameter samples}
+
+\item{\code{psi}}{MCMC parameter samples}
 
 \item{\code{rho}}{MCMC parameter samples}
 
@@ -143,6 +147,10 @@ sets of gene-specific variables.}
 
 \item{\code{nuRhoStart}}{MCMC starting values}
 
+\item{\code{omegaSquaredStart}}{MCMC parameter samples}
+
+\item{\code{psiStart}}{MCMC parameter samples}
+
 \item{\code{rhoStart}}{MCMC starting values}
 
 \item{\code{sigmaSquaredStart}}{MCMC starting values}
@@ -165,6 +173,10 @@ sets of gene-specific variables.}
 
 \item{\code{nuRhoPostMean}}{estimated posterior mean}
 
+\item{\code{omegaSquaredPostMean}}{MCMC parameter samples}
+
+\item{\code{psiPostMean}}{MCMC parameter samples}
+
 \item{\code{rhoPostMean}}{estimated posterior means}
 
 \item{\code{sigmaSquaredPostMean}}{estimated posterior means}
@@ -186,6 +198,10 @@ sets of gene-specific variables.}
 \item{\code{nuGammaPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
 \item{\code{nuRhoPostMeanSquare}}{estimated posterior mean of the square of the parameter}
+
+\item{\code{omegaSquaredPostMeanSquare}}{MCMC parameter samples}
+
+\item{\code{psiPostMeanSquare}}{MCMC parameter samples}
 
 \item{\code{rhoPostMeanSquare}}{estimated posterior means of the squares of parameters}
 

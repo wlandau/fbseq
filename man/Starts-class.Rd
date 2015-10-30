@@ -34,6 +34,8 @@ objects from scratch.
 
 \item{\code{s}}{initialization constants}
 
+\item{\code{w}}{initialization constants}
+
 \item{\code{beta}}{MCMC starting values}
 
 \item{\code{epsilon}}{MCMC starting values}
@@ -43,6 +45,10 @@ objects from scratch.
 \item{\code{nuGamma}}{MCMC starting values}
 
 \item{\code{nuRho}}{MCMC starting values}
+
+\item{\code{omegaSquared}}{MCMC starting values}
+
+\item{\code{psi}}{MCMC starting values}
 
 \item{\code{rho}}{MCMC starting values}
 

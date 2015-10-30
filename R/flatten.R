@@ -27,7 +27,7 @@ flatten = function(obj){
 flatten_chain = function(chain){
   ret = list()
 
-  for(x in c("nuGamma", "nuRho", "tauGamma", "tauRho"))
+  for(x in c("nuGamma", "nuRho", "omegaSquared", "tauGamma", "tauRho"))
     if(length(slot(chain, x)))
       ret[[x]] = slot(chain, x)
   
@@ -43,6 +43,12 @@ flatten_chain = function(chain){
       colnames(ret[[x]]) = paste0(x, "_", rep(1:chain@L, each = chain@Greturn), "_", rep(chain@genes_return, times = chain@L))
     }
 
+  for(x in c("psi", "rho"))
+    if(length(slot(chain, x))){
+      ret[[x]] = matrix(slot(chain, x), ncol = chain@Nreturn, byrow = T)
+      colnames(ret[[x]]) = paste(x, chain@libraries_return, sep = "_")
+    }
+
   if(length(chain@epsilon)){
     ret$epsilon = matrix(chain@epsilon, ncol = chain@NreturnEpsilon * chain@GreturnEpsilon, byrow = T)
     colnames(ret$epsilon) = paste("epsilon_", rep(chain@libraries_return_epsilon, each = chain@GreturnEpsilon), 
@@ -52,11 +58,6 @@ flatten_chain = function(chain){
   if(length(chain@gamma)){
     ret$gamma = matrix(chain@gamma, ncol = chain@Greturn, byrow = T)
     colnames(ret$gamma) = paste("gamma", chain@genes_return, sep = "_")
-  }
-
-  if(length(chain@rho)){
-    ret$rho = matrix(chain@rho, ncol = chain@Nreturn, byrow = T)
-    colnames(ret$rho) = paste("rho", chain@libraries_return, sep = "_")
   }
 
   as.data.frame(do.call(cbind, ret))
@@ -77,7 +78,7 @@ flatten_starts = function(starts){
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste0(x, "_", rep(1:L, each = G), "_", rep(1:G, times = L))
 
-  for(x in c("c", "k", "r", "s", "gamma", "rho", "sigmaSquared", "theta"))
+  for(x in c("c", "k", "r", "s", "psi", "gamma", "rho", "sigmaSquared", "theta"))
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste(x, 1:length(slot(starts, x)), sep = "_")
 
@@ -96,12 +97,15 @@ flatten_starts = function(starts){
     starts@k,
     starts@r,
     starts@s,
+    starts@w,
 
     starts@beta,
     starts@epsilon,
     starts@gamma,
     nuGamma = starts@nuGamma,
     nuRho = starts@nuRho,
+    omegaSquared = starts@omegaSquared,
+    starts@psi,
     starts@rho,
     starts@sigmaSquared,
     tauGamma = starts@tauGamma,
