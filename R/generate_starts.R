@@ -104,14 +104,14 @@ dispersed_set = function(chain, parm, lower = NA, upper = NA){
   Sd =  sqrt(m*(MeanSquare - Mean^2)/(m - 1))
   n = length(Mean)
 
-  out = rt(n, 5)*1.5*Sd + Mean
-  if(all(is.finite(lower))) out[out <= lower] = lower
-  if(all(is.finite(upper))) out[out >= upper] = upper
-  out
+#  out = rt(n, 5)*Sd + Mean
+#  if(all(is.finite(lower))) out[out <= lower] = lower
+#  if(all(is.finite(upper))) out[out >= upper] = upper
+#  out
 
-#  Min = pmax(rep(lower, n/length(lower)), Mean - 3*Sd, na.rm = T)
-#  Max = pmin(rep(upper, n/length(upper)), Mean + 3*Sd, na.rm = T) 
-#  runif(n, Min, Max)
+  Min = pmax(rep(lower, n/length(lower)), Mean - 3*Sd, na.rm = T)
+  Max = pmin(rep(upper, n/length(upper)), Mean + 3*Sd, na.rm = T) 
+  runif(n, Min, Max)
 }
 
 #' @title Function \code{disperse_starts}
