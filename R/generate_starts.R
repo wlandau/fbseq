@@ -54,9 +54,11 @@ simple_starts = function(chain, counts, design){
   xi = rep(1, ncol(beta)*G)
 
   epsilon = logcounts - t(PROJ %*% t(logcounts))
-  gamma = get_nonzeros(apply(epsilon, 1, var, na.rm = T))
+  chain@h = h = colMeans(epsilon)
+  hmat = matrix(rep(h, each = G), ncol = N)
+  gamma = get_nonzeros(apply(epsilon - hmat, 1, var, na.rm = T))
   gammamat = matrix(rep(gamma, times = N), ncol = N)
-  rho = get_nonzeros(apply(epsilon/sqrt(gammamat), 2, var, na.rm = T))
+  rho = get_nonzeros(apply((epsilon - hmat)/sqrt(gammamat), 2, var, na.rm = T))
   
   nt = nu_tau(rho)
   nuRho = nt$nu

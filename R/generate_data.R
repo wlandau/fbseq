@@ -27,6 +27,7 @@ generate_data = function(libraries = 12, genes = 3.5e4,
   for(l in 1:ncol(design))
     starts@beta = c(starts@beta, rnorm(genes, starts@theta[l], sqrt(starts@sigmaSquared[l])))
   
+  starts@h = runif(libraries, -0.5, 0.5)
   starts@gamma = 1/rgamma(genes, shape = starts@nuGamma/2, 
     rate = starts@nuGamma*starts@tauGamma/2)
   starts@rho = 1/rgamma(libraries, shape = starts@nuRho/2, 

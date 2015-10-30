@@ -59,6 +59,7 @@
 #' @slot c initialization constants 
 #' @slot dRho initialization constant 
 #' @slot dGamma initialization constant 
+#' @slot h log-scale normalization factors
 #' @slot k initialization constants 
 #' @slot r initialization constants 
 #' @slot s initialization constants 
@@ -156,6 +157,7 @@ setClass("Chain",
     c = "numeric",
     dGamma = "numeric",
     dRho = "numeric",
+    h = "numeric",
     k = "numeric",
     r = "numeric",
     s = "numeric",

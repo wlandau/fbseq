@@ -26,6 +26,8 @@ objects from scratch.
 
 \item{\code{dGamma}}{initialization constant}
 
+\item{\code{h}}{log-scale normalization factors}
+
 \item{\code{k}}{initialization constants}
 
 \item{\code{r}}{initialization constants}

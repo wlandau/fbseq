@@ -11,6 +11,7 @@
 #' @slot c initialization constants 
 #' @slot dRho initialization constant 
 #' @slot dGamma initialization constant 
+#' @slot h log-scale normalization factors
 #' @slot k initialization constants 
 #' @slot r initialization constants 
 #' @slot s initialization constants 
@@ -28,13 +29,14 @@
 #' @slot xi MCMC starting values
 setClass("Starts", 
   slots = list(
-    aRho = "numeric",
     aGamma = "numeric",
-    bRho = "numeric",
+    aRho = "numeric",
     bGamma = "numeric",
+    bRho = "numeric",
     c = "numeric",
-    dRho = "numeric",
     dGamma = "numeric",
+    dRho = "numeric",
+    h = "numeric",
     k = "numeric",
     r = "numeric",
     s = "numeric",
@@ -53,13 +55,13 @@ setClass("Starts",
   ),
 
   prototype = list(
-    aRho = 1,
     aGamma = 1,
-    bRho = 1,
+    aRho = 1,
     bGamma = 1,
+    bRho = 1,
     c = 10,
-    dRho = 1000,
     dGamma = 1000,
+    dRho = 1000,
     k = 5,
     r = 5,
     s = 100,
