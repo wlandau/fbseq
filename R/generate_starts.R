@@ -16,8 +16,8 @@ get_nonzeros = function(x){
 #' @return list of nu and tau estimates
 #' @param x argument
 nu_tau = function(x){
-  m = mean(x^2)
-  v = var(x^2)
+  m = mean(x)
+  v = var(x)
   shape = m^2/v + 2
   scale  = m*(shape - 1)
   nu = 2*shape
