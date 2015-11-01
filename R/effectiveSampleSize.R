@@ -20,7 +20,7 @@ effectiveSampleSize = function(chain){
     }    
 
     ess = effectiveSize(mcmc(flat))
-    pattern = paste(c("nu", "omegaSquared", "sigmaSquared", "tau", "theta"), collapse = "|")
+    pattern = paste(c("nu", "omegaSquared", "pi", "sigmaSquared", "tau", "theta"), collapse = "|")
     ess = ess[grep(pattern, names(ess))]
 
     if(chain@verbose) {

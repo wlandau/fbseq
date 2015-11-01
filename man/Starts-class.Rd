@@ -32,6 +32,8 @@ objects from scratch.
 
 \item{\code{beta}}{MCMC starting values}
 
+\item{\code{delta}}{MCMC starting values}
+
 \item{\code{epsilon}}{MCMC starting values}
 
 \item{\code{gamma}}{MCMC starting values}
@@ -39,6 +41,8 @@ objects from scratch.
 \item{\code{nu}}{MCMC starting values}
 
 \item{\code{omegaSquared}}{MCMC starting values}
+
+\item{\code{pi}}{MCMC starting values}
 
 \item{\code{rho}}{MCMC starting values}
 

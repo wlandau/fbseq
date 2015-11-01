@@ -38,6 +38,11 @@ credible_intervals = function(chain, level = 0.95){
   if(is.finite(upperCI["omegaSquared"])) upperCI["omegaSquared"] = min(upperCI["omegaSquared"], chain@w^2)
   if(is.finite(upperCI["sigmaSquared"])) upperCI["sigmaSquared"] = min(upperCI["sigmaSquared"], chain@s^2)
 
+  lowerCI[grep("delta", names(Mean))] = 0
+  upperCI[grep("delta", names(Mean))] = 1
+
+  lowerCI[grep("pi", names(Mean))] = max(0, lowerCI[grep("pi", names(Mean))])
+  upperCI[grep("pi", names(Mean))] = min(1, upperCI[grep("pi", names(Mean))])
 
   out = data.frame(Mean, lowerCI, upperCI)
   colnames(out) = c("mean", paste0(c("lower", "upper"), "_ci_", level))

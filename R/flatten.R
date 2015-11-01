@@ -31,13 +31,13 @@ flatten_chain = function(chain){
     if(length(slot(chain, x)))
       ret[[x]] = slot(chain, x)
   
-  for(x in c("sigmaSquared", "theta"))
+  for(x in c("pi", "sigmaSquared", "theta"))
     if(length(slot(chain, x))){
       ret[[x]] = matrix(slot(chain, x), ncol = chain@L, byrow = T)
       colnames(ret[[x]]) = paste0(x, "_", 1:chain@L)
     }
 
-  for(x in c("beta", "xi"))
+  for(x in c("beta", "delta", "xi"))
     if(length(slot(chain, x))){
       ret[[x]] = matrix(slot(chain, x), ncol = chain@L * chain@Greturn, byrow = T)
       colnames(ret[[x]]) = paste0(x, "_", rep(1:chain@L, each = chain@Greturn), "_", rep(chain@genes_return, times = chain@L))
@@ -73,11 +73,11 @@ flatten_starts = function(starts){
   L = length(starts@beta)/ifelse(G, G, 1)
   N = tryCatch(max(length(starts@rho), length(starts@epsilon)/G), warning = function(w) 0, error = function(w) 0)
 
-  for(x in c("beta", "xi"))
+  for(x in c("beta", "delta", "xi"))
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste0(x, "_", rep(1:L, each = G), "_", rep(1:G, times = L))
 
-  for(x in c("c", "k", "r", "s", "gamma", "omegaSquared", "rho", "sigmaSquared", "theta"))
+  for(x in c("c", "k", "r", "s", "gamma", "pi", "rho", "sigmaSquared", "theta"))
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste(x, 1:length(slot(starts, x)), sep = "_")
 
@@ -96,10 +96,12 @@ flatten_starts = function(starts){
     starts@w,
 
     starts@beta,
+    starts@delta,
     starts@epsilon,
     starts@gamma,
     nu = starts@nu,
-    starts@omegaSquared,
+    omegaSquared = starts@omegaSquared,
+    starts@pi,
     starts@rho,
     starts@sigmaSquared,
     tau = starts@tau,

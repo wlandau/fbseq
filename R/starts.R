@@ -15,10 +15,12 @@
 #' @slot w initialization constants 
 #' 
 #' @slot beta MCMC starting values
+#' @slot delta MCMC starting values
 #' @slot epsilon MCMC starting values
 #' @slot gamma MCMC starting values
 #' @slot nu MCMC starting values
 #' @slot omegaSquared MCMC starting values
+#' @slot pi MCMC starting values
 #' @slot rho MCMC starting values
 #' @slot sigmaSquared MCMC starting values
 #' @slot tau MCMC starting values
@@ -37,10 +39,12 @@ setClass("Starts",
     w = "numeric",
 
     beta = "numeric",
+    delta = "numeric",
     epsilon = "numeric",
     gamma = "numeric",
     nu = "numeric",
     omegaSquared = "numeric",
+    pi = "numeric",
     rho = "numeric",
     sigmaSquared = "numeric",
     tau = "numeric",

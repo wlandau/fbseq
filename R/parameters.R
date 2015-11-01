@@ -4,5 +4,5 @@
 #' @export
 #' @return Character vector of parameter names.
 parameters = function(){
-  c("beta", "epsilon", "gamma", "nu", "omegaSquared", "rho", "sigmaSquared", "tau", "theta", "xi")
+  c("beta", "delta", "epsilon", "gamma", "nu", "omegaSquared", "pi", "rho", "sigmaSquared", "tau", "theta", "xi")
 }

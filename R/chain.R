@@ -62,10 +62,12 @@
 #' @slot w initialization constants 
 #' 
 #' @slot beta MCMC parameter samples
+#' @slot delta MCMC parameter samples
 #' @slot epsilon MCMC parameter samples
 #' @slot gamma MCMC parameter samples
 #' @slot nu MCMC parameter samples
 #' @slot omegaSquared MCMC parameter samples
+#' @slot pi MCMC parameter samples
 #' @slot rho MCMC parameter samples
 #' @slot sigmaSquared MCMC parameter samples
 #' @slot tau MCMC parameter samples
@@ -73,10 +75,12 @@
 #' @slot xi MCMC parameter samples
 #' 
 #' @slot betaStart MCMC starting values
+#' @slot deltaStart MCMC parameter samples
 #' @slot epsilonStart MCMC starting values
 #' @slot gammaStart MCMC starting values
 #' @slot nuStart MCMC starting values
 #' @slot omegaSquaredStart MCMC starting values
+#' @slot piStart MCMC parameter samples
 #' @slot rhoStart MCMC starting values
 #' @slot sigmaSquaredStart MCMC starting values
 #' @slot tauStart MCMC starting values
@@ -84,10 +88,12 @@
 #' @slot xiStart MCMC starting values
 #' 
 #' @slot betaPostMean estimated posterior means
+#' @slot deltaPostMean MCMC parameter samples
 #' @slot epsilonPostMean estimated posterior means
 #' @slot gammaPostMean estimated posterior means
 #' @slot nuPostMean estimated posterior mean
 #' @slot omegaSquaredPostMean estimated posterior means
+#' @slot piPostMean MCMC parameter samples
 #' @slot rhoPostMean estimated posterior means
 #' @slot sigmaSquaredPostMean estimated posterior means
 #' @slot tauPostMean estimated posterior mean
@@ -95,10 +101,12 @@
 #' @slot xiPostMean estimated posterior means
 #' 
 #' @slot betaPostMeanSquare estimated posterior means of the squares of parameters
+#' @slot deltaPostMeanSquare MCMC parameter samples
 #' @slot epsilonPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot gammaPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot nuPostMeanSquare estimated posterior mean of the square of the parameter 
 #' @slot omegaSquaredPostMeanSquare estimated posterior means of the squares of parameters
+#' @slot piPostMeanSquare MCMC parameter samples
 #' @slot rhoPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot sigmaSquaredPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot tauPostMeanSquare estimated posterior mean of the square of the parameter
@@ -153,10 +161,12 @@ setClass("Chain",
     w = "numeric",
 
     beta = "numeric",
+    delta = "integer",
     epsilon = "numeric",
     gamma = "numeric",
     nu = "numeric",
     omegaSquared = "numeric",
+    pi = "numeric",
     rho = "numeric",
     sigmaSquared = "numeric",
     tau = "numeric",
@@ -164,10 +174,12 @@ setClass("Chain",
     xi = "numeric",
 
     betaStart = "numeric",
+    deltaStart = "integer",
     epsilonStart = "numeric",
     gammaStart = "numeric",
     nuStart = "numeric",
     omegaSquaredStart = "numeric",
+    piStart = "numeric",
     rhoStart = "numeric",
     sigmaSquaredStart = "numeric",
     tauStart = "numeric",
@@ -175,10 +187,12 @@ setClass("Chain",
     xiStart = "numeric",
 
     betaPostMean = "numeric",
+    deltaPostMean = "integer",
     epsilonPostMean = "numeric",
     gammaPostMean = "numeric",
     nuPostMean = "numeric",
     omegaSquaredPostMean = "numeric",
+    piPostMean = "numeric",
     rhoPostMean = "numeric",
     sigmaSquaredPostMean = "numeric",
     tauPostMean = "numeric",
@@ -186,10 +200,12 @@ setClass("Chain",
     xiPostMean = "numeric",
 
     betaPostMeanSquare = "numeric",
+    deltaPostMeanSquare = "integer",
     epsilonPostMeanSquare = "numeric",
     gammaPostMeanSquare = "numeric",
     nuPostMeanSquare = "numeric",
     omegaSquaredPostMeanSquare = "numeric",
+    piPostMeanSquare = "numeric",
     rhoPostMeanSquare = "numeric",
     sigmaSquaredPostMeanSquare = "numeric",
     tauPostMeanSquare = "numeric",

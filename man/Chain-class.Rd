@@ -107,6 +107,8 @@ sets of gene-specific variables.}
 
 \item{\code{beta}}{MCMC parameter samples}
 
+\item{\code{delta}}{MCMC parameter samples}
+
 \item{\code{epsilon}}{MCMC parameter samples}
 
 \item{\code{gamma}}{MCMC parameter samples}
@@ -114,6 +116,8 @@ sets of gene-specific variables.}
 \item{\code{nu}}{MCMC parameter samples}
 
 \item{\code{omegaSquared}}{MCMC parameter samples}
+
+\item{\code{pi}}{MCMC parameter samples}
 
 \item{\code{rho}}{MCMC parameter samples}
 
@@ -127,6 +131,8 @@ sets of gene-specific variables.}
 
 \item{\code{betaStart}}{MCMC starting values}
 
+\item{\code{deltaStart}}{MCMC parameter samples}
+
 \item{\code{epsilonStart}}{MCMC starting values}
 
 \item{\code{gammaStart}}{MCMC starting values}
@@ -134,6 +140,8 @@ sets of gene-specific variables.}
 \item{\code{nuStart}}{MCMC starting values}
 
 \item{\code{omegaSquaredStart}}{MCMC starting values}
+
+\item{\code{piStart}}{MCMC parameter samples}
 
 \item{\code{rhoStart}}{MCMC starting values}
 
@@ -147,6 +155,8 @@ sets of gene-specific variables.}
 
 \item{\code{betaPostMean}}{estimated posterior means}
 
+\item{\code{deltaPostMean}}{MCMC parameter samples}
+
 \item{\code{epsilonPostMean}}{estimated posterior means}
 
 \item{\code{gammaPostMean}}{estimated posterior means}
@@ -154,6 +164,8 @@ sets of gene-specific variables.}
 \item{\code{nuPostMean}}{estimated posterior mean}
 
 \item{\code{omegaSquaredPostMean}}{estimated posterior means}
+
+\item{\code{piPostMean}}{MCMC parameter samples}
 
 \item{\code{rhoPostMean}}{estimated posterior means}
 
@@ -167,6 +179,8 @@ sets of gene-specific variables.}
 
 \item{\code{betaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
+\item{\code{deltaPostMeanSquare}}{MCMC parameter samples}
+
 \item{\code{epsilonPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
 \item{\code{gammaPostMeanSquare}}{estimated posterior means of the squares of parameters}
@@ -174,6 +188,8 @@ sets of gene-specific variables.}
 \item{\code{nuPostMeanSquare}}{estimated posterior mean of the square of the parameter}
 
 \item{\code{omegaSquaredPostMeanSquare}}{estimated posterior means of the squares of parameters}
+
+\item{\code{piPostMeanSquare}}{MCMC parameter samples}
 
 \item{\code{rhoPostMeanSquare}}{estimated posterior means of the squares of parameters}
 

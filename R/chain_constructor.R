@@ -123,10 +123,12 @@ fill_easy_gaps = function(chain, counts, design){
 
   lengths = c(
     beta = L*Greturn,
+    delta = L*Greturn,
     epsilon = NreturnEpsilon*GreturnEpsilon,
     gamma = Greturn,
     nu = 1,
     omegaSquared = 1,
+    pi = L,
     rho = Nreturn,
     sigmaSquared = L,
     tau = 1,
@@ -139,10 +141,12 @@ fill_easy_gaps = function(chain, counts, design){
 
   lengths = c(
     beta = L*G,
+    delta = L*G,
     epsilon = N*G,
     gamma = G,
     nu = 1,
     omegaSquared = 1,
+    pi = L,
     rho = N,
     sigmaSquared = L,
     tau = 1,

@@ -49,9 +49,27 @@ simple_starts = function(chain, counts, design){
   PROJ = design %*% OLS
   beta = t(OLS %*% t(logcounts))
 
-  theta = apply(beta, 2, mean)
-  sigmaSquared = apply(beta, 2, var)
+  pi = rep(1, ncol(beta))
   xi = rep(1, ncol(beta)*G)
+
+  delta = matrix(0, nrow = nrow(beta), ncol = ncol(beta))
+  for(l in 1:ncol(beta)){
+    d = density(beta[,l], bw = 1) 
+    modes = table(diff(sign(diff(d$y))))["-2"]
+    if(modes > 1) pi[l] = 0.5
+
+    x = beta[,l]^2
+    delta[,l] = as.numeric(beta[,l]^2 >= quantile(beta[,l]^2, 1 - pi[l]))
+  }
+
+  theta = lapply(1:ncol(beta), function(l){mean(beta[,l][delta[,l] == 1])})
+  sigmaSquared = sapply(1:ncol(beta), function(l){
+    x0 = var(beta[,l][delta[,l] == 0])
+    x1 = var(beta[,l][delta[,l] == 1])
+    if(!is.finite(x0)) x0 = 0
+    if(!is.finite(x1)) x1 = 0
+    x0 + x1
+  })
 
   epsilon = logcounts - t(PROJ %*% t(logcounts))
   rho = colMeans(epsilon)
