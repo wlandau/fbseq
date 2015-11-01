@@ -126,7 +126,8 @@ dispersed_set = function(chain, parm, lower = NA, upper = NA){
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
   configs = Configs(chain)
-  lower = list(nu = 0, gamma = min(Starts(chain)@gamma), omegaSquared = 0, sigmaSquared = 0, tau = 0, xi = 0)
+  lower = list(nu = 0, gamma = min(Starts(chain)@gamma), omegaSquared = 0, sigmaSquared = 0, 
+                    tau = 0, xi = min(Starts(chain)@xi))
   upper = list(nu = chain@d, omegaSquared = chain@w^2, sigmaSquared = chain@s^2)
 
   for(v in configs@parameter_sets_update)
