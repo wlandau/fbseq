@@ -137,7 +137,7 @@ fill_easy_gaps = function(chain, counts, design){
 
   for(s in names(lengths))
     if(as.logical(chain@parameter_sets_return[s]))
-      slot(chain, s) = rep(0, chain@iterations*lengths[s])
+      slot(chain, s) = as(rep(0, chain@iterations*lengths[s]), class(slot(chain, s)))
 
   lengths = c(
     beta = L*G,

@@ -92,7 +92,7 @@ simple_starts = function(chain, counts, design){
 
   for(n in slotNames(chain))
     if(grepl("Start", n) && !length(slot(chain, n)))
-      slot(chain, n) = as.numeric(get(gsub("Start", "", n)))
+      slot(chain, n) = as(get(gsub("Start", "", n)), class(slot(chain, n)))
 
   return(chain)
 }
