@@ -55,7 +55,7 @@ simple_starts = function(chain, counts, design){
 
   epsilon = logcounts - t(PROJ %*% t(logcounts))
   rho = colMeans(epsilon)
-  omegaSquared = var(rho)  
+  omegaSquared = var(rho)
 
   rhomat = matrix(rep(rho, each = G), ncol = N)
   gamma = get_nonzeros(apply(epsilon - rhomat, 1, var, na.rm = T))
@@ -126,7 +126,7 @@ dispersed_set = function(chain, parm, lower = NA, upper = NA){
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
   configs = Configs(chain)
-  lower = list(nu = 0, omegaSquared = 0, sigmaSquared = 0, tau = 0, xi = 0)
+  lower = list(nu = 0, gamma = min(Starts(chain)@gamma), omegaSquared = 0, sigmaSquared = 0, tau = 0, xi = 0)
   upper = list(nu = chain@d, omegaSquared = chain@w^2, sigmaSquared = chain@s^2)
 
   for(v in configs@parameter_sets_update)
