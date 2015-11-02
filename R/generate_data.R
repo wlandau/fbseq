@@ -18,11 +18,12 @@
 #' Can be among "Laplace", "t", or "horseshoe". All other values will default to the normal prior.
 generate_data = function(libraries = 12, genes = 3.5e4, 
           design = cbind(rep(1, libraries), rep(c(1, -1, 1), each = floor(libraries/3)), rep(c(-1, 1, 1), each = floor(libraries/3))),
-          starts = Starts(nu = 10, omegaSquared = 0.01, pi = c(0.5, 0.5, 0.5), sigmaSquared = c(2.25, 0.25, 0.25), tau = 0.1, 
+          starts = Starts(nu = 10, omegaSquared = 0.01, pi = c(0.5, 1, 1), sigmaSquared = c(2.25, 0.25, 0.25), tau = 0.1, 
           theta = c(5, 0, 0))){
 
   stopifnot(libraries >= 3)
   starts@xi = rep(1, ncol(design)*genes)
+  starts@p = c(1, 0, 0)
 
   starts@beta = starts@delta = numeric(0)
   for(l in 1:ncol(design)){

@@ -114,6 +114,8 @@ dispersed_set = function(chain, parm, lower = NA, upper = NA){
   Sd =  sqrt(m*(MeanSquare - Mean^2)/(m - 1))
   n = length(Mean)
 
+  if(parm == "delta") return(Vectorize(function(i) sample(0:1, 1, prob = c(1 - Mean[i], Mean[i])), "i")(1:length(Mean)))
+
 #  out = rt(n, 5)*Sd + Mean
 #  if(all(is.finite(lower))) out[out <= lower] = lower
 #  if(all(is.finite(upper))) out[out >= upper] = upper
@@ -138,9 +140,9 @@ dispersed_set = function(chain, parm, lower = NA, upper = NA){
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
   configs = Configs(chain)
-  lower = list(nu = 0, gamma = min(Starts(chain)@gamma), omegaSquared = 0, sigmaSquared = 0, 
+  lower = list(nu = 0, gamma = min(Starts(chain)@gamma), omegaSquared = 0, pi = 0, sigmaSquared = 0, 
                     tau = 0, xi = min(Starts(chain)@xi))
-  upper = list(nu = chain@d, omegaSquared = chain@w^2, sigmaSquared = chain@s^2)
+  upper = list(nu = chain@d, omegaSquared = chain@w^2, pi = 1, sigmaSquared = chain@s^2)
 
   for(v in configs@parameter_sets_update)
     slot(chain, paste0(v, "Start")) = dispersed_set(chain, v, lower[[v]], upper[[v]])
