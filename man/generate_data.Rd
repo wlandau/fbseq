@@ -7,8 +7,8 @@
 generate_data(libraries = 12, genes = 35000, design = cbind(rep(1,
   libraries), rep(c(1, -1, 1), each = floor(libraries/3)), rep(c(-1, 1, 1), each
   = floor(libraries/3))), starts = Starts(nu = 10, omegaSquared = 0.01, pi =
-  c(0.5, 1, 1), sigmaSquared = c(2.25, 0.25, 0.25), tau = 0.1, theta = c(5, 0,
-  0)))
+  c(0.5, 0.5, 0.5), sigmaSquared = c(2.25, 0.25, 0.25), tau = 0.1, theta = c(5,
+  0, 0)))
 }
 \arguments{
 \item{libraries}{number of libraries/libraries in the data}

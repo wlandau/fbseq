@@ -57,6 +57,7 @@
 #' @slot c initialization constants 
 #' @slot d initialization constant 
 #' @slot k initialization constants 
+#' @slot p initialization constants 
 #' @slot r initialization constants 
 #' @slot s initialization constants 
 #' @slot w initialization constants 
@@ -156,6 +157,7 @@ setClass("Chain",
     c = "numeric",
     d = "numeric",
     k = "numeric",
+    p = "integer",
     r = "numeric",
     s = "numeric",
     w = "numeric",

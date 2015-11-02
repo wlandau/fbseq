@@ -99,6 +99,8 @@ sets of gene-specific variables.}
 
 \item{\code{k}}{initialization constants}
 
+\item{\code{p}}{initialization constants}
+
 \item{\code{r}}{initialization constants}
 
 \item{\code{s}}{initialization constants}

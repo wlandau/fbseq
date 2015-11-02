@@ -9,7 +9,8 @@
 #' @slot c initialization constants 
 #' @slot d initialization constant 
 #' @slot h log-scale normalization factors
-#' @slot k initialization constants 
+#' @slot k initialization constants
+#' @slot p initialization constants
 #' @slot r initialization constants 
 #' @slot s initialization constants 
 #' @slot w initialization constants 
@@ -34,6 +35,7 @@ setClass("Starts",
     d = "numeric",
     h = "numeric",
     k = "numeric",
+    p = "numeric",
     r = "numeric",
     s = "numeric",
     w = "numeric",

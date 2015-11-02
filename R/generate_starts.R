@@ -41,6 +41,7 @@ nu_tau = function(x){
 simple_starts = function(chain, counts, design){
   N = dim(counts)[2]
   G = dim(counts)[1]
+  L = dim(design)[2]
 
   counts = as.matrix(counts)
   logcounts = log(counts + 1)
@@ -49,20 +50,11 @@ simple_starts = function(chain, counts, design){
   PROJ = design %*% OLS
   beta = t(OLS %*% t(logcounts))
 
-  pi = rep(1, ncol(beta))
-  xi = rep(1, ncol(beta)*G)
+  if(length(chain@p) != L) chain@p = apply(design, 2, function(x) as.integer(length(unique(x)) < 2))
+  pi = ifelse(chain@p, 0.5, 1)
+  delta = sapply(1:L, function(l) ifelse(beta[,l]^2 >= quantile(beta[,l]^2, 1 - pi[l]), 1, 0))
 
-  delta = matrix(0, nrow = nrow(beta), ncol = ncol(beta))
-  for(l in 1:ncol(beta)){
-    d = density(beta[,l], bw = 1) 
-    modes = table(diff(sign(diff(d$y))))["-2"]
-    if(modes > 1) pi[l] = 0.5
-
-    x = beta[,l]^2
-    delta[,l] = as.numeric(beta[,l]^2 >= quantile(beta[,l]^2, 1 - pi[l]))
-  }
-
-  theta = lapply(1:ncol(beta), function(l){mean(beta[,l][delta[,l] == 1])})
+  theta = sapply(1:ncol(beta), function(l){mean(beta[,l][delta[,l] == 1])})
   sigmaSquared = sapply(1:ncol(beta), function(l){
     x0 = var(beta[,l][delta[,l] == 0])
     x1 = var(beta[,l][delta[,l] == 1])
@@ -70,6 +62,8 @@ simple_starts = function(chain, counts, design){
     if(!is.finite(x1)) x1 = 0
     x0 + x1
   })
+
+  xi = rep(1, prod(dim(beta)))
 
   epsilon = logcounts - t(PROJ %*% t(logcounts))
   rho = colMeans(epsilon)
@@ -86,8 +80,8 @@ simple_starts = function(chain, counts, design){
     if(length(slot(chain, n)) == 0)
       slot(chain, n) = slot(Starts(), n)
     if(length(slot(chain, n)) == 1)
-      slot(chain, n) = rep(slot(chain, n), ncol(design))
-    stopifnot(length(slot(chain, n)) == ncol(design))
+      slot(chain, n) = rep(slot(chain, n), L)
+    stopifnot(length(slot(chain, n)) == L)
   }
 
   for(n in slotNames(chain))
