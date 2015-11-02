@@ -23,7 +23,6 @@ generate_data = function(libraries = 12, genes = 3.5e4,
 
   stopifnot(libraries >= 3)
   starts@xi = rep(1, ncol(design)*genes)
-  starts@p = c(1, 0, 0)
 
   starts@beta = starts@delta = numeric(0)
   for(l in 1:ncol(design)){
