@@ -55,11 +55,11 @@ setClass("Configs",
   prototype = list(
     diag = "gelman",
     ess = 1e2,
-    max_attempts = 10,
+    max_attempts = 5,
     nchains_diag = 4,
     psrf_tol = 1.1,
 
-    burnin = 1e4,
+    burnin = 1e5,
     genes_return = numeric(0),
     genes_return_epsilon = numeric(0),
     iterations = 1e3,
@@ -68,7 +68,7 @@ setClass("Configs",
     parameter_sets_return = setdiff(parameters(), c("rho", "omegaSquared")),
     parameter_sets_update = setdiff(parameters(), c("rho", "omegaSquared")),
     priors = "normal",
-    thin = 1e1,
+    thin = 1e2,
     verbose = 1e1
   )
 )
