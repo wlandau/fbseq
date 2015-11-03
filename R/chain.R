@@ -9,7 +9,7 @@
 #' 
 #' @slot counts RNA-seq count data, flattened from a matrix
 #'
-#' @slot conjunctions 
+#' @slot conjunctions
 #' @slot contrasts
 #' @slot design Design, flattened from the design matrix.
 #' Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
@@ -25,8 +25,8 @@
 #' convergence diagnostics that require multiple chains. 
 #' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
 #' 
+#' @slot betas_update values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
-#' @slot effects_update values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
 #' Applies to all gene-specific parameters except for the epsilons.
 #' @slot genes_return_epsilon Indices of genes g for which epsilon_{n, g} is updated/returned.
@@ -118,7 +118,7 @@ setClass("Chain",
 
     counts = "integer",
 
-    conjunctions = "numeric",
+    conjunctions = "integer",
     contrasts = "numeric",
     design = "numeric",
     probs = "numeric",
@@ -130,8 +130,8 @@ setClass("Chain",
     nchains_diag = "integer",
     psrf_tol = "numeric",
 
+    betas_update = "integer",
     burnin = "integer",
-    effects_update = "integer",
     genes_return = "integer",
     genes_return_epsilon = "integer",
     iterations = "integer",

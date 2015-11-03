@@ -19,5 +19,6 @@ Constructor for class \code{Inference}
 }
 \details{
 Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
+Elements passed with \code{...} must be named. For example, \code{Inference(design = my_matrix)}.
 }
 

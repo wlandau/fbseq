@@ -8,18 +8,16 @@ NULL
 #' @export
 #' @return a \code{Chain} object ready to be passed to \code{single_chain()}
 #'
-#' @param data A data frame/matrix of RNA-seq read counts or list of slots. If a list,
+#' @param data A data frame or matrix of RNA-seq read counts or list of slots. If a list,
 #' then the function will return a \code{Chain} object with those slots. Note: \code{data}
 #' should only be a list within internal functions of the package. It is not recommended that
 #' the user assign \code{data} to be a list.
-#' @param design Design matrix.
-#' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-#' sets of gene-specific variables.
+#' @param inference an \code{Inference} object.
 #' @param configs A \code{Configs} object of MCMC control parameters.
 #' @param starts A \code{Starts} object of model parameter starting values.
 Chain = function(
   data, 
-  design, 
+  inference, 
   configs = Configs(),
   starts = Starts()
 ){
@@ -33,10 +31,10 @@ Chain = function(
 
   counts = as.matrix(data)
   stopifnot(all(is.finite(counts)))
-  chain = plug_in_chain(chain, design, configs = Configs(), starts = Starts())
-  chain = plug_in_chain(chain, design, configs = configs, starts = starts)
-  chain = fill_easy_gaps(chain, counts, design)
-  chain = simple_starts(chain, counts, design)
+  chain = plug_in_chain(chain, inference, configs = Configs(), starts = Starts())
+  chain = plug_in_chain(chain, inference, configs = configs, starts = starts)
+  chain = fill_easy_gaps(chain, counts, inference)
+  chain = simple_starts(chain, counts, inference@design)
   chain
 }
 
@@ -48,12 +46,10 @@ Chain = function(
 #' @return a \code{Chain} object 
 #'
 #' @param chain a \code{Chain} object
-#' @param design Design matrix. 
-#' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-#' sets of gene-specific variables.
+#' @param inference an \code{Inference} object
 #' @param configs A \code{Configs} object of MCMC control parameters.
 #' @param starts A \code{Starts} object of model parameter starting values.
-plug_in_chain = function(chain, design, configs, starts){
+plug_in_chain = function(chain, inference, configs, starts){
   chain@iterations = as.integer(configs@iterations)
   subtract = c("parameter_sets_return", "parameter_sets_update", "priors")
   for(n in setdiff(intersect(slotNames(chain), slotNames(configs)), subtract))
@@ -65,8 +61,8 @@ plug_in_chain = function(chain, design, configs, starts){
   }
 
   chain@priors = ifelse(configs@priors %in% alternate_priors(), which(alternate_priors() == configs@priors), as.integer(0))
-  if(length(chain@priors) == 1) chain@priors = rep(chain@priors, ncol(design))
-  stopifnot(length(chain@priors) == ncol(design))
+  if(length(chain@priors) == 1) chain@priors = rep(chain@priors, ncol(inference@design))
+  stopifnot(length(chain@priors) == ncol(inference@design))
 
   for(n in slotNames(chain)){
     if(grepl("Start", n))
@@ -75,7 +71,12 @@ plug_in_chain = function(chain, design, configs, starts){
       slot(chain, n) = as(slot(starts, n), class(slot(chain, n)))
   }
 
-  return(chain)
+  chain@conjunctions = as.integer(unlist(lapply(inference@conjunctions, function(x){1:length(inference@contrasts) %in% x})))
+  chain@contrasts = unlist(inference@contrasts)
+  chain@design = as.numeric(inference@design)
+  chain@values = inference@values
+
+  chain
 }
 
 #' @title Function \code{fill_easy_gaps}
@@ -86,26 +87,26 @@ plug_in_chain = function(chain, design, configs, starts){
 #'
 #' @param chain a \code{Chain} object
 #' @param counts Matrix of RNA-seq read counts.
-#' @param design Design matrix. 
+#' @param inference an \code{Inference} object
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' sets of gene-specific variables.
-fill_easy_gaps = function(chain, counts, design){
-  stopifnot(ncol(counts) == nrow(design))
+fill_easy_gaps = function(chain, counts, inference){
+  stopifnot(ncol(counts) == nrow(inference@design))
 
-  designUnique = apply(design, 2, function(x){
+  designUnique = apply(inference@design, 2, function(x){
     out = sort(unique(x[x != 0]))
-    c(out, rep(0, dim(design)[1] - length(out)))
+    c(out, rep(0, dim(inference@design)[1] - length(out)))
   })
 
-  designUniqueN = as.integer(apply(design, 2, function(x){length(unique(x[x != 0]))}))
-  if(any(!designUniqueN)) stop("every column in the design matrix must have nonzero elements.")
+  designUniqueN = as.integer(apply(inference@design, 2, function(x){length(unique(x[x != 0]))}))
+  if(any(!designUniqueN)) stop("every column in the inference matrix must have nonzero elements.")
 
-  if(!length(chain@effects_update)) chain@effects_update = 1:ncol(design)
+  if(!length(chain@betas_update)) chain@betas_update = 1:ncol(inference@design)
 
+  chain@C = length(inference@contrasts)
   chain@counts = as.integer(counts)
   chain@countSums_g = as.integer(apply(counts, 1, sum))
   chain@countSums_n = as.integer(apply(counts, 2, sum))
-  chain@design = as.numeric(design)
   chain@designUnique = as.numeric(designUnique)
   chain@designUniqueN = as.integer(designUniqueN)
   chain@genes_return = sort(chain@genes_return)
@@ -115,11 +116,13 @@ fill_easy_gaps = function(chain, counts, design){
   chain@GreturnEpsilon = GreturnEpsilon = length(chain@genes_return_epsilon)
   chain@libraries_return = sort(chain@libraries_return)
   chain@libraries_return_epsilon = sort(chain@libraries_return_epsilon)
-  chain@L = L = ncol(design)
-  chain@Lupdate = length(chain@effects_update)
-  chain@N = N = nrow(design)
+  chain@J = length(inference@conjunctions)
+  chain@L = L = ncol(inference@design)
+  chain@Lupdate = length(chain@betas_update)
+  chain@N = N = nrow(inference@design)
   chain@Nreturn = Nreturn = length(chain@libraries_return)
   chain@NreturnEpsilon = NreturnEpsilon = length(chain@libraries_return_epsilon)
+  chain@probs = rep(0, chain@J * chain@G)
 
   lengths = c(
     beta = L*Greturn,

@@ -13,8 +13,8 @@ NULL
 #' convergence diagnostics that require multiple chains. 
 #' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
 #' 
+#' @slot betas_update values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
-#' @slot effects_update values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
 #' Applies to all gene-specific parameters except for the epsilons.
 #' @slot genes_return_epsilon Indices of genes g for which epsilon_{n, g} is updated/returned.
@@ -39,8 +39,8 @@ setClass("Configs",
     nchains_diag = "numeric",
     psrf_tol = "numeric",
 
+    betas_update = "numeric",
     burnin = "numeric",
-    effects_update = "numeric",
     genes_return = "numeric",
     genes_return_epsilon = "numeric",
     iterations = "numeric",
@@ -75,6 +75,7 @@ setClass("Configs",
 
 #' @title Constructor for class \code{Configs}
 #' @details Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
+#' Elements passed with \code{...} must be named. For example, \code{Configs(diag = "gelman")}.
 #' @export
 #' @return a \code{Configs} object
 #' @param obj a \code{Chain} or \code{list} object to get slots from.

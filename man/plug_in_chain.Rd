@@ -4,14 +4,12 @@
 \alias{plug_in_chain}
 \title{Function \code{plug_in_chain}}
 \usage{
-plug_in_chain(chain, design, configs, starts)
+plug_in_chain(chain, inference, configs, starts)
 }
 \arguments{
 \item{chain}{a \code{Chain} object}
 
-\item{design}{Design matrix.
-Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-sets of gene-specific variables.}
+\item{inference}{an \code{Inference} object}
 
 \item{configs}{A \code{Configs} object of MCMC control parameters.}
 

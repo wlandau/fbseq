@@ -18,7 +18,8 @@ concatenate = function(chain1, chain2){
       slot(chain, sn) = slot(chain1, sn)
 
   sn = slotNames(chain)
-  sn = sn[grepl("PostMean", sn)]
+  pattern = "PostMean|probs"
+  sn = sn[grepl(pattern, sn)]
 
   for(p in sn)
     slot(chain, p) = (chain1@iterations * slot(chain1, p) + chain2@iterations * slot(chain2, p))/(chain1@iterations + chain2@iterations)

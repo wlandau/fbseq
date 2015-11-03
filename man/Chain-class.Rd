@@ -41,9 +41,9 @@ convergence diagnostics that require multiple chains.}
 
 \item{\code{psrf_tol}}{upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")}
 
-\item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
+\item{\code{betas_update}}{values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.}
 
-\item{\code{effects_update}}{values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.}
+\item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
 
 \item{\code{genes_return}}{Indices of genes whose parameter samples you want to return.
 Applies to all gene-specific parameters except for the epsilons.}

@@ -18,11 +18,11 @@
 #' @slot values Numeric vector of length \code{length(contrasts)}. Used int tests.
 setClass("Inference", 
   slots = list(
-    design = "matrix",
-    contrasts = "list",
-    values = "numeric",
     conjunctions = "list",
-    probs = "matrix"
+    contrasts = "list",
+    design = "matrix",
+    probs = "matrix",
+    values = "numeric"
   )
 )
 
@@ -53,6 +53,7 @@ check_inference = function(inference){
 
 #' @title Constructor for class \code{Inference}
 #' @details Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
+#' Elements passed with \code{...} must be named. For example, \code{Inference(design = my_matrix)}.
 #' @export
 #' @return a \code{Inference} object
 #' @param obj a \code{Chain} or \code{list} object to get slots from.
@@ -64,7 +65,12 @@ Inference = function(obj = NULL, ...){
     for(n in intersect(slotNames(inference), names(obj)))
        slot(inference, n) = obj[[n]]
   } else if(class(obj) == "Chain"){
-    stop("not implemented yet.")
+    inference@design = matrix(obj@design, nrow = obj@N)
+    inference@contrasts = as.list(as.data.frame(matrix(obj@contrasts, nrow = obj@L)))
+    inference@values = obj@values
+    cm = matrix(obj@conjunctions, nrow = 4)
+    inference@conjunctions = lapply(1:dim(cm)[2], function(i) which(cm[,i] == 1))
+    inference@probs = matrix(obj@probs, nrow = obj@G)
   }
 
   check_inference(inference)

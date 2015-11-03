@@ -4,17 +4,15 @@
 \alias{Chain}
 \title{Function \code{Chain}}
 \usage{
-Chain(data, design, configs = Configs(), starts = Starts())
+Chain(data, inference, configs = Configs(), starts = Starts())
 }
 \arguments{
-\item{data}{A data frame/matrix of RNA-seq read counts or list of slots. If a list,
+\item{data}{A data frame or matrix of RNA-seq read counts or list of slots. If a list,
 then the function will return a \code{Chain} object with those slots. Note: \code{data}
 should only be a list within internal functions of the package. It is not recommended that
 the user assign \code{data} to be a list.}
 
-\item{design}{Design matrix.
-Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-sets of gene-specific variables.}
+\item{inference}{an \code{Inference} object.}
 
 \item{configs}{A \code{Configs} object of MCMC control parameters.}
 
