@@ -86,5 +86,5 @@ Starts = function(obj = NULL, ...){
     }
   }
 
-  return(starts)
+  starts
 }

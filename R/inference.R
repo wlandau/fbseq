@@ -26,6 +26,33 @@ setClass("Inference",
   )
 )
 
+
+#' @title Function \code{check_inference}
+#' @details checks an \code{Inference} object for inconsistencies.
+#' @export
+#' @return a \code{Inference} object
+#' @param inference a \code{Inference} object
+check_inference = function(inference){
+  for(s in slotNames(inference)) stopifnot(all(is.finite(unlist(slot(inference, s)))))
+  if(any(!dim(inference@design))) stop("no design matrix specified.")
+
+  N = nrow(inference@design)
+  L = ncol(inference@design)
+
+  if(!all(sapply(inference@contrasts, length) == L)) stop("the number of terms in each contrast must equal the number of columns in the design matrix.")
+  if(length(inference@contrasts) != length(inference@values)) 
+    stop("the length of the \"values\" vector must equal the number of contrasts.")
+  if(!all(unique(unlist(inference@conjunctions)) %in% 1:length(inference@contrasts))) 
+    stop("elements of the \"conjunctions\" list must be vectors whose elements lie beween 1 and the number of contrasts.")
+  if(length(inference@conjunctions) & !length(inference@contrasts)) 
+    stop("\"conjunctions\" list specified without a list of contrasts.")
+  if(length(inference@conjunctions) & !length(inference@values)) 
+    stop("\"conjunctions\" list specified without a \"values\" vector.")  
+
+  inference
+}
+
+
 #' @title Constructor for class \code{Inference}
 #' @details Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
 #' @export
@@ -42,5 +69,5 @@ Inference = function(obj = NULL, ...){
     stop("not implemented yet.")
   }
 
-  return(inference)
+  check_inference(inference)
 }

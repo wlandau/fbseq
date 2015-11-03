@@ -109,5 +109,6 @@ Configs = function(obj = NULL, ...){
     configs@parameter_sets_return = setdiff(configs@parameter_sets_return, "xi")
     configs@parameter_sets_update = setdiff(configs@parameter_sets_update, "xi")
   }
-  return(configs)
+  
+  configs
 }
