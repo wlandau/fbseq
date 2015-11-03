@@ -4,6 +4,19 @@
 #' by feeding one into \code{single_chain()}.
 #' @exportClass Chain
 #'
+#' @slot psrf Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the 
+#' actual MCMC parameter samples are not returned)
+#' 
+#' @slot counts RNA-seq count data, flattened from a matrix
+#'
+#' @slot conjunctions 
+#' @slot contrasts
+#' @slot design Design, flattened from the design matrix.
+#' Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+#' sets of gene-specific variables.
+#' @slot probs
+#' @slot values
+#' 
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
 #' @slot max_attempts Maximum number of retries for assessing convergence and generating enough effective samples.
@@ -31,20 +44,15 @@
 #' @slot verbose Number of times to print out progress during burnin and the actual MCMC.
 #' If \code{verbose} > 0, then progress messages will also print during setup and cleanup.
 #' 
-#' @slot psrf Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the 
-#' actual MCMC parameter samples are not returned)
-#'
-#' @slot counts RNA-seq count data, flattened from a matrix
+#' @slot C number of contrasts
 #' @slot countSums_g gene-specific count sums
 #' @slot countSums_n library-specific count sums
-#' @slot design Design, flattened from the design matrix.
-#' Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-#' sets of gene-specific variables.
 #' @slot designUnique Matrix of unique nonzero elements of \code{design}. Vacent entries are 0.
 #' @slot designUniqueN for each column index \code{l}, number of unique nonzero elements of \code{design[, l]}.
 #' @slot G number of genes
 #' @slot Greturn number of genes to return gene-specific MCMC parameter samples for (except the epsilons)
 #' @slot GreturnEpsilon number of genes to return gene-specific MCMC epsilon parameter samples
+#' @slot J number of conjunctions of contrasts
 #' @slot L number of columns in the original design matrix
 #' @slot Lupdate number of values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot N number of libraries
@@ -106,6 +114,16 @@
 #' @slot xiPostMeanSquare posterior means of the squares of parameters
 setClass("Chain",
   slots = list(
+    psrf = "numeric",
+
+    counts = "integer",
+
+    conjunctions = "numeric",
+    contrasts = "numeric",
+    design = "numeric",
+    probs = "numeric",
+    values = "numeric",
+
     diag = "character",
     ess = "integer",
     max_attempts = "numeric",
@@ -125,17 +143,15 @@ setClass("Chain",
     thin = "integer",
     verbose = "integer",
 
-    psrf = "numeric",
-
-    counts = "integer",
+    C = "integer",
     countSums_g = "integer",
     countSums_n = "integer",
-    design = "numeric",
     designUnique = "numeric",
     designUniqueN = "integer",
     G = "integer",
     Greturn = "integer",
     GreturnEpsilon = "integer",
+    J = "integer",
     L = "integer",
     Lupdate = "integer",
     N = "integer",

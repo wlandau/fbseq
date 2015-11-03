@@ -12,6 +12,23 @@ by feeding one into \code{single_chain()}.
 \section{Slots}{
 
 \describe{
+\item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the
+actual MCMC parameter samples are not returned)}
+
+\item{\code{counts}}{RNA-seq count data, flattened from a matrix}
+
+\item{\code{conjunctions}}{}
+
+\item{\code{contrasts}}{}
+
+\item{\code{design}}{Design, flattened from the design matrix.
+Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
+sets of gene-specific variables.}
+
+\item{\code{probs}}{}
+
+\item{\code{values}}{}
+
 \item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
 
 \item{\code{ess}}{Minimum effective sample size for all parameters}
@@ -54,18 +71,11 @@ Can be any value returned by \code{alternate_priors()}. All other values will de
 \item{\code{verbose}}{Number of times to print out progress during burnin and the actual MCMC.
 If \code{verbose} > 0, then progress messages will also print during setup and cleanup.}
 
-\item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the
-actual MCMC parameter samples are not returned)}
-
-\item{\code{counts}}{RNA-seq count data, flattened from a matrix}
+\item{\code{C}}{number of contrasts}
 
 \item{\code{countSums_g}}{gene-specific count sums}
 
 \item{\code{countSums_n}}{library-specific count sums}
-
-\item{\code{design}}{Design, flattened from the design matrix.
-Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-sets of gene-specific variables.}
 
 \item{\code{designUnique}}{Matrix of unique nonzero elements of \code{design}. Vacent entries are 0.}
 
@@ -76,6 +86,8 @@ sets of gene-specific variables.}
 \item{\code{Greturn}}{number of genes to return gene-specific MCMC parameter samples for (except the epsilons)}
 
 \item{\code{GreturnEpsilon}}{number of genes to return gene-specific MCMC epsilon parameter samples}
+
+\item{\code{J}}{number of conjunctions of contrasts}
 
 \item{\code{L}}{number of columns in the original design matrix}
 
