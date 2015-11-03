@@ -26,7 +26,6 @@ setClass("Inference",
   )
 )
 
-
 #' @title Function \code{check_inference}
 #' @details checks an \code{Inference} object for inconsistencies.
 #' @export
@@ -51,7 +50,6 @@ check_inference = function(inference){
 
   inference
 }
-
 
 #' @title Constructor for class \code{Inference}
 #' @details Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
