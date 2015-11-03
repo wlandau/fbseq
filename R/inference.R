@@ -18,11 +18,11 @@
 #' @slot values Numeric vector of length \code{length(contrasts)}. Used int tests.
 setClass("Inference", 
   slots = list(
-    conjunctions = "list",
-    contrasts = "list",
     design = "matrix",
-    probs = "matrix",
-    values = "numeric"
+    contrasts = "list",
+    values = "numeric",
+    conjunctions = "list",
+    probs = "matrix"
   )
 )
 
@@ -42,5 +42,5 @@ Inference = function(obj = NULL, ...){
     stop("not implemented yet.")
   }
 
-  return(Inference)
+  return(inference)
 }
