@@ -21,21 +21,9 @@ Chain = function(scenario, configs = Configs(), starts = Starts(), slots = NULL)
     return(chain)
   }
 
-  chain = plug_in_chain(chain, scenario, configs = Configs(), starts = Starts())
+  starts = generate_starts(scenario@counts, scenario@design, starts)
   chain = plug_in_chain(chain, scenario, configs = configs, starts = starts)
-  chain = fill_easy_gaps(chain, scenario)
-  starts = generate_starts(scenario@counts, scenario@design)
-
-  for(n in slotNames(starts)){
-    if(n %in% parameters()){
-      s = paste0(n, "Start")
-      slot(chain, s) = as(slot(starts, n), class(slot(chain, s)))
-    } else if(.hasSlot(chain, n)){
-      slot(chain, n) = as(slot(starts, n), class(slot(chain, n)))
-    }
-  }
-
-  chain
+  fill_easy_gaps(chain, scenario)
 }
 
 #' @title Function \code{plug_in_chain}

@@ -4,7 +4,7 @@
 \alias{generate_starts}
 \title{Function \code{generate_starts}}
 \usage{
-generate_starts(counts, design)
+generate_starts(counts, design, starts = Starts())
 }
 \arguments{
 \item{counts}{A data frame/matrix of RNA-seq read counts or list of slots. If a list,
@@ -12,7 +12,8 @@ then the function will return a \code{Chain} object with those slots.}
 
 \item{design}{Gene-specific design matrix.
 Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
-gene-specific variables.}
+gene-specific variables.
+param a \code{Starts} object to fill}
 }
 \value{
 a \code{Starts} object with a full set of MCMC starting values.

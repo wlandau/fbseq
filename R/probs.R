@@ -6,8 +6,8 @@
 #' corresponding to the conjunctions in \code{Scenario(chain)@@conjunctions}.
 #' @param chain a \code{Chain} object
 probs = function(chain){
-  out = matrix(chain@probs, ncol = chain@J)
-  rownames(probs) = chain@gene_names
-  colnames(probs) = chain@proposition_names
+  out = matrix(chain@probs, ncol = chain@P)
+  rownames(out) = chain@gene_names
+  colnames(out) = chain@proposition_names
   out
 }
