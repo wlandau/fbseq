@@ -12,6 +12,6 @@ parameters = function(){
 #'
 #' @export
 #' @return Character vector of parameter names.
-contstants = function(){
+constants = function(){
   c("a", "b", "c", "d", "k", "r", "s", "w")
 }
