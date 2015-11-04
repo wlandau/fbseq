@@ -11,7 +11,7 @@ probs(chain)
 }
 \value{
 a data frame of estimated posterior probabilities, with rows corresponding to genes and columns
-corresponding to the conjunctions in \code{Scenario(chain)@conjunctions}.
+corresponding to the propositions in \code{Scenario(chain)@propositions}.
 }
 \description{
 Extracts estimated posterior probs from a \code{Chain} object.

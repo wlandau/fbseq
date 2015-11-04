@@ -3,7 +3,7 @@
 #'
 #' @export
 #' @return a data frame of estimated posterior probabilities, with rows corresponding to genes and columns 
-#' corresponding to the conjunctions in \code{Scenario(chain)@@conjunctions}.
+#' corresponding to the propositions in \code{Scenario(chain)@@propositions}.
 #' @param chain a \code{Chain} object
 probs = function(chain){
   out = matrix(chain@probs, ncol = chain@P)

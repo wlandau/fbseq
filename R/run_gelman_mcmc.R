@@ -1,4 +1,4 @@
-#' @include effectiveSampleSize.R flatten.R run_fixed_mcmc.R
+#' @include flatten.R run_fixed_mcmc.R
 NULL
 
 #' @title Function \code{calc_gelman}

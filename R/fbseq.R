@@ -1,4 +1,4 @@
-#' @include effectiveSampleSize.R run_gelman_mcmc.R
+#' @include effective_sample_size.R run_gelman_mcmc.R
 NULL
 
 #' @title Function \code{fbseq}
@@ -17,6 +17,6 @@ fbseq = function(chain){
   } else {
     chain = run_fixed_mcmc(chain)
   }
-  if(chain@ess >= 1) chain = effectiveSampleSize(chain)
+  if(chain@ess >= 1) chain = effective_sample_size(chain)
   chain
 }

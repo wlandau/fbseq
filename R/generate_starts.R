@@ -37,7 +37,7 @@ nu_tau = function(x){
 #' @param design Gene-specific design matrix.
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' gene-specific variables.
-#' param a \code{Starts} object to fill
+#' @param starts a \code{Starts} object to fill
 generate_starts = function(counts, design, starts = Starts()){
   N = dim(counts)[2]
   G = dim(counts)[1]

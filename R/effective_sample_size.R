@@ -1,13 +1,13 @@
 #' @include concatenate.R run_fixed_mcmc.R
 NULL
 
-#' @title Function \code{effectiveSampleSize}
+#' @title Function \code{effective_sample_size}
 #' @description Reruns an already-run \code{Chain} object until 
 #' at least \code{chain@@iterations} effective samples are obtained for each returned hyperparameter.
 #' @export
 #' @return a \code{Chain} object
 #' @param chain a \code{Chain} object
-effectiveSampleSize = function(chain){
+effective_sample_size = function(chain){
   i = 0
   iterations = chain@iterations
   while(i < chain@max_attempts){
