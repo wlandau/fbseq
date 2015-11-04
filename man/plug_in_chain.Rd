@@ -13,7 +13,7 @@ plug_in_chain(chain, scenario, configs, starts)
 
 \item{configs}{A \code{Configs} object of MCMC control parameters.}
 
-\item{starts}{A \code{Starts} object of model parameter starting values.}
+\item{starts}{A \code{Starts} object of model parameter starting bounds.}
 }
 \value{
 a \code{Chain} object

@@ -12,10 +12,21 @@ by feeding one into \code{single_chain()}.
 \section{Slots}{
 
 \describe{
+\item{\code{bound_names}}{names of \code{bounds} slot in the original \code{Scenario} object}
+
+\item{\code{contrast_names}}{names of \code{contrasts} slot in the \code{Scenario} object}
+
+\item{\code{gene_names}}{names of genes, taken from the row names of the count data matrix}
+
+\item{\code{library_names}}{names of the libraries/samples, taken from the column names of the count data matrix}
+
+\item{\code{proposition_names}}{names of \code{propositions} slot in the \code{Scenario} object}
+
 \item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the
 actual MCMC parameter samples are not returned)}
 
-\item{\code{conjunctions}}{conjunctions of inequalities involving contrasts from the \code{Scenario} object.}
+\item{\code{bounds}}{values to compare contrasts to. The comparison is to see if the contrast is greater than
+its corresponding element in \code{bounds} (from the \code{Scenario} object)}
 
 \item{\code{contrasts}}{contrasts from the \code{Scenario} object.}
 
@@ -25,7 +36,7 @@ actual MCMC parameter samples are not returned)}
 Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 sets of gene-specific variables.}
 
-\item{\code{values}}{values to compare contrasts to (from the \code{Scenario} object)}
+\item{\code{propositions}}{propositions of inequalities involving contrasts from the \code{Scenario} object.}
 
 \item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
 
@@ -39,7 +50,7 @@ convergence diagnostics that require multiple chains.}
 
 \item{\code{psrf_tol}}{upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")}
 
-\item{\code{betas_update}}{values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.}
+\item{\code{betas_update}}{bounds of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.}
 
 \item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
 
@@ -62,7 +73,7 @@ you want to return}
 during the MCMC.}
 
 \item{\code{priors}}{Names of the family of priors on the betas after integrating out the xi's.
-Can be any value returned by \code{alternate_priors()}. All other values will default to the normal prior.}
+Can be any value returned by \code{alternate_priors()}. All other bounds will default to the normal prior.}
 
 \item{\code{thin}}{MCMC thinning interval, number of iterations to skip in between iterations to return.}
 
@@ -85,11 +96,9 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{GreturnEpsilon}}{number of genes to return gene-specific MCMC epsilon parameter samples}
 
-\item{\code{J}}{number of conjunctions of contrasts}
-
 \item{\code{L}}{number of columns in the original design matrix}
 
-\item{\code{Lupdate}}{number of values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.}
+\item{\code{Lupdate}}{number of bounds of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.}
 
 \item{\code{N}}{number of libraries}
 
@@ -97,7 +106,9 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{NreturnEpsilon}}{number of libraries to return library-specific MCMC epsilon parameter samples}
 
-\item{\code{probs}}{estimated posterior probabilities of conjunctions in the \code{Scenario} object.}
+\item{\code{P}}{number of propositions involving contrasts}
+
+\item{\code{probs}}{estimated posterior probabilities of propositions in the \code{Scenario} object.}
 
 \item{\code{seeds}}{vector of N*G random number generator seeds}
 
@@ -137,25 +148,25 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{xi}}{MCMC parameter samples}
 
-\item{\code{betaStart}}{MCMC starting values}
+\item{\code{betaStart}}{MCMC starting bounds}
 
-\item{\code{epsilonStart}}{MCMC starting values}
+\item{\code{epsilonStart}}{MCMC starting bounds}
 
-\item{\code{gammaStart}}{MCMC starting values}
+\item{\code{gammaStart}}{MCMC starting bounds}
 
-\item{\code{nuStart}}{MCMC starting values}
+\item{\code{nuStart}}{MCMC starting bounds}
 
-\item{\code{omegaSquaredStart}}{MCMC starting values}
+\item{\code{omegaSquaredStart}}{MCMC starting bounds}
 
-\item{\code{rhoStart}}{MCMC starting values}
+\item{\code{rhoStart}}{MCMC starting bounds}
 
-\item{\code{sigmaSquaredStart}}{MCMC starting values}
+\item{\code{sigmaSquaredStart}}{MCMC starting bounds}
 
-\item{\code{tauStart}}{MCMC starting values}
+\item{\code{tauStart}}{MCMC starting bounds}
 
-\item{\code{thetaStart}}{MCMC starting values}
+\item{\code{thetaStart}}{MCMC starting bounds}
 
-\item{\code{xiStart}}{MCMC starting values}
+\item{\code{xiStart}}{MCMC starting bounds}
 
 \item{\code{betaPostMean}}{estimated posterior means}
 

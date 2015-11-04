@@ -13,6 +13,6 @@ get_nonzeros(x)
 x with no zeros
 }
 \description{
-Helper function for \code{simple_starts()}.
+Helper function for \code{generate_starts()}.
 }
 

@@ -10,7 +10,7 @@ NULL
 #'
 #' @param scenario a \code{Scenario} object with count data, the design matrix, etc.
 #' @param configs A \code{Configs} object of MCMC control parameters.
-#' @param starts A \code{Starts} object of model parameter starting values.
+#' @param starts A \code{Starts} object of model parameter starting bounds.
 #' @param slots a list of slots to be plugged into a \code{Chain} object
 Chain = function(scenario, configs = Configs(), starts = Starts(), slots = NULL){
   chain = new("Chain")
@@ -24,7 +24,17 @@ Chain = function(scenario, configs = Configs(), starts = Starts(), slots = NULL)
   chain = plug_in_chain(chain, scenario, configs = Configs(), starts = Starts())
   chain = plug_in_chain(chain, scenario, configs = configs, starts = starts)
   chain = fill_easy_gaps(chain, scenario)
-  chain = simple_starts(chain, counts, scenario@design)
+  starts = generate_starts(scenario@counts, scenario@design)
+
+  for(n in slotNames(starts)){
+    if(n %in% parameters()){
+      s = paste0(n, "Start")
+      slot(chain, s) = as(slot(starts, n), class(slot(chain, s)))
+    } else if(.hasSlot(chain, n)){
+      slot(chain, n) = as(slot(starts, n), class(slot(chain, n)))
+    }
+  }
+
   chain
 }
 
@@ -38,7 +48,7 @@ Chain = function(scenario, configs = Configs(), starts = Starts(), slots = NULL)
 #' @param chain a \code{Chain} object
 #' @param scenario an \code{Scenario} object
 #' @param configs A \code{Configs} object of MCMC control parameters.
-#' @param starts A \code{Starts} object of model parameter starting values.
+#' @param starts A \code{Starts} object of model parameter starting bounds.
 plug_in_chain = function(chain, scenario, configs, starts){
   chain@iterations = as.integer(configs@iterations)
   subtract = c("parameter_sets_return", "parameter_sets_update", "priors")
@@ -61,11 +71,11 @@ plug_in_chain = function(chain, scenario, configs, starts){
       slot(chain, n) = as(slot(starts, n), class(slot(chain, n)))
   }
 
-  chain@conjunctions = as.integer(unlist(lapply(scenario@conjunctions, function(x){1:length(scenario@contrasts) %in% x})))
+  chain@bounds = scenario@bounds
   chain@contrasts = unlist(scenario@contrasts)
   chain@counts = as.integer(scenario@counts)
   chain@design = as.numeric(scenario@design)
-  chain@values = scenario@values
+  chain@propositions = as.integer(unlist(lapply(scenario@propositions, function(x){1:length(scenario@contrasts) %in% x})))
 
   chain
 }
@@ -77,11 +87,10 @@ plug_in_chain = function(chain, scenario, configs, starts){
 #' @return a \code{Chain} object 
 #'
 #' @param chain a \code{Chain} object
-#' @param counts Matrix of RNA-seq read counts.
 #' @param scenario an \code{Scenario} object
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' sets of gene-specific variables.
-fill_easy_gaps = function(chain, counts, scenario){
+fill_easy_gaps = function(chain, scenario){
   designUnique = apply(scenario@design, 2, function(x){
     out = sort(unique(x[x != 0]))
     c(out, rep(0, dim(scenario@design)[1] - length(out)))
@@ -89,26 +98,32 @@ fill_easy_gaps = function(chain, counts, scenario){
 
   if(!length(chain@betas_update)) chain@betas_update = 1:ncol(scenario@design)
 
+  chain@bound_names = names(scenario@bounds)
+  chain@contrast_names = names(scenario@contrasts)
+  chain@gene_names = rownames(scenario@counts)
+  chain@library_names = colnames(scenario@counts)
+  chain@proposition_names = names(scenario@propositions)
+
   chain@C = length(scenario@contrasts)
-  chain@counts = as.integer(counts)
-  chain@countSums_g = as.integer(apply(counts, 1, sum))
-  chain@countSums_n = as.integer(apply(counts, 2, sum))
+  chain@counts = as.integer(scenario@counts)
+  chain@countSums_g = as.integer(apply(scenario@counts, 1, sum))
+  chain@countSums_n = as.integer(apply(scenario@counts, 2, sum))
   chain@designUnique = as.numeric(designUnique)
   chain@designUniqueN = as.integer(apply(scenario@design, 2, function(x){length(unique(x[x != 0]))}))
   chain@genes_return = sort(chain@genes_return)
   chain@genes_return_epsilon = sort(chain@genes_return_epsilon)
-  chain@G = G = nrow(counts)
+  chain@G = G = nrow(scenario@counts)
   chain@Greturn = Greturn = length(chain@genes_return)
   chain@GreturnEpsilon = GreturnEpsilon = length(chain@genes_return_epsilon)
   chain@libraries_return = sort(chain@libraries_return)
   chain@libraries_return_epsilon = sort(chain@libraries_return_epsilon)
-  chain@J = length(scenario@conjunctions)
   chain@L = L = ncol(scenario@design)
   chain@Lupdate = length(chain@betas_update)
   chain@N = N = nrow(scenario@design)
   chain@Nreturn = Nreturn = length(chain@libraries_return)
   chain@NreturnEpsilon = NreturnEpsilon = length(chain@libraries_return_epsilon)
-  chain@probs = rep(0, chain@J * chain@G)
+  chain@P = length(scenario@propositions)
+  chain@probs = rep(0, chain@P * chain@G)
 
   lengths = c(
     beta = L*Greturn,

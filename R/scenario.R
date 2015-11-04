@@ -2,25 +2,26 @@
 #' @description A collection of MCMC control parameters.
 #' @exportClass Scenario
 #' 
-#' @slot conjunctions List of numeric vectors of length J. Each numeric vector is a collection of 
-#' indices c_1, ..., c_J such that the posterior probability,
-#' P(contrasts[[c_1]] * beta > value[c_1], ..., contrasts[[c_J]] * beta > value[c_J] | data),
-#' is estimated by averging over Monte Carlo samples. This allows the user to "test"
-#' multiple contrasts together. See the vignette for a more thorough explanation.
+#' @slot bounds Numeric vector of length \code{length(contrasts)}. Used to formulate 
+#' logical propositions involving contrasts.
 #' @slot contrasts list of numeric vectors, each length \code{L}. Each vector
 #' is a contrast of the \code{beta_{l, .}}'s of interest.
 #' @slot counts RNA-seq count data matrix with G rows (for genes) and N columns (for libraries/samples).
 #' @slot design Design matrix, with \code{N} rows and \code{L} columns.
 #' Same format as in \code{edgeR::glmFit}, with RNA-seq libraries/samples as rows
 #' and each \code{beta_{l, .}} as a column.
-#' @slot values Numeric vector of length \code{length(contrasts)}. Used int tests.
+#' @slot propositions List of numeric vectors of length \code{P}. Each numeric vector \code{v} denotes a logical
+#' proposition that involves the \code{contrasts} list and \code{bounds} vector. Each element of \code{v}
+#' is the index of a contrast in \code{contrasts}. For each gene, the MCMC will estimate the posterior
+#' probability that each contrast (of the \code{beta} parameters) denoted in \code{v} is greater than 
+#' its corresponding value in \code{bound}. See the tutorial vignette for more details
 setClass("Scenario", 
   slots = list(
-    conjunctions = "list",
+    bounds = "numeric",
     contrasts = "list",
     counts = "matrix",
     design = "matrix",
-    values = "numeric"
+    propositions = "list"
   )
 )
 
@@ -39,18 +40,18 @@ check_scenario = function(scenario){
   designUniqueN = as.integer(apply(scenario@design, 2, function(x){length(unique(x[x != 0]))}))
   if(any(!designUniqueN)) stop("every column in the design matrix must have nonzero elements.")
 
-  N = nrow(scenario@design)
   L = ncol(scenario@design)
+  N = nrow(scenario@design)
 
   if(!all(sapply(scenario@contrasts, length) == L)) stop("the number of terms in each contrast must equal the number of columns in the design matrix.")
-  if(length(scenario@contrasts) != length(scenario@values)) 
-    stop("the length of the \"values\" vector must equal the number of contrasts.")
-  if(!all(unique(unlist(scenario@conjunctions)) %in% 1:length(scenario@contrasts))) 
-    stop("elements of the \"conjunctions\" list must be vectors whose elements lie beween 1 and the number of contrasts.")
-  if(length(scenario@conjunctions) & !length(scenario@contrasts)) 
-    stop("\"conjunctions\" list specified without a list of contrasts.")
-  if(length(scenario@conjunctions) & !length(scenario@values)) 
-    stop("\"conjunctions\" list specified without a \"values\" vector.")  
+  if(length(scenario@contrasts) != length(scenario@bounds))
+    stop("the length of the \"bounds\" vector must equal the number of contrasts.")
+  if(!all(unique(unlist(scenario@propositions)) %in% 1:length(scenario@contrasts)))
+    stop("elements of the \"propositions\" list must be vectors whose elements lie beween 1 and the number of contrasts.")
+  if(length(scenario@propositions) & !length(scenario@contrasts))
+    stop("\"propositions\" list specified without a list of contrasts.")
+  if(length(scenario@propositions) & !length(scenario@bounds))
+    stop("\"propositions\" list specified without a \"bounds\" vector.")
 
   scenario
 }
@@ -61,20 +62,34 @@ check_scenario = function(scenario){
 #' @export
 #' @return a \code{Scenario} object
 #' @param obj a \code{Chain} or \code{list} object to get slots from.
-#' @param ... optional slot values.
+#' @param ... optional slot bounds.
 Scenario = function(obj = NULL, ...){
   scenario = new("Scenario", ...)
 
   if(class(obj) == "list") {
     for(n in intersect(slotNames(scenario), names(obj)))
-       slot(scenario, n) = obj[[n]]
+       slot(scenario, n) = as(obj[[n]], class(slot(scenario, n)))
   } else if(class(obj) == "Chain"){
-    cm = matrix(obj@conjunctions, nrow = obj@J)
-    scenario@conjunctions = lapply(1:dim(cm)[2], function(i) which(cm[,i] == 1))
+    scenario@bounds = obj@bounds
     scenario@contrasts = as.list(as.data.frame(matrix(obj@contrasts, nrow = obj@L)))
     scenario@counts = matrix(obj@counts, ncol = obj@N)
     scenario@design = matrix(obj@design, nrow = obj@N)
-    scenario@values = obj@values
+    cm = matrix(obj@propositions, ncol = obj@P)
+    scenario@propositions = lapply(1:dim(cm)[2], function(i) which(cm[,i] == 1))
+
+    names(scenario@bounds) = obj@bound_names
+    names(scenario@contrasts) = obj@contrast_names
+    colnames(scenario@counts) = obj@library_names
+    rownames(scenario@counts) = obj@gene_names
+    colnames(scenario@design) = paste0("beta_", 1:ncol(scenario@design))
+    rownames(scenario@design) = obj@library_names
+    names(scenario@propositions) = obj@proposition_names
+
+    for(i in 1:length(scenario@contrasts))
+      names(scenario@contrasts[[i]]) = paste0("beta_", 1:ncol(scenario@design))
+
+    for(i in 1:length(scenario@propositions))
+      names(scenario@propositions[[i]]) = names(scenario@contrasts)[scenario@propositions[[i]]]
   }
 
   check_scenario(scenario)

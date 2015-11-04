@@ -4,12 +4,10 @@
 \alias{fill_easy_gaps}
 \title{Function \code{fill_easy_gaps}}
 \usage{
-fill_easy_gaps(chain, counts, scenario)
+fill_easy_gaps(chain, scenario)
 }
 \arguments{
 \item{chain}{a \code{Chain} object}
-
-\item{counts}{Matrix of RNA-seq read counts.}
 
 \item{scenario}{an \code{Scenario} object
 Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to

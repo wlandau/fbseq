@@ -4,7 +4,7 @@
 #' @return a list of slots
 #' @param obj an s4 object
 s4list = function(obj){
-  lst = lapply(slotNames(obj), function(x){c(slot(obj, x))})
+  lst = lapply(slotNames(obj), function(x){slot(obj, x)})
   names(lst) = slotNames(obj)
   lst
 }

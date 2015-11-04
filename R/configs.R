@@ -85,25 +85,25 @@ Configs = function(obj = NULL, ...){
 
   if(class(obj) == "list") {
     for(n in intersect(slotNames(configs), names(obj)))
-       slot(configs, n) = obj[[n]]
+       slot(configs, n) = as(obj[[n]], class(slot(configs, n)))
 
     for(n in c("parameter_sets_return", "parameter_sets_update"))
       if(n %in% names(obj)){
         if(is.character(obj[[n]])){
-          slot(configs, n) = obj[[n]]
+          slot(configs, n) = as(obj[[n]], class(slot(configs, n)))
         } else {
-          slot(configs, n) = names(obj[[n]])[as.logical(obj[[n]])]
+          slot(configs, n) = as(names(obj[[n]])[as.logical(obj[[n]])], class(slot(configs, n)))
         }
       }
   } else if(class(obj) == "Chain"){
     subtract = c("parameter_sets_return", "parameter_sets_update", "priors")
     for(n in setdiff(intersect(slotNames(configs), slotNames(obj)), subtract))
-      slot(configs, n) = slot(obj, n)
+      slot(configs, n) = as(slot(obj, n), class(slot(configs, n)))
 
     for(n in c("parameter_sets_return", "parameter_sets_update"))
-      slot(configs, n) = names(slot(obj, n))[as.logical(slot(obj, n))]
+      slot(configs, n) = as(names(slot(obj, n))[as.logical(slot(obj, n))], class(slot(configs, n)))
 
-    configs@priors = ifelse(obj@priors > 0, alternate_priors()[obj@priors], "normal")
+    configs@priors = as(ifelse(obj@priors > 0, alternate_priors()[obj@priors], "normal"), class(configs@priors))
   }
 
   if(!any(configs@priors %in% alternate_priors())){

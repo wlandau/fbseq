@@ -10,11 +10,8 @@ A collection of MCMC control parameters.
 \section{Slots}{
 
 \describe{
-\item{\code{conjunctions}}{List of numeric vectors of length J. Each numeric vector is a collection of
-indices c_1, ..., c_J such that the posterior probability,
-P(contrasts[[c_1]] * beta > value[c_1], ..., contrasts[[c_J]] * beta > value[c_J] | data),
-is estimated by averging over Monte Carlo samples. This allows the user to "test"
-multiple contrasts together. See the vignette for a more thorough explanation.}
+\item{\code{bounds}}{Numeric vector of length \code{length(contrasts)}. Used to formulate
+logical propositions involving contrasts.}
 
 \item{\code{contrasts}}{list of numeric vectors, each length \code{L}. Each vector
 is a contrast of the \code{beta_{l, .}}'s of interest.}
@@ -25,6 +22,10 @@ is a contrast of the \code{beta_{l, .}}'s of interest.}
 Same format as in \code{edgeR::glmFit}, with RNA-seq libraries/samples as rows
 and each \code{beta_{l, .}} as a column.}
 
-\item{\code{values}}{Numeric vector of length \code{length(contrasts)}. Used int tests.}
+\item{\code{propositions}}{List of numeric vectors of length \code{P}. Each numeric vector \code{v} denotes a logical
+proposition that involves the \code{contrasts} list and \code{bounds} vector. Each element of \code{v}
+is the index of a contrast in \code{contrasts}. For each gene, the MCMC will estimate the posterior
+probability that each contrast (of the \code{beta} parameters) denoted in \code{v} is greater than
+its corresponding value in \code{bound}. See the tutorial vignette for more details}
 }}
 

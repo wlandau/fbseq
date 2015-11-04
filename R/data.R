@@ -1,15 +1,8 @@
-#' @name paschold_counts
-#' @title paschold_counts
-#' @description Paschold count data matrix.
+#' @name paschold
+#' @title paschold
+#' @description a \code{Scenario} object guiding the analysis of the Paschold dataset.
 #' @docType data
 #' @author Paschold
-NULL
-
-#' @name paschold_design
-#' @title paschold_design
-#' @description The design matrix for the paschold dataset
-#' @docType data
-#' @author Will Landau \email{will.landau@@gmail.com}
 NULL
 
 #' @name starting_chain

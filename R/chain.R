@@ -4,16 +4,22 @@
 #' by feeding one into \code{single_chain()}.
 #' @exportClass Chain
 #'
+#' @slot bound_names names of \code{bounds} slot in the original \code{Scenario} object
+#' @slot contrast_names names of \code{contrasts} slot in the \code{Scenario} object
+#' @slot gene_names names of genes, taken from the row names of the count data matrix
+#' @slot library_names names of the libraries/samples, taken from the column names of the count data matrix
+#' @slot proposition_names names of \code{propositions} slot in the \code{Scenario} object
 #' @slot psrf Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the 
 #' actual MCMC parameter samples are not returned)
 #'
-#' @slot conjunctions conjunctions of inequalities involving contrasts from the \code{Scenario} object.
+#' @slot bounds values to compare contrasts to. The comparison is to see if the contrast is greater than
+#' its corresponding element in \code{bounds} (from the \code{Scenario} object)
 #' @slot contrasts contrasts from the \code{Scenario} object.
 #' @slot counts RNA-seq count data, flattened from a matrix
 #' @slot design Design, flattened from the design matrix.
 #' Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' sets of gene-specific variables.
-#' @slot values values to compare contrasts to (from the \code{Scenario} object)
+#' @slot propositions propositions of inequalities involving contrasts from the \code{Scenario} object.
 #' 
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
@@ -23,7 +29,7 @@
 #' convergence diagnostics that require multiple chains. 
 #' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
 #' 
-#' @slot betas_update values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
+#' @slot betas_update bounds of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
 #' Applies to all gene-specific parameters except for the epsilons.
@@ -37,7 +43,7 @@
 #' @slot parameter_sets_update Character vector naming the variables to calculate/update
 #' during the MCMC.
 #' @slot priors Names of the family of priors on the betas after integrating out the xi's. 
-#' Can be any value returned by \code{alternate_priors()}. All other values will default to the normal prior.
+#' Can be any value returned by \code{alternate_priors()}. All other bounds will default to the normal prior.
 #' @slot thin MCMC thinning interval, number of iterations to skip in between iterations to return.
 #' @slot verbose Number of times to print out progress during burnin and the actual MCMC.
 #' If \code{verbose} > 0, then progress messages will also print during setup and cleanup.
@@ -50,13 +56,13 @@
 #' @slot G number of genes
 #' @slot Greturn number of genes to return gene-specific MCMC parameter samples for (except the epsilons)
 #' @slot GreturnEpsilon number of genes to return gene-specific MCMC epsilon parameter samples
-#' @slot J number of conjunctions of contrasts
 #' @slot L number of columns in the original design matrix
-#' @slot Lupdate number of values of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
+#' @slot Lupdate number of bounds of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot N number of libraries
 #' @slot Nreturn number of libraries to return library-specific MCMC parameter samples for (except the epsilons)
 #' @slot NreturnEpsilon number of libraries to return library-specific MCMC epsilon parameter samples
-#' @slot probs estimated posterior probabilities of conjunctions in the \code{Scenario} object.
+#' @slot P number of propositions involving contrasts
+#' @slot probs estimated posterior probabilities of propositions in the \code{Scenario} object.
 #' @slot seeds vector of N*G random number generator seeds
 #' 
 #' @slot a initialization constant  
@@ -79,16 +85,16 @@
 #' @slot theta MCMC parameter samples
 #' @slot xi MCMC parameter samples
 #' 
-#' @slot betaStart MCMC starting values
-#' @slot epsilonStart MCMC starting values
-#' @slot gammaStart MCMC starting values
-#' @slot nuStart MCMC starting values
-#' @slot omegaSquaredStart MCMC starting values
-#' @slot rhoStart MCMC starting values
-#' @slot sigmaSquaredStart MCMC starting values
-#' @slot tauStart MCMC starting values
-#' @slot thetaStart MCMC starting values
-#' @slot xiStart MCMC starting values
+#' @slot betaStart MCMC starting bounds
+#' @slot epsilonStart MCMC starting bounds
+#' @slot gammaStart MCMC starting bounds
+#' @slot nuStart MCMC starting bounds
+#' @slot omegaSquaredStart MCMC starting bounds
+#' @slot rhoStart MCMC starting bounds
+#' @slot sigmaSquaredStart MCMC starting bounds
+#' @slot tauStart MCMC starting bounds
+#' @slot thetaStart MCMC starting bounds
+#' @slot xiStart MCMC starting bounds
 #' 
 #' @slot betaPostMean estimated posterior means
 #' @slot epsilonPostMean estimated posterior means
@@ -113,13 +119,18 @@
 #' @slot xiPostMeanSquare posterior means of the squares of parameters
 setClass("Chain",
   slots = list(
+    bound_names = "character",
+    contrast_names = "character",
+    gene_names = "character",
+    library_names = "character",
+    proposition_names = "character",
     psrf = "numeric",
 
-    conjunctions = "integer",
+    bounds = "numeric",
     contrasts = "numeric",
     counts = "integer",
     design = "numeric",
-    values = "numeric",
+    propositions = "integer",
 
     diag = "character",
     ess = "integer",
@@ -148,12 +159,12 @@ setClass("Chain",
     G = "integer",
     Greturn = "integer",
     GreturnEpsilon = "integer",
-    J = "integer",
     L = "integer",
     Lupdate = "integer",
     N = "integer",
     Nreturn = "integer",
     NreturnEpsilon = "integer",
+    P = "integer",
     probs = "numeric",
     seeds = "integer",
 

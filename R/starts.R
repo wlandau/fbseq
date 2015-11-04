@@ -8,7 +8,6 @@
 #' @slot b initialization constant 
 #' @slot c initialization constants 
 #' @slot d initialization constant 
-#' @slot h log-scale normalization factors
 #' @slot k initialization constants 
 #' @slot r initialization constants 
 #' @slot s initialization constants 
@@ -30,7 +29,6 @@ setClass("Starts",
     b = "numeric",
     c = "numeric",
     d = "numeric",
-    h = "numeric",
     k = "numeric",
     r = "numeric",
     s = "numeric",
@@ -72,17 +70,17 @@ Starts = function(obj = NULL, ...){
     for(n in slotNames(starts)){
       x = paste(n, "Start", sep = "")
       if(x %in% names(obj) && n %in% slotNames(starts))
-        slot(starts, n) = obj[[x]]
+        slot(starts, n) = as(obj[[x]], class(slot(starts, n)))
       else if(n %in% intersect(names(obj), slotNames(starts)))
-        slot(starts, n) = obj[[n]]
+        slot(starts, n) = as(obj[[n]], class(slot(starts, n)))
     }
   } else if(class(obj) == "Chain") {
     for(n in slotNames(starts)){
       x = paste(n, "Start", sep = "")
       if(x %in% slotNames(obj) && n %in% slotNames(starts))
-        slot(starts, n) = slot(obj, x)
+        slot(starts, n) = as(slot(obj, x), class(slot(starts, n)))
       else if(n %in% intersect(slotNames(obj), slotNames(starts)))
-        slot(starts, n) = slot(obj, n)
+        slot(starts, n) = as(slot(obj, n), class(slot(starts, n)))
     }
   }
 

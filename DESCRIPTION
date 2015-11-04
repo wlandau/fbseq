@@ -38,6 +38,7 @@ Collate:
     'fbseq.R'
     'generate_data.R'
     'namespace.R'
+    'probs.R'
     's4list.R'
     'scenario.R'
     'starts.R'

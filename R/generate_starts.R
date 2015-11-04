@@ -1,5 +1,5 @@
 #' @title Function \code{get_nonzeros}
-#' @description Helper function for \code{simple_starts()}.
+#' @description Helper function for \code{generate_starts()}.
 #' @export
 #' @return x with no zeros
 #' @param x argument
@@ -11,7 +11,7 @@ get_nonzeros = function(x){
 }
 
 #' @title Function \code{nu_tau}
-#' @description Helper function for \code{simple_starts()}.
+#' @description Helper function for \code{generate_starts()}.
 #' @export
 #' @return list of nu and tau estimates
 #' @param x argument
@@ -25,20 +25,19 @@ nu_tau = function(x){
   list(nu = nu, tau = tau)
 }
 
-#' @title Function \code{simple_starts}
+#' @title Function \code{generate_starts}
 #' @description Generates MCMC starting values using a \code{Starts} object and an 
 #' \code{Internals} object. The \code{configure(...)} function must be called first. 
 #' @details Simple nonstochastic starting values are calculated by quick arithmetic. 
 #' @export
 #' 
-#' @return a \code{Chain} object with a full set of MCMC starting values.
-#' @param chain \code{Chain} object whose starting values to fill.
+#' @return a \code{Starts} object with a full set of MCMC starting values.
 #' @param counts A data frame/matrix of RNA-seq read counts or list of slots. If a list,
 #' then the function will return a \code{Chain} object with those slots.
 #' @param design Gene-specific design matrix.
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' gene-specific variables.
-simple_starts = function(chain, counts, design){
+generate_starts = function(counts, design){
   N = dim(counts)[2]
   G = dim(counts)[1]
 
@@ -64,19 +63,21 @@ simple_starts = function(chain, counts, design){
   nu = nt$nu
   tau = nt$tau
 
+  starts = new("Starts")
+
   for(n in c("c", "k", "r", "s")){
-    if(length(slot(chain, n)) == 0)
-      slot(chain, n) = slot(Starts(), n)
-    if(length(slot(chain, n)) == 1)
-      slot(chain, n) = rep(slot(chain, n), ncol(design))
-    stopifnot(length(slot(chain, n)) == ncol(design))
+    if(length(slot(starts, n)) == 0)
+      slot(starts, n) = slot(Starts(), n)
+    if(length(slot(starts, n)) == 1)
+      slot(starts, n) = rep(slot(starts, n), ncol(design))
+    stopifnot(length(slot(starts, n)) == ncol(design))
   }
 
-  for(n in slotNames(chain))
-    if(grepl("Start", n) && !length(slot(chain, n)))
-      slot(chain, n) = as.numeric(get(gsub("Start", "", n)))
+  for(n in slotNames(starts))
+    if(n %in% parameters() & !length(slot(starts, n)))
+      slot(starts, n) = as(get(n), class(slot(starts, n)))
 
-  return(chain)
+  starts
 }
 
 

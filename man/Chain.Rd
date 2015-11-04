@@ -11,7 +11,7 @@ Chain(scenario, configs = Configs(), starts = Starts(), slots = NULL)
 
 \item{configs}{A \code{Configs} object of MCMC control parameters.}
 
-\item{starts}{A \code{Starts} object of model parameter starting values.}
+\item{starts}{A \code{Starts} object of model parameter starting bounds.}
 
 \item{slots}{a list of slots to be plugged into a \code{Chain} object}
 }

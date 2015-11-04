@@ -13,6 +13,6 @@ nu_tau(x)
 list of nu and tau estimates
 }
 \description{
-Helper function for \code{simple_starts()}.
+Helper function for \code{generate_starts()}.
 }
 

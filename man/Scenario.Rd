@@ -9,7 +9,7 @@ Scenario(obj = NULL, ...)
 \arguments{
 \item{obj}{a \code{Chain} or \code{list} object to get slots from.}
 
-\item{...}{optional slot values.}
+\item{...}{optional slot bounds.}
 }
 \value{
 a \code{Scenario} object
