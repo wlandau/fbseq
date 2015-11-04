@@ -60,7 +60,7 @@ run_gelman_mcmc = function(chain){
     psrf = all_psrf[grepl(pattern, names(all_psrf))]
 
     if(chain@verbose) {
-      print("Summary of Gelman factors for hyperparameters and betas:")
+      print("Summary of Gelman factors for betas involved in contrasts and hyperparameters:")
       print(summary(psrf))
       print("Highest 10:")   
       print(sort(psrf, decreasing = T)[1:10])
