@@ -38,7 +38,7 @@ effectiveSampleSize = function(chain){
     configs = Configs(chain)
     configs@burnin = 0
     configs@iterations = iterations
-    new_chain = Chain(matrix(chain@counts, ncol = chain@N), matrix(chain@design, nrow = chain@N), configs, Starts(chain))
+    new_chain = Chain(Scenario(chain), configs, Starts(chain))
     new_chain = run_fixed_mcmc(new_chain)
     chain = concatenate(chain, new_chain)
   }
