@@ -45,7 +45,8 @@ run_gelman_mcmc = function(chain){
   for(i in 2:chain@nchains_diag) chain_list[[i]] = disperse_starts(pilot_chain)
  
   attempt = 0
-  pattern = paste(c("beta", "nu",  "omegaSquared", "sigmaSquared", "tau", "theta"), collapse = "|")
+  betas = which(apply(do.call(rbind, Scenario(chain)@contrasts), 2, function(x) any(x != 0)))
+  pattern = paste(c(paste0("beta_", betas), "nu",  "omegaSquared", "sigmaSquared", "tau", "theta"), collapse = "|")
 
   while(attempt < chain@max_attempts){
     attempt = attempt + 1
