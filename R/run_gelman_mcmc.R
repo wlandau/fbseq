@@ -37,7 +37,7 @@ run_gelman_mcmc = function(chain){
     print("Running pilot chain first to get dispersed starting values relative to the joint posterior.")
   }
 
-  if(chain@burnin < 1e4) warning("small burnin. Chains generated with disperse_starts() may be numerically unstable.")
+  if(chain@burnin < 1e5) warning("small burnin. Chains generated with disperse_starts() may be numerically unstable.")
   pilot_chain = run_fixed_mcmc(chain)
 
   if(chain@verbose) print(paste0("Generating dispersed starting values for the other ", chain@nchains_diag - 1," chains using pilot chain."))

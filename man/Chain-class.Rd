@@ -15,19 +15,17 @@ by feeding one into \code{single_chain()}.
 \item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the
 actual MCMC parameter samples are not returned)}
 
+\item{\code{conjunctions}}{conjunctions of inequalities involving contrasts from the \code{Scenario} object.}
+
+\item{\code{contrasts}}{contrasts from the \code{Scenario} object.}
+
 \item{\code{counts}}{RNA-seq count data, flattened from a matrix}
-
-\item{\code{conjunctions}}{}
-
-\item{\code{contrasts}}{}
 
 \item{\code{design}}{Design, flattened from the design matrix.
 Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 sets of gene-specific variables.}
 
-\item{\code{probs}}{}
-
-\item{\code{values}}{}
+\item{\code{values}}{values to compare contrasts to (from the \code{Scenario} object)}
 
 \item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
 
@@ -98,6 +96,8 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 \item{\code{Nreturn}}{number of libraries to return library-specific MCMC parameter samples for (except the epsilons)}
 
 \item{\code{NreturnEpsilon}}{number of libraries to return library-specific MCMC epsilon parameter samples}
+
+\item{\code{probs}}{estimated posterior probabilities of conjunctions in the \code{Scenario} object.}
 
 \item{\code{seeds}}{vector of N*G random number generator seeds}
 

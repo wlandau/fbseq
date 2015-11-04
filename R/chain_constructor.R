@@ -8,33 +8,23 @@ NULL
 #' @export
 #' @return a \code{Chain} object ready to be passed to \code{single_chain()}
 #'
-#' @param data A data frame or matrix of RNA-seq read counts or list of slots. If a list,
-#' then the function will return a \code{Chain} object with those slots. Note: \code{data}
-#' should only be a list within internal functions of the package. It is not recommended that
-#' the user assign \code{data} to be a list.
-#' @param inference an \code{Inference} object.
+#' @param scenario a \code{Scenario} object with count data, the design matrix, etc.
 #' @param configs A \code{Configs} object of MCMC control parameters.
 #' @param starts A \code{Starts} object of model parameter starting values.
-Chain = function(
-  data, 
-  inference, 
-  configs = Configs(),
-  starts = Starts()
-){
+#' @param slots a list of slots to be plugged into a \code{Chain} object
+Chain = function(scenario, configs = Configs(), starts = Starts(), slots = NULL){
   chain = new("Chain")
 
-  if(class(data) == "list" & !is.data.frame(data)){
-    for(n in intersect(names(data), slotNames(chain)))
-       slot(chain, n) = data[[n]]
+  if(!is.null(slots) & class(slots) == "list" & !is.data.frame(slots)){
+    for(n in intersect(names(slots), slotNames(chain)))
+       slot(chain, n) = as(slots[[n]], class(slot(chain, n)))
     return(chain)
   }
 
-  counts = as.matrix(data)
-  stopifnot(all(is.finite(counts)))
-  chain = plug_in_chain(chain, inference, configs = Configs(), starts = Starts())
-  chain = plug_in_chain(chain, inference, configs = configs, starts = starts)
-  chain = fill_easy_gaps(chain, counts, inference)
-  chain = simple_starts(chain, counts, inference@design)
+  chain = plug_in_chain(chain, scenario, configs = Configs(), starts = Starts())
+  chain = plug_in_chain(chain, scenario, configs = configs, starts = starts)
+  chain = fill_easy_gaps(chain, scenario)
+  chain = simple_starts(chain, counts, scenario@design)
   chain
 }
 
@@ -46,10 +36,10 @@ Chain = function(
 #' @return a \code{Chain} object 
 #'
 #' @param chain a \code{Chain} object
-#' @param inference an \code{Inference} object
+#' @param scenario an \code{Scenario} object
 #' @param configs A \code{Configs} object of MCMC control parameters.
 #' @param starts A \code{Starts} object of model parameter starting values.
-plug_in_chain = function(chain, inference, configs, starts){
+plug_in_chain = function(chain, scenario, configs, starts){
   chain@iterations = as.integer(configs@iterations)
   subtract = c("parameter_sets_return", "parameter_sets_update", "priors")
   for(n in setdiff(intersect(slotNames(chain), slotNames(configs)), subtract))
@@ -61,8 +51,8 @@ plug_in_chain = function(chain, inference, configs, starts){
   }
 
   chain@priors = ifelse(configs@priors %in% alternate_priors(), which(alternate_priors() == configs@priors), as.integer(0))
-  if(length(chain@priors) == 1) chain@priors = rep(chain@priors, ncol(inference@design))
-  stopifnot(length(chain@priors) == ncol(inference@design))
+  if(length(chain@priors) == 1) chain@priors = rep(chain@priors, ncol(scenario@design))
+  stopifnot(length(chain@priors) == ncol(scenario@design))
 
   for(n in slotNames(chain)){
     if(grepl("Start", n))
@@ -71,10 +61,11 @@ plug_in_chain = function(chain, inference, configs, starts){
       slot(chain, n) = as(slot(starts, n), class(slot(chain, n)))
   }
 
-  chain@conjunctions = as.integer(unlist(lapply(inference@conjunctions, function(x){1:length(inference@contrasts) %in% x})))
-  chain@contrasts = unlist(inference@contrasts)
-  chain@design = as.numeric(inference@design)
-  chain@values = inference@values
+  chain@conjunctions = as.integer(unlist(lapply(scenario@conjunctions, function(x){1:length(scenario@contrasts) %in% x})))
+  chain@contrasts = unlist(scenario@contrasts)
+  chain@counts = as.integer(scenario@counts)
+  chain@design = as.numeric(scenario@design)
+  chain@values = scenario@values
 
   chain
 }
@@ -87,28 +78,23 @@ plug_in_chain = function(chain, inference, configs, starts){
 #'
 #' @param chain a \code{Chain} object
 #' @param counts Matrix of RNA-seq read counts.
-#' @param inference an \code{Inference} object
+#' @param scenario an \code{Scenario} object
 #' Must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' sets of gene-specific variables.
-fill_easy_gaps = function(chain, counts, inference){
-  stopifnot(ncol(counts) == nrow(inference@design))
-
-  designUnique = apply(inference@design, 2, function(x){
+fill_easy_gaps = function(chain, counts, scenario){
+  designUnique = apply(scenario@design, 2, function(x){
     out = sort(unique(x[x != 0]))
-    c(out, rep(0, dim(inference@design)[1] - length(out)))
+    c(out, rep(0, dim(scenario@design)[1] - length(out)))
   })
 
-  designUniqueN = as.integer(apply(inference@design, 2, function(x){length(unique(x[x != 0]))}))
-  if(any(!designUniqueN)) stop("every column in the inference matrix must have nonzero elements.")
+  if(!length(chain@betas_update)) chain@betas_update = 1:ncol(scenario@design)
 
-  if(!length(chain@betas_update)) chain@betas_update = 1:ncol(inference@design)
-
-  chain@C = length(inference@contrasts)
+  chain@C = length(scenario@contrasts)
   chain@counts = as.integer(counts)
   chain@countSums_g = as.integer(apply(counts, 1, sum))
   chain@countSums_n = as.integer(apply(counts, 2, sum))
   chain@designUnique = as.numeric(designUnique)
-  chain@designUniqueN = as.integer(designUniqueN)
+  chain@designUniqueN = as.integer(apply(scenario@design, 2, function(x){length(unique(x[x != 0]))}))
   chain@genes_return = sort(chain@genes_return)
   chain@genes_return_epsilon = sort(chain@genes_return_epsilon)
   chain@G = G = nrow(counts)
@@ -116,10 +102,10 @@ fill_easy_gaps = function(chain, counts, inference){
   chain@GreturnEpsilon = GreturnEpsilon = length(chain@genes_return_epsilon)
   chain@libraries_return = sort(chain@libraries_return)
   chain@libraries_return_epsilon = sort(chain@libraries_return_epsilon)
-  chain@J = length(inference@conjunctions)
-  chain@L = L = ncol(inference@design)
+  chain@J = length(scenario@conjunctions)
+  chain@L = L = ncol(scenario@design)
   chain@Lupdate = length(chain@betas_update)
-  chain@N = N = nrow(inference@design)
+  chain@N = N = nrow(scenario@design)
   chain@Nreturn = Nreturn = length(chain@libraries_return)
   chain@NreturnEpsilon = NreturnEpsilon = length(chain@libraries_return_epsilon)
   chain@probs = rep(0, chain@J * chain@G)

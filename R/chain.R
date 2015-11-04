@@ -6,16 +6,14 @@
 #'
 #' @slot psrf Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the 
 #' actual MCMC parameter samples are not returned)
-#' 
-#' @slot counts RNA-seq count data, flattened from a matrix
 #'
-#' @slot conjunctions
-#' @slot contrasts
+#' @slot conjunctions conjunctions of inequalities involving contrasts from the \code{Scenario} object.
+#' @slot contrasts contrasts from the \code{Scenario} object.
+#' @slot counts RNA-seq count data, flattened from a matrix
 #' @slot design Design, flattened from the design matrix.
 #' Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' sets of gene-specific variables.
-#' @slot probs
-#' @slot values
+#' @slot values values to compare contrasts to (from the \code{Scenario} object)
 #' 
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
@@ -58,6 +56,7 @@
 #' @slot N number of libraries
 #' @slot Nreturn number of libraries to return library-specific MCMC parameter samples for (except the epsilons)
 #' @slot NreturnEpsilon number of libraries to return library-specific MCMC epsilon parameter samples
+#' @slot probs estimated posterior probabilities of conjunctions in the \code{Scenario} object.
 #' @slot seeds vector of N*G random number generator seeds
 #' 
 #' @slot a initialization constant  
@@ -116,12 +115,10 @@ setClass("Chain",
   slots = list(
     psrf = "numeric",
 
-    counts = "integer",
-
     conjunctions = "integer",
     contrasts = "numeric",
+    counts = "integer",
     design = "numeric",
-    probs = "numeric",
     values = "numeric",
 
     diag = "character",
@@ -157,6 +154,7 @@ setClass("Chain",
     N = "integer",
     Nreturn = "integer",
     NreturnEpsilon = "integer",
+    probs = "numeric",
     seeds = "integer",
 
     a = "numeric",

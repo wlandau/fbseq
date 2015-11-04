@@ -4,19 +4,16 @@
 \alias{Chain}
 \title{Function \code{Chain}}
 \usage{
-Chain(data, inference, configs = Configs(), starts = Starts())
+Chain(scenario, configs = Configs(), starts = Starts(), slots = NULL)
 }
 \arguments{
-\item{data}{A data frame or matrix of RNA-seq read counts or list of slots. If a list,
-then the function will return a \code{Chain} object with those slots. Note: \code{data}
-should only be a list within internal functions of the package. It is not recommended that
-the user assign \code{data} to be a list.}
-
-\item{inference}{an \code{Inference} object.}
+\item{scenario}{a \code{Scenario} object with count data, the design matrix, etc.}
 
 \item{configs}{A \code{Configs} object of MCMC control parameters.}
 
 \item{starts}{A \code{Starts} object of model parameter starting values.}
+
+\item{slots}{a list of slots to be plugged into a \code{Chain} object}
 }
 \value{
 a \code{Chain} object ready to be passed to \code{single_chain()}

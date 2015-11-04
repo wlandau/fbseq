@@ -37,7 +37,7 @@ Collate:
     'run_gelman_mcmc.R'
     'fbseq.R'
     'generate_data.R'
-    'inference.R'
     'namespace.R'
     's4list.R'
+    'scenario.R'
     'starts.R'
