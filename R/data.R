@@ -1,3 +1,6 @@
+#' @include scenario_heterosis_model.R
+NULL
+
 #' @name paschold
 #' @title paschold
 #' @description a \code{Scenario} object guiding the analysis of the Paschold dataset.
@@ -5,23 +8,23 @@
 #' @author Paschold
 NULL
 
-#' @name starting_chain
-#' @title starting_chain
+#' @name chain1
+#' @title chain1
 #' @description \code{Chain} object for use in the vignette.
 #' @docType data
 #' @author Will Landau \email{will.landau@@gmail.com}
 NULL
 
-#' @name ending_chain
-#' @title ending_chain
+#' @name chain2
+#' @title chain2
 #' @description \code{Chain} object for use in the vignette.
 #' @docType data
 #' @author Will Landau \email{will.landau@@gmail.com}
 NULL
 
-#' @name example_generated_data
-#' @title example_generated_data
-#' @description Example generated data generated with \code{generate_data()}.
+#' @name tiny
+#' @title tiny
+#' @description Example \code{Scenario} object from \code{scenario_heterosis_model}
 #' @docType data
 #' @author Will Landau \email{will.landau@@gmail.com}
 NULL
@@ -30,9 +33,8 @@ NULL
 #' @description Creates the vignette data.
 #' @export
 make_vignette_data = function(){
-  file = "vignette.rda"
-  example_generated_data = dat = generate_data(libraries = 12, genes = 20)
-  starting_chain = Chain(dat$counts, dat$design, Configs(diag = "none", ess = 0, iterations = 100, burnin = 100, thin = 0))
-  ending_chain = fbseq(starting_chain)
-  save(example_generated_data, starting_chain, ending_chain, file = file)
+  tiny = scenario_heterosis_model(genes = 20)
+  chain1 = Chain(tiny, Configs(diag = "none", ess = 0, iterations = 100, burnin = 100, thin = 0))
+  chain2 = fbseq(chain1)
+  save(tiny, chain1, chain2, file = "vignette.rda")
 }

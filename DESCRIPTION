@@ -22,6 +22,7 @@ VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
     'alternate_priors.R'
+    'starts.R'
     'chain.R'
     'generate_starts.R'
     'chain_constructor.R'
@@ -29,6 +30,7 @@ Collate:
     'parameters.R'
     'configs.R'
     'cuda_usage.R'
+    'scenario_heterosis_model.R'
     'data.R'
     'run_fixed_mcmc.R'
     'effectiveSampleSize.R'
@@ -36,9 +38,8 @@ Collate:
     'estimates.R'
     'run_gelman_mcmc.R'
     'fbseq.R'
-    'generate_data.R'
+    'scenario.R'
+    'generate_data_from_model.R'
     'namespace.R'
     'probs.R'
     's4list.R'
-    'scenario.R'
-    'starts.R'

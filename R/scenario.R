@@ -15,13 +15,16 @@
 #' is the index of a contrast in \code{contrasts}. For each gene, the MCMC will estimate the posterior
 #' probability that each contrast (of the \code{beta} parameters) denoted in \code{v} is greater than 
 #' its corresponding value in \code{bound}. See the tutorial vignette for more details
+#' @slot supplement a list containing supplementary information about the scenario: 
+#' for example, how the data were simulated, if applicable
 setClass("Scenario", 
   slots = list(
     bounds = "numeric",
     contrasts = "list",
     counts = "matrix",
     design = "matrix",
-    propositions = "list"
+    propositions = "list",
+    supplement = "list"
   )
 )
 
@@ -31,7 +34,7 @@ setClass("Scenario",
 #' @return a \code{Scenario} object
 #' @param scenario a \code{Scenario} object
 check_scenario = function(scenario){
-  for(s in slotNames(scenario)) stopifnot(all(is.finite(unlist(slot(scenario, s)))))
+  for(s in setdiff(slotNames(scenario), "supplement")) stopifnot(all(is.finite(unlist(slot(scenario, s)))))
 
   if(any(!dim(scenario@counts))) stop("no count data specified.")
   if(any(!dim(scenario@design))) stop("no design matrix specified.")
@@ -76,6 +79,7 @@ Scenario = function(obj = NULL, ...){
     scenario@design = matrix(obj@design, nrow = obj@N)
     cm = matrix(obj@propositions, ncol = obj@P)
     scenario@propositions = lapply(1:dim(cm)[2], function(i) which(cm[,i] == 1))
+    scenario@supplement = obj@supplement
 
     names(scenario@bounds) = obj@bound_names
     names(scenario@contrasts) = obj@contrast_names

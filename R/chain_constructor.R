@@ -76,6 +76,7 @@ plug_in_chain = function(chain, scenario, configs, starts){
   chain@counts = as.integer(scenario@counts)
   chain@design = as.numeric(scenario@design)
   chain@propositions = as.integer(unlist(lapply(scenario@propositions, function(x){1:length(scenario@contrasts) %in% x})))
+  chain@supplement = scenario@supplement
 
   chain
 }
@@ -98,11 +99,11 @@ fill_easy_gaps = function(chain, scenario){
 
   if(!length(chain@betas_update)) chain@betas_update = 1:ncol(scenario@design)
 
-  chain@bound_names = names(scenario@bounds)
-  chain@contrast_names = names(scenario@contrasts)
-  chain@gene_names = rownames(scenario@counts)
-  chain@library_names = colnames(scenario@counts)
-  chain@proposition_names = names(scenario@propositions)
+  chain@bound_names = as.character(names(scenario@bounds))
+  chain@contrast_names = as.character(names(scenario@contrasts))
+  chain@gene_names = as.character(rownames(scenario@counts))
+  chain@library_names = as.character(colnames(scenario@counts))
+  chain@proposition_names = as.character(names(scenario@propositions))
 
   chain@C = length(scenario@contrasts)
   chain@counts = as.integer(scenario@counts)

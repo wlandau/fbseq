@@ -1,3 +1,6 @@
+#' @include starts.R
+NULL
+
 #' @title Class \code{Chain}
 #' @description the main storage object for a heterosis MCMC chain.
 #' Create a new one with a call to \code{Chain()} and run MCMC
@@ -11,6 +14,8 @@
 #' @slot proposition_names names of \code{propositions} slot in the \code{Scenario} object
 #' @slot psrf Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the 
 #' actual MCMC parameter samples are not returned)
+#' @slot supplement a list containing supplementary information about the scenario: 
+#' for example, how the data were simulated, if applicable
 #'
 #' @slot bounds values to compare contrasts to. The comparison is to see if the contrast is greater than
 #' its corresponding element in \code{bounds} (from the \code{Scenario} object)
@@ -125,6 +130,7 @@ setClass("Chain",
     library_names = "character",
     proposition_names = "character",
     psrf = "numeric",
+    supplement = "list",
 
     bounds = "numeric",
     contrasts = "numeric",

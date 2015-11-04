@@ -25,6 +25,9 @@ by feeding one into \code{single_chain()}.
 \item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the
 actual MCMC parameter samples are not returned)}
 
+\item{\code{supplement}}{a list containing supplementary information about the scenario:
+for example, how the data were simulated, if applicable}
+
 \item{\code{bounds}}{values to compare contrasts to. The comparison is to see if the contrast is greater than
 its corresponding element in \code{bounds} (from the \code{Scenario} object)}
 

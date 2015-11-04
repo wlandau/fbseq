@@ -27,5 +27,8 @@ proposition that involves the \code{contrasts} list and \code{bounds} vector. Ea
 is the index of a contrast in \code{contrasts}. For each gene, the MCMC will estimate the posterior
 probability that each contrast (of the \code{beta} parameters) denoted in \code{v} is greater than
 its corresponding value in \code{bound}. See the tutorial vignette for more details}
+
+\item{\code{supplement}}{a list containing supplementary information about the scenario:
+for example, how the data were simulated, if applicable}
 }}
 
