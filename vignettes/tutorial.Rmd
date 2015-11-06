@@ -168,14 +168,86 @@ Note: every `Scenario` object has an optional `suppelement` slot with additional
 
 The `Configs` S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so for many simple applications, you should be able to get away with calling the `Configs` function with no arguments. For a full list of slots and their explanations, type `help("Configs-class")`.
 
+Pay particular attention to the `diag` slot. If it is set to `"gelman"`, Gelman-Rubin potential scale reduction factors will be used to assess convergence and then stored in the `psrf` slot of the subsequent `Chain`. For any other value, no such convergence diagnostic will be used. Similarly, the `ess` slot is important. If greater than 0, the program will make sure that an effective sample size of at least `ess` is reached for all returned parameters. Otherwise, no such checks will occur. The `max_attempts` slot controls the number of retries to meet these convergence diagnostics. It can be set to `Inf`, but this is not recommended because saved `Chain` objects can be restarted from where they left off with a single line of code.
+
+The `iterations`, `burnin`, and `thin` slots control the duration of the MCMC.  You can run MCMCs on subsets of the model, holding some parameters constant, by adjusting the `parameter_sets_update`, `effects_update_beta`, and `effects_update_theta` slots. Similarly, you can choose which parameter samples to return with the `parameter_samples_return`, `genes_return`, `genes_return_epsilon`, `libraries_return`, and `libraries_return_epsilon` slots. This is extremely useful because CUDA
+
+
 ## (Optional) create a `Starts` object.
 
-The `Starts` S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as it is automatically generated for a given dataset and design with `generate_starts` inside the constructor of `Chain` class. However, the user may wish to modify individual slots. For more information, type `help("Starts-class")` and be sure to read the vignette on the hierarchical model.
+The `Starts` S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as the unspecified starting values are automatically generated for a given dataset and design with `generate_starts` inside the constructor of `Chain` class. However, the user may wish to modify individual slots. For more information, type `help("Starts-class")` and be sure to read the vignette on the hierarchical model.
 
 ## Create a `Chain` object.
 
+The `Chain` class plays the role of an environment or workspace. It stores all the information in your `Scenario`, `Configs`, and `Starts` objects, in addition to Monte Carlo output and results. There are many, many S4 slots. For details on the slots, type `help("Chain-class")` and be sure to read the hierarchical model vignette. For help on how to create `Chain` objects, type `help("Chain")`.
+
+With only a `Scenario` object, you can create a `Chain` object with 
+
+```{r, eval = F}
+chain = Chain(scenario)
+```
+
+If you have `Configs` and/or `Starts` objects, you can pass them in as well.
+
+
+```{r, eval = F}
+chain = Chain(scenario, configs, starts)
+```
+
+As an example, here is the `Chain` created from the `paschold` scenario visited earlier.
+
+```{r}
+chain = Chain(paschold)
+str(chain)
+```
+
+You can recover the scenario, configuration, or starting values of a `Chain` object with the `Scenario`, `Configs`, and `Starts` objects. For example,
+
+```{r}
+scenario = Scenario(chain)
+configs = Configs(chain)
+starts = Starts(chain)
+str(scenario)
+str(configs)
+str(starts)
+```
+
+Note that the unspecified starting values were automatically generated in the construction of the `Chain` object.
+
 ## Call `fbseq` on the `Chain` object.
 
+The `fbseq` function actually runs the MCMC algorithm to fit the model and calculate posterior probabilities of interest. It takes a single `Chain` object as an argument and outputs another `Chain` object with Gelman factors (if applicable), posterior means and means of squares of parameters, estimated posterior probabilities of interest, and updated starting values.
+
+```{r, eval = F}
+out = fbseq(chain)
+```
+
+The starting values of `out` are the final parameter samples of the previous MCMC. The upshot is that calling `fbseq` on `out` will resume the MCMC where it left off.
+
+```{r, eval = F}
+continuation = fbseq(out)
+```
+
+You can even run the MCMC indefinitely and save your work at after every attempt.
+
+```{r, eval = F}
+repeat{
+  chain = fbseq(chain)
+  saveRDS(chain, "chain.rds")
+}
+```
+
+
 ## Inspect the output.
+
+No actual output is shipped with the package because output  `Chain` objects are is usually large, in the tens of megabytes at least. However, all the functions to extract output are easy one-liners. I list them below in roughly decreasing order of usefulness. Let `chain` be a `Chain` object returned from `fbseq`.
+
+|------------------------------------|----------|--------------------------------------------------| 
+| `probs(chain)`   |	|  Estimated gene-specific posterior probabilities of each logical proposition specified in `Scenario` | 
+| `volcano(chain)`   |	| `ggplot2` plot of posterior probabilities vs effect sizes for each proposition. | 
+| `estimates(chain, level)`  |	|  Posterior means and credible intervals (of level `level`) for all parameters. Note: to avoid taking up too much memory, the credible intervals are computed using the posterior means and variances of parameters, not quantiles of actual parameter samples. The results are approximate. | 
+| `effect_sizes(chain)`    |	| Estimated gene-specific effect sizes for each logical proposition. For example, if the proposition is "$2\beta_{2, g} - \beta_{4, g} > 1$ and $2\beta_{3, g} - \beta_{4, g} > 0.5$", then the effect size is $\min \left (2\beta_{2, g} - \beta_{4, g} - 1, \ 2\beta_{3, g} - \beta_{4, g} - 0.5 \right )^+$, where $(\cdots)^+$ denote the positive part of an expression. | 
+|`flatten(chain)` |	$\qquad$ | Monte Carlo samples of returned parameters selected in `Configs` | 
+|`flatten_post(chain)` |	$\qquad$ | Posterior means or means of squares of all or most of the parameters (configure with additional arguments) | 
 
 # References

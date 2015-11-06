@@ -375,19 +375,273 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 <div id="optional-create-a-configs-object." class="section level2">
 <h2><span class="header-section-number">4.2</span> (Optional) create a <code>Configs</code> object.</h2>
 <p>The <code>Configs</code> S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so for many simple applications, you should be able to get away with calling the <code>Configs</code> function with no arguments. For a full list of slots and their explanations, type <code>help(&quot;Configs-class&quot;)</code>.</p>
+<p>Pay particular attention to the <code>diag</code> slot. If it is set to <code>&quot;gelman&quot;</code>, Gelman-Rubin potential scale reduction factors will be used to assess convergence and then stored in the <code>psrf</code> slot of the subsequent <code>Chain</code>. For any other value, no such convergence diagnostic will be used. Similarly, the <code>ess</code> slot is important. If greater than 0, the program will make sure that an effective sample size of at least <code>ess</code> is reached for all returned parameters. Otherwise, no such checks will occur. The <code>max_attempts</code> slot controls the number of retries to meet these convergence diagnostics. It can be set to <code>Inf</code>, but this is not recommended because saved <code>Chain</code> objects can be restarted from where they left off with a single line of code.</p>
+<p>The <code>iterations</code>, <code>burnin</code>, and <code>thin</code> slots control the duration of the MCMC. You can run MCMCs on subsets of the model, holding some parameters constant, by adjusting the <code>parameter_sets_update</code>, <code>effects_update_beta</code>, and <code>effects_update_theta</code> slots. Similarly, you can choose which parameter samples to return with the <code>parameter_samples_return</code>, <code>genes_return</code>, <code>genes_return_epsilon</code>, <code>libraries_return</code>, and <code>libraries_return_epsilon</code> slots. This is extremely useful because CUDA</p>
 </div>
 <div id="optional-create-a-starts-object." class="section level2">
 <h2><span class="header-section-number">4.3</span> (Optional) create a <code>Starts</code> object.</h2>
-<p>The <code>Starts</code> S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as it is automatically generated for a given dataset and design with <code>generate_starts</code> inside the constructor of <code>Chain</code> class. However, the user may wish to modify individual slots. For more information, type <code>help(&quot;Starts-class&quot;)</code> and be sure to read the vignette on the hierarchical model.</p>
+<p>The <code>Starts</code> S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as the unspecified starting values are automatically generated for a given dataset and design with <code>generate_starts</code> inside the constructor of <code>Chain</code> class. However, the user may wish to modify individual slots. For more information, type <code>help(&quot;Starts-class&quot;)</code> and be sure to read the vignette on the hierarchical model.</p>
 </div>
 <div id="create-a-chain-object." class="section level2">
 <h2><span class="header-section-number">4.4</span> Create a <code>Chain</code> object.</h2>
+<p>The <code>Chain</code> class plays the role of an environment or workspace. It stores all the information in your <code>Scenario</code>, <code>Configs</code>, and <code>Starts</code> objects, in addition to Monte Carlo output and results. There are many, many S4 slots. For details on the slots, type <code>help(&quot;Chain-class&quot;)</code> and be sure to read the hierarchical model vignette. For help on how to create <code>Chain</code> objects, type <code>help(&quot;Chain&quot;)</code>.</p>
+<p>With only a <code>Scenario</code> object, you can create a <code>Chain</code> object with</p>
+<pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(scenario)</code></pre>
+<p>If you have <code>Configs</code> and/or <code>Starts</code> objects, you can pass them in as well.</p>
+<pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(scenario, configs, starts)</code></pre>
+<p>As an example, here is the <code>Chain</code> created from the <code>paschold</code> scenario visited earlier.</p>
+<pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(paschold)
+<span class="kw">str</span>(chain)</code></pre>
+<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 95 slots
+##   ..@ bound_names               : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
+##   ..@ contrast_names            : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
+##   ..@ gene_names                : chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
+##   ..@ library_names             : chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
+##   ..@ proposition_names         : chr [1:6] &quot;high-parent_B73xMo17_Mo17xB73&quot; &quot;low-parent_B73xMo17_Mo17xB73&quot; &quot;high-parent_B73xMo17&quot; &quot;low-parent_B73xMo17&quot; ...
+##   ..@ psrf                      : num(0) 
+##   ..@ supplement                : list()
+##   ..@ bounds                    : Named num [1:12] 0 0 0 0 0 0 0 0 0 0 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
+##   ..@ contrasts                 : Named num [1:60] 0 1 0 0 0 0 0 1 0 0 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:60] &quot;high-parent_B73xMo17_Mo17xB73_1.beta_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_1.beta_2&quot; &quot;high-parent_B73xMo17_Mo17xB73_1.beta_3&quot; &quot;high-parent_B73xMo17_Mo17xB73_1.beta_4&quot; ...
+##   ..@ counts                    : int [1:634496] 1 3 2323 2 3 672 459 1184 551 245 ...
+##   ..@ design                    : num [1:80] 1 1 1 1 1 1 1 1 1 1 ...
+##   ..@ propositions              : int [1:72] 1 1 0 0 0 0 0 0 0 0 ...
+##   ..@ diag                      : chr &quot;gelman&quot;
+##   ..@ ess                       : int 100
+##   ..@ max_attempts              : num 5
+##   ..@ nchains_diag              : int 4
+##   ..@ psrf_tol                  : num 1.1
+##   ..@ burnin                    : int 100000
+##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
+##   ..@ effects_update_theta      : int [1:5] 1 2 3 4 5
+##   ..@ genes_return              : int(0) 
+##   ..@ genes_return_epsilon      : int(0) 
+##   ..@ iterations                : int 1000
+##   ..@ libraries_return          : int(0) 
+##   ..@ libraries_return_epsilon  : int(0) 
+##   ..@ parameter_sets_return     : Named int [1:10] 1 1 1 1 0 0 1 1 1 0
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:10] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
+##   ..@ parameter_sets_update     : Named int [1:10] 1 1 1 1 0 0 1 1 1 0
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:10] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
+##   ..@ priors                    : int [1:5] 0 0 0 0 0
+##   ..@ thin                      : int 100
+##   ..@ verbose                   : int 10
+##   ..@ C                         : int 12
+##   ..@ countSums_g               : int [1:39656] 7 169 28253 35 213 11719 8598 16934 7935 3697 ...
+##   ..@ countSums_n               : int [1:16] 11570430 10080543 9028832 9658141 10029386 9011261 10284321 9645122 10954923 10203856 ...
+##   ..@ designUnique              : num [1:80] 1 0 0 0 0 0 0 0 0 0 ...
+##   ..@ designUniqueN             : int [1:5] 1 2 2 2 2
+##   ..@ G                         : int 39656
+##   ..@ Greturn                   : int 0
+##   ..@ GreturnEpsilon            : int 0
+##   ..@ L                         : int 5
+##   ..@ Lupdate_beta              : int 5
+##   ..@ Lupdate_theta             : int 5
+##   ..@ N                         : int 16
+##   ..@ Nreturn                   : int 0
+##   ..@ NreturnEpsilon            : int 0
+##   ..@ P                         : int 6
+##   ..@ probs                     : num [1:237936] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ seeds                     : int(0) 
+##   ..@ a                         : num 1
+##   ..@ b                         : num 1
+##   ..@ c                         : num [1:5] 10 10 10 10 10
+##   ..@ d                         : num 1000
+##   ..@ k                         : num [1:5] 5 5 5 5 5
+##   ..@ r                         : num [1:5] 5 5 5 5 5
+##   ..@ s                         : num [1:5] 100 100 100 100 100
+##   ..@ w                         : num 100
+##   ..@ beta                      : num(0) 
+##   ..@ epsilon                   : num(0) 
+##   ..@ gamma                     : num(0) 
+##   ..@ nu                        : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ omegaSquared              : num(0) 
+##   ..@ rho                       : num(0) 
+##   ..@ sigmaSquared              : num [1:5000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ tau                       : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ theta                     : num [1:5000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ xi                        : num(0) 
+##   ..@ betaStart                 : num [1:198280] 0.311 2.002 7.558 1.161 2.499 ...
+##   ..@ epsilonStart              : num [1:634496] 0.1839 0.2887 0.2745 0.1976 0.0642 ...
+##   ..@ gammaStart                : Named num [1:39656] 0.108 0.212 0.014 0.137 0.107 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
+##   ..@ nuStart                   : num 5.19
+##   ..@ omegaSquaredStart         : num 0.00206
+##   ..@ rhoStart                  : Named num [1:16] 0.08744 -0.00452 -0.05525 -0.02768 -0.01447 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
+##   ..@ sigmaSquaredStart         : num [1:5] 6.1462 0.0507 0.0451 0.0109 0.061
+##   ..@ tauStart                  : num 0.187
+##   ..@ thetaStart                : num [1:5] 3.37 0 0 0 0
+##   ..@ xiStart                   : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...
+##   ..@ betaPostMean              : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ epsilonPostMean           : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ gammaPostMean             : num [1:39656] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ nuPostMean                : num 0
+##   ..@ omegaSquaredPostMean      : num 0
+##   ..@ rhoPostMean               : num [1:16] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ sigmaSquaredPostMean      : num [1:5] 0 0 0 0 0
+##   ..@ tauPostMean               : num 0
+##   ..@ thetaPostMean             : num [1:5] 0 0 0 0 0
+##   ..@ xiPostMean                : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ betaPostMeanSquare        : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ epsilonPostMeanSquare     : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ gammaPostMeanSquare       : num [1:39656] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ nuPostMeanSquare          : num 0
+##   ..@ omegaSquaredPostMeanSquare: num 0
+##   ..@ rhoPostMeanSquare         : num [1:16] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ sigmaSquaredPostMeanSquare: num [1:5] 0 0 0 0 0
+##   ..@ tauPostMeanSquare         : num 0
+##   ..@ thetaPostMeanSquare       : num [1:5] 0 0 0 0 0
+##   ..@ xiPostMeanSquare          : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+<p>You can recover the scenario, configuration, or starting values of a <code>Chain</code> object with the <code>Scenario</code>, <code>Configs</code>, and <code>Starts</code> objects. For example,</p>
+<pre class="sourceCode r"><code class="sourceCode r">scenario =<span class="st"> </span><span class="kw">Scenario</span>(chain)
+configs =<span class="st"> </span><span class="kw">Configs</span>(chain)
+starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
+<span class="kw">str</span>(scenario)</code></pre>
+<pre><code>## Formal class 'Scenario' [package &quot;fbseq&quot;] with 6 slots
+##   ..@ bounds      : Named num [1:12] 0 0 0 0 0 0 0 0 0 0 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
+##   ..@ contrasts   :List of 12
+##   .. ..$ high-parent_B73xMo17_Mo17xB73_1: Named num [1:5] 0 1 0 0 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ high-parent_B73xMo17_Mo17xB73_2: Named num [1:5] 0 0 1 0 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ low-parent_B73xMo17_Mo17xB73_1 : Named num [1:5] 0 -1 0 0 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ low-parent_B73xMo17_Mo17xB73_2 : Named num [1:5] 0 0 -1 0 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ high-parent_B73xMo17_1         : Named num [1:5] 0 2 0 1 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ high-parent_B73xMo17_2         : Named num [1:5] 0 0 2 1 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ low-parent_B73xMo17_1          : Named num [1:5] 0 -2 0 -1 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ low-parent_B73xMo17_2          : Named num [1:5] 0 0 -2 -1 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ high-parent_Mo17xB73_1         : Named num [1:5] 0 2 0 -1 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ high-parent_Mo17xB73_2         : Named num [1:5] 0 0 2 -1 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ low-parent_Mo17xB73_1          : Named num [1:5] 0 -2 0 1 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   .. ..$ low-parent_Mo17xB73_2          : Named num [1:5] 0 0 -2 1 0
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   ..@ counts      : int [1:39656, 1:16] 1 3 2323 2 3 672 459 1184 551 245 ...
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. ..$ : chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
+##   .. .. ..$ : chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
+##   ..@ design      : num [1:16, 1:5] 1 1 1 1 1 1 1 1 1 1 ...
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. ..$ : chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
+##   .. .. ..$ : chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
+##   ..@ propositions:List of 6
+##   .. ..$ high-parent_B73xMo17_Mo17xB73: Named int [1:2] 1 2
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot;
+##   .. ..$ low-parent_B73xMo17_Mo17xB73 : Named int [1:2] 3 4
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot;
+##   .. ..$ high-parent_B73xMo17         : Named int [1:2] 5 6
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;high-parent_B73xMo17_1&quot; &quot;high-parent_B73xMo17_2&quot;
+##   .. ..$ low-parent_B73xMo17          : Named int [1:2] 7 8
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;low-parent_B73xMo17_1&quot; &quot;low-parent_B73xMo17_2&quot;
+##   .. ..$ high-parent_Mo17xB73         : Named int [1:2] 9 10
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;high-parent_Mo17xB73_1&quot; &quot;high-parent_Mo17xB73_2&quot;
+##   .. ..$ low-parent_Mo17xB73          : Named int [1:2] 11 12
+##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;low-parent_Mo17xB73_1&quot; &quot;low-parent_Mo17xB73_2&quot;
+##   ..@ supplement  : list()</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(configs)</code></pre>
+<pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 18 slots
+##   ..@ diag                    : chr &quot;gelman&quot;
+##   ..@ ess                     : int 100
+##   ..@ max_attempts            : num 5
+##   ..@ nchains_diag            : int 4
+##   ..@ psrf_tol                : num 1.1
+##   ..@ burnin                  : int 100000
+##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
+##   ..@ effects_update_theta    : int [1:5] 1 2 3 4 5
+##   ..@ genes_return            : int(0) 
+##   ..@ genes_return_epsilon    : int(0) 
+##   ..@ iterations              : int 1000
+##   ..@ libraries_return        : int(0) 
+##   ..@ libraries_return_epsilon: int(0) 
+##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
+##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
+##   ..@ priors                  : chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
+##   ..@ thin                    : int 100
+##   ..@ verbose                 : int 10</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(starts)</code></pre>
+<pre><code>## Formal class 'Starts' [package &quot;fbseq&quot;] with 18 slots
+##   ..@ a           : num 1
+##   ..@ b           : num 1
+##   ..@ c           : num [1:5] 10 10 10 10 10
+##   ..@ d           : num 1000
+##   ..@ k           : num [1:5] 5 5 5 5 5
+##   ..@ r           : num [1:5] 5 5 5 5 5
+##   ..@ s           : num [1:5] 100 100 100 100 100
+##   ..@ w           : num 100
+##   ..@ beta        : num [1:198280] 0.311 2.002 7.558 1.161 2.499 ...
+##   ..@ epsilon     : num [1:634496] 0.1839 0.2887 0.2745 0.1976 0.0642 ...
+##   ..@ gamma       : Named num [1:39656] 0.108 0.212 0.014 0.137 0.107 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
+##   ..@ nu          : num 5.19
+##   ..@ omegaSquared: num 0.00206
+##   ..@ rho         : Named num [1:16] 0.08744 -0.00452 -0.05525 -0.02768 -0.01447 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
+##   ..@ sigmaSquared: num [1:5] 6.1462 0.0507 0.0451 0.0109 0.061
+##   ..@ tau         : num 0.187
+##   ..@ theta       : num [1:5] 3.37 0 0 0 0
+##   ..@ xi          : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<p>Note that the unspecified starting values were automatically generated in the construction of the <code>Chain</code> object.</p>
 </div>
 <div id="call-fbseq-on-the-chain-object." class="section level2">
 <h2><span class="header-section-number">4.5</span> Call <code>fbseq</code> on the <code>Chain</code> object.</h2>
+<p>The <code>fbseq</code> function actually runs the MCMC algorithm to fit the model and calculate posterior probabilities of interest. It takes a single <code>Chain</code> object as an argument and outputs another <code>Chain</code> object with Gelman factors (if applicable), posterior means and means of squares of parameters, estimated posterior probabilities of interest, and updated starting values.</p>
+<pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain)</code></pre>
+<p>The starting values of <code>out</code> are the final parameter samples of the previous MCMC. The upshot is that calling <code>fbseq</code> on <code>out</code> will resume the MCMC where it left off.</p>
+<pre class="sourceCode r"><code class="sourceCode r">continuation =<span class="st"> </span><span class="kw">fbseq</span>(out)</code></pre>
+<p>You can even run the MCMC indefinitely and save your work at after every attempt.</p>
+<pre class="sourceCode r"><code class="sourceCode r">repeat{
+  chain =<span class="st"> </span><span class="kw">fbseq</span>(chain)
+  <span class="kw">saveRDS</span>(chain, <span class="st">&quot;chain.rds&quot;</span>)
+}</code></pre>
 </div>
 <div id="inspect-the-output." class="section level2">
 <h2><span class="header-section-number">4.6</span> Inspect the output.</h2>
+<p>No actual output is shipped with the package because output <code>Chain</code> objects are is usually large, in the tens of megabytes at least. However, all the functions to extract output are easy one-liners. I list them below in roughly decreasing order of usefulness. Let <code>chain</code> be a <code>Chain</code> object returned from <code>fbseq</code>.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left"><code>probs(chain)</code></td>
+<td align="left"></td>
+<td align="left">Estimated gene-specific posterior probabilities of each logical proposition specified in <code>Scenario</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>volcano(chain)</code></td>
+<td align="left"></td>
+<td align="left"><code>ggplot2</code> plot of posterior probabilities vs effect sizes for each proposition.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>estimates(chain, level)</code></td>
+<td align="left"></td>
+<td align="left">Posterior means and credible intervals (of level <code>level</code>) for all parameters. Note: to avoid taking up too much memory, the credible intervals are computed using the posterior means and variances of parameters, not quantiles of actual parameter samples. The results are approximate.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>effect_sizes(chain)</code></td>
+<td align="left"></td>
+<td align="left">Estimated gene-specific effect sizes for each logical proposition. For example, if the proposition is “<span class="math">\(2\beta_{2, g} - \beta_{4, g} &gt; 1\)</span> and <span class="math">\(2\beta_{3, g} - \beta_{4, g} &gt; 0.5\)</span>”, then the effect size is <span class="math">\(\min \left (2\beta_{2, g} - \beta_{4, g} - 1, \ 2\beta_{3, g} - \beta_{4, g} - 0.5 \right )^+\)</span>, where <span class="math">\((\cdots)^+\)</span> denote the positive part of an expression.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>flatten(chain)</code></td>
+<td align="left"><span class="math">\(\qquad\)</span></td>
+<td align="left">Monte Carlo samples of returned parameters selected in <code>Configs</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>flatten_post(chain)</code></td>
+<td align="left"><span class="math">\(\qquad\)</span></td>
+<td align="left">Posterior means or means of squares of all or most of the parameters (configure with additional arguments)</td>
+</tr>
+</tbody>
+</table>
 <div class="references">
 <h1 id="references" class="unnumbered">References</h1>
 <p>Paschold, Anja, Yi Jia, Caroline Marcon, Steve Lund, Nick B Larson, Cheng-Ting Yeh, Stephan Ossowski, et al. 2012. “Complementation Contributes to Transcriptome Complexity in Maize (<em>Zea Mays L.</em>) Hybrids Relative to Their Inbred Parents.” <em>Genome Research</em> 22 (12). Cold Spring Harbor Lab: 2445–54.</p>
