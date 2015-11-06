@@ -27,7 +27,6 @@ Collate:
     'parameters.R'
     'configs.R'
     'cuda_usage.R'
-    'scenario_heterosis_model.R'
     'data.R'
     'effect_sizes.R'
     'run_fixed_mcmc.R'
@@ -41,4 +40,5 @@ Collate:
     'namespace.R'
     'probs.R'
     's4list.R'
+    'scenario_heterosis_model.R'
     'volcano.R'
