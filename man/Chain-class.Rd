@@ -53,9 +53,11 @@ convergence diagnostics that require multiple chains.}
 
 \item{\code{psrf_tol}}{upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")}
 
-\item{\code{betas_update}}{bounds of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.}
-
 \item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
+
+\item{\code{effects_update_beta}}{bounds of l for which to update the beta_{l, g} parameters.}
+
+\item{\code{effects_update_theta}}{bounds of l for which to update the theta_l parameters.}
 
 \item{\code{genes_return}}{Indices of genes whose parameter samples you want to return.
 Applies to all gene-specific parameters except for the epsilons.}
@@ -101,7 +103,9 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{L}}{number of columns in the original design matrix}
 
-\item{\code{Lupdate}}{number of bounds of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.}
+\item{\code{Lupdate_beta}}{number of bounds of l for which to update the beta_{l, g} parameters.}
+
+\item{\code{Lupdate_theta}}{number of bounds of l for which to update the theta_l parameters.}
 
 \item{\code{N}}{number of libraries}
 

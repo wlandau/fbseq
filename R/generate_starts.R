@@ -41,6 +41,7 @@ nu_tau = function(x){
 generate_starts = function(counts, design, starts = Starts()){
   N = dim(counts)[2]
   G = dim(counts)[1]
+  colnames(design) = NULL
 
   counts = as.matrix(counts)
   logcounts = log(counts + 1)
@@ -50,6 +51,7 @@ generate_starts = function(counts, design, starts = Starts()){
   beta = t(OLS %*% t(logcounts))
 
   theta = apply(beta, 2, mean)
+  theta[!rowSums(OLS)] = 0
   sigmaSquared = apply(beta, 2, var)
   xi = rep(1, ncol(beta)*G)
 

@@ -85,7 +85,8 @@ fill_easy_gaps = function(chain, scenario){
     c(out, rep(0, dim(scenario@design)[1] - length(out)))
   })
 
-  if(!length(chain@betas_update)) chain@betas_update = 1:ncol(scenario@design)
+  if(!length(chain@effects_update_beta)) chain@effects_update_beta = 1:ncol(scenario@design)
+  if(!length(chain@effects_update_theta)) chain@effects_update_theta = 1:ncol(scenario@design)
 
   chain@bound_names = as.character(names(scenario@bounds))
   chain@contrast_names = as.character(names(scenario@contrasts))
@@ -107,7 +108,8 @@ fill_easy_gaps = function(chain, scenario){
   chain@libraries_return = sort(chain@libraries_return)
   chain@libraries_return_epsilon = sort(chain@libraries_return_epsilon)
   chain@L = L = ncol(scenario@design)
-  chain@Lupdate = length(chain@betas_update)
+  chain@Lupdate_beta = length(chain@effects_update_beta)
+  chain@Lupdate_theta = length(chain@effects_update_theta)
   chain@N = N = nrow(scenario@design)
   chain@Nreturn = Nreturn = length(chain@libraries_return)
   chain@NreturnEpsilon = NreturnEpsilon = length(chain@libraries_return_epsilon)

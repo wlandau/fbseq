@@ -6,15 +6,12 @@ Version: 0.0
 Author: Will Landau <will.landau@gmail.com>
 Maintainer: Will Landau <will.landau@gmail.com>
 Depends:
-    R (>= 3.0.0),
-    methods
+    R (>= 3.0.0)
 Imports:
     coda,
-    MASS,
-    parallel,
-    plyr,
-    pracma,
-    R.utils
+    ggplot2,
+    methods,
+    reshape2
 Suggests:
     fbseqCUDA,
     knitr
@@ -44,3 +41,4 @@ Collate:
     'namespace.R'
     'probs.R'
     's4list.R'
+    'volcano.R'

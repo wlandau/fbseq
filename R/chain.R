@@ -34,8 +34,9 @@ NULL
 #' convergence diagnostics that require multiple chains. 
 #' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
 #' 
-#' @slot betas_update bounds of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
+#' @slot effects_update_beta bounds of l for which to update the beta_{l, g} parameters.
+#' @slot effects_update_theta bounds of l for which to update the theta_l parameters.
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
 #' Applies to all gene-specific parameters except for the epsilons.
 #' @slot genes_return_epsilon Indices of genes g for which epsilon_{n, g} is updated/returned.
@@ -62,7 +63,8 @@ NULL
 #' @slot Greturn number of genes to return gene-specific MCMC parameter samples for (except the epsilons)
 #' @slot GreturnEpsilon number of genes to return gene-specific MCMC epsilon parameter samples
 #' @slot L number of columns in the original design matrix
-#' @slot Lupdate number of bounds of l for which to update the beta_{l, g} parameters. Manually set for debugging purposes only.
+#' @slot Lupdate_beta number of bounds of l for which to update the beta_{l, g} parameters.
+#' @slot Lupdate_theta number of bounds of l for which to update the theta_l parameters.
 #' @slot N number of libraries
 #' @slot Nreturn number of libraries to return library-specific MCMC parameter samples for (except the epsilons)
 #' @slot NreturnEpsilon number of libraries to return library-specific MCMC epsilon parameter samples
@@ -144,8 +146,9 @@ setClass("Chain",
     nchains_diag = "integer",
     psrf_tol = "numeric",
 
-    betas_update = "integer",
     burnin = "integer",
+    effects_update_beta = "integer",
+    effects_update_theta = "integer",
     genes_return = "integer",
     genes_return_epsilon = "integer",
     iterations = "integer",
@@ -166,7 +169,8 @@ setClass("Chain",
     Greturn = "integer",
     GreturnEpsilon = "integer",
     L = "integer",
-    Lupdate = "integer",
+    Lupdate_beta = "integer",
+    Lupdate_theta = "integer",
     N = "integer",
     Nreturn = "integer",
     NreturnEpsilon = "integer",
