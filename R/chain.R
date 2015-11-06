@@ -14,8 +14,7 @@ NULL
 #' @slot proposition_names names of \code{propositions} slot in the \code{Scenario} object
 #' @slot psrf Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the 
 #' actual MCMC parameter samples are not returned)
-#' @slot supplement a list containing supplementary information about the scenario: 
-#' for example, how the data were simulated, if applicable
+#' @slot runtime runtime of the call to the \code{fbseq} function as measured by \code{proc.time}.
 #'
 #' @slot bounds values to compare contrasts to. The comparison is to see if the contrast is greater than
 #' its corresponding element in \code{bounds} (from the \code{Scenario} object)
@@ -25,6 +24,8 @@ NULL
 #' Original matrix must have rows corresponding to colums/libraries in RNA-seq data and colums corresponding to
 #' sets of gene-specific variables.
 #' @slot propositions propositions of inequalities involving contrasts from the \code{Scenario} object.
+#' @slot supplement a list containing supplementary information about the scenario: 
+#' for example, how the data were simulated, if applicable
 #' 
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
@@ -132,13 +133,14 @@ setClass("Chain",
     library_names = "character",
     proposition_names = "character",
     psrf = "numeric",
-    supplement = "list",
+    runtime = "numeric",
 
     bounds = "numeric",
     contrasts = "numeric",
     counts = "integer",
     design = "numeric",
     propositions = "integer",
+    supplement = "list",
 
     diag = "character",
     ess = "integer",

@@ -25,8 +25,7 @@ by feeding one into \code{single_chain()}.
 \item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the
 actual MCMC parameter samples are not returned)}
 
-\item{\code{supplement}}{a list containing supplementary information about the scenario:
-for example, how the data were simulated, if applicable}
+\item{\code{runtime}}{runtime of the call to the \code{fbseq} function as measured by \code{proc.time}.}
 
 \item{\code{bounds}}{values to compare contrasts to. The comparison is to see if the contrast is greater than
 its corresponding element in \code{bounds} (from the \code{Scenario} object)}
@@ -40,6 +39,9 @@ Original matrix must have rows corresponding to colums/libraries in RNA-seq data
 sets of gene-specific variables.}
 
 \item{\code{propositions}}{propositions of inequalities involving contrasts from the \code{Scenario} object.}
+
+\item{\code{supplement}}{a list containing supplementary information about the scenario:
+for example, how the data were simulated, if applicable}
 
 \item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
 

@@ -12,11 +12,15 @@ NULL
 #'
 #' @param chain object of type \code{Chain}. See the package vignette for details.
 fbseq = function(chain){
+  t0 = proc.time()
   if(chain@diag == "gelman"){
     chain = run_gelman_mcmc(chain)
   } else {
     chain = run_fixed_mcmc(chain)
   }
-  if(chain@ess >= 1) chain = effective_sample_size(chain)
+  if(chain@ess > 0) chain = effective_sample_size(chain)
+  t1 = as.numeric(proc.time() - t0)
+  names(t1) = names(t0)
+  chain@runtime = t1
   chain
 }
