@@ -29,15 +29,15 @@ scenario_heterosis_model = function(genes = 3.5e4, libraries = 16){
     "low-parent_hybrids_1"  = c(beta_1 = 0, beta_2 = -1, beta_3 =  0, beta_4 = 0, beta_5 = 0),
     "low-parent_hybrids_2"  = c(beta_1 = 0, beta_2 = 0,  beta_3 = -1, beta_4 = 0, beta_5 = 0),
 
-    "high-parent_hybrid1_1" = c(beta_1 = 0, beta_2 =  0, beta_3 =  2, beta_4 =  1, beta_5 = 0),
-    "high-parent_hybrid1_2" = c(beta_1 = 0, beta_2 =  2, beta_3 =  0, beta_4 =  1, beta_5 = 0),
-    "low-parent_hybrid1_1"  = c(beta_1 = 0, beta_2 =  0, beta_3 = -2, beta_4 = -1, beta_5 = 0),
-    "low-parent_hybrid1_2"  = c(beta_1 = 0, beta_2 = -2, beta_3 =  0, beta_4 = -1, beta_5 = 0),
+    "high-parent_hybrid1_1" = c(beta_1 = 0, beta_2 =  2, beta_3 =  0, beta_4 =  1, beta_5 = 0),
+    "high-parent_hybrid1_2" = c(beta_1 = 0, beta_2 =  0, beta_3 =  2, beta_4 =  1, beta_5 = 0),
+    "low-parent_hybrid1_1"  = c(beta_1 = 0, beta_2 = -2, beta_3 =  0, beta_4 = -1, beta_5 = 0),
+    "low-parent_hybrid1_2"  = c(beta_1 = 0, beta_2 =  0, beta_3 = -2, beta_4 = -1, beta_5 = 0),
 
-    "high-parent_hybrid2_1" = c(beta_1 = 0, beta_2 =  0, beta_3 =  2, beta_4 = -1, beta_5 = 0),
-    "high-parent_hybrid2_2" = c(beta_1 = 0, beta_2 =  2, beta_3 =  0, beta_4 = -1, beta_5 = 0),
-    "low-parent_hybrid2_1"  = c(beta_1 = 0, beta_2 =  0, beta_3 = -2, beta_4 =  1, beta_5 = 0),
-    "low-parent_hybrid2_2"  = c(beta_1 = 0, beta_2 = -2, beta_3 =  0, beta_4 =  1, beta_5 = 0))
+    "high-parent_hybrid2_1" = c(beta_1 = 0, beta_2 =  2, beta_3 =  0, beta_4 = -1, beta_5 = 0),
+    "high-parent_hybrid2_2" = c(beta_1 = 0, beta_2 =  0, beta_3 =  2, beta_4 = -1, beta_5 = 0),
+    "low-parent_hybrid2_1"  = c(beta_1 = 0, beta_2 = -2, beta_3 =  0, beta_4 =  1, beta_5 = 0),
+    "low-parent_hybrid2_2"  = c(beta_1 = 0, beta_2 =  0, beta_3 = -2, beta_4 =  1, beta_5 = 0))
 
   s@bounds = rep(0, length(s@contrasts))
   names(s@bounds) = names(s@contrasts)
