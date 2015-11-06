@@ -1,5 +1,5 @@
 ---
-title: "`heterosis` package methodology"
+title: "`fbseq` package methodology"
 author: Will Landau, Dr. Jarad Niemi
 date: 2015
 output: 
@@ -22,94 +22,115 @@ vignette: >
 
 # Purpose
 
-The `heterosis` package is a tool for analyzing data from certain RNA sequencing experiments. These experiments concern the phenomenon of heterosis, or hybrid vigor, in situations where two genetic lines are inbred to produce a hybrid. An individual gene has
-
-- high-parent heterosis if it is *more* expressed in the hybrid than in either parent. 
-- low-parent heterosis if it is *less* expressed in the hybrid than in either parent.
-- mid-parent heterosis if its expression level in the hybrid is significantly different from its mean expression level in the parents.
-
-The package uses a hierarchical modeling strategy, executed with a slice-sampling-within-Gibbs Markov chain Monte Carlo algorithm, to calculate the posterior probability of each form of heterosis for each gene. These heterosis probabilities enable the user to detect heterosis genes and rank them according to the strength of heterosis.
-
+The `fbseq` package fits a hierarchical model to RNA-seq data in (nearly) fully Bayesian fashion. Although it was originally designed to fit RNA-seq data, it can also be used to analyze count data with tens of thousands of response variables and only a handful of observations each.
 
 # The hierarchical model
 
-Let $y_{n, g}$ be the fully preprocessed RNA-sequencing read count for sample/library $n$ and feature/gene $g$. The full hierarchical model is as follows.
+Let $y_{n, g}$ be the fully preprocessed RNA-sequencing read count for library/column $n$ ($n = 1, \ldots, N)$ and gene/row $g$ ($g = 1, \ldots, G)$. Let $X$ be the $N \times L$ design matrix for gene-specific effects $\boldsymbol{\beta}_g = (\beta_{1, g}, \ \ldots, \ \beta_{L, g})$. Let $\boldsymbol{X}_n$ be the $n$'th row of $X$. Conditioned on the parameters $\boldsymbol{\beta}_{ g}$ and $\e_{n, g}$, the $y_{n, g}$'s are treated as independent and Poisson-distributed in the likelihood.
 
 $$ \begin{align*}
-&y_{n,g} \stackrel{\text{ind}}{\sim} \text{Poisson}(\exp(\e_{n, g} + \eta(n, g))) \\
-& \qquad \e_{n, g} \stackrel{\text{ind}}{\sim} \text{N}(0, \rho_n^2 \gamma_g^2) \\
-& \qquad \qquad \rho_n^2 \stackrel{\text{ind}}{\sim} \text{Inv-Gamma}\left (\text{shape} = \frac{\nu_\rho}{2}, \ \text{scale} =  \frac{\nu_\rho \tau_\rho^2}{2} \right) \\
-& \qquad \qquad \qquad \nu_\rho \stackrel{\text{}}{\sim} \text{U}(0, d_\rho) \\
-& \qquad \qquad \qquad \tau_\rho^2 \stackrel{\text{}}{\sim} \text{Gamma}(\text{shape} = a_\rho, \text{rate} = b_\rho) \\
-& \qquad \qquad \gamma_g^2 \stackrel{\text{ind}}{\sim} \text{Inv-Gamma}\left (\text{shape} = \frac{\nu_\gamma}{2}, \ \text{scale} =  \frac{\nu_\gamma \tau_\gamma^2}{2} \right) \\
-& \qquad \qquad \qquad \nu_\gamma \stackrel{\text{}}{\sim} \text{U}(0, d) \\
-& \qquad \qquad \qquad \tau_\gamma^2 \stackrel{\text{}}{\sim} \text{Gamma}(\text{shape} = a_\gamma, \text{rate} = b_\gamma) \\
-& \qquad \phi_g \stackrel{\text{ind}}{\sim} \text{N}(\theta_\phi, \sigma_\phi^2 \xi_{\phi, g}) \\
-& \qquad \qquad \theta_\phi \stackrel{\text{}}{\sim} \text{N}(0, c_{\phi }^2) \\
-& \qquad \qquad \sigma_\phi \stackrel{\text{}}{\sim} \text{U}(0, s_{\phi}) \\
-& \qquad \qquad \xi_{\phi, g} \stackrel{\text{ind}}{\sim} p(\xi_{\phi, g} \ | \ k_\phi, r_\phi) \\
-& \qquad \alpha_g \stackrel{\text{ind}}{\sim} \text{N}( \theta_\alpha, \sigma_\alpha^2 \xi_{\alpha, g}) \\
-& \qquad \qquad \theta_\alpha \stackrel{\text{}}{\sim} \text{N}(0, c_{\alpha}^2) \\
-& \qquad \qquad \sigma_\alpha \stackrel{\text{}}{\sim} \text{U}(0, s_{\alpha}) \\
-& \qquad \qquad \xi_{\alpha, g} \stackrel{\text{ind}}{\sim} p(\xi_{\alpha, g} \ | \ k_\alpha, r_\alpha) \\
-& \qquad \delta_g \stackrel{\text{ind}}{\sim} \text{N}(\theta_\delta, \sigma_{\delta}^2 \xi_{\delta, g}) \\
-& \qquad \qquad \theta_\delta\stackrel{\text{}}{\sim} \text{N}(0, c_{\delta}^2) \\
-& \qquad \qquad \sigma_\delta \stackrel{\text{}}{\sim} \text{U}(0, s_{\delta}) \\
-& \qquad \qquad \xi_{\delta, g} \stackrel{\text{ind}}{\sim} p(\xi_{\delta, g} \ | \ k_\delta, r_\delta)
-\end{align*} $$ 
-
-where
-
-$$ \begin{align*}
-\eta(n, g) = \begin{cases}
-\phi_g - \alpha_g & \text{ library $n$ is in treatment group 1 (parent 1)} \\
-\phi_g + \delta_g & \text{ library $n$ is in treatment group 2 (hybrid)} \\
-\phi_g + \alpha_g & \text{ library $n$ is in treatment group 3 (parent 2)} \\
-\end{cases}
+y_{n,g} \ | \ \boldsymbol{\beta}_g, \ \e_{n, g} \stackrel{\text{ind}}{\sim} \text{Poisson} \left (\exp \left (\boldsymbol{X}_n \boldsymbol{\beta}_g + \e_{n, g} \right ) \right )
 \end{align*} $$
 
-In practice, $\tau_\gamma$ 
+## Signal
 
-## Interpretations of model parameters
-
-<dl>
-<dt>$\rho_n$</dt><dd>log (base $e$) normalization factor of sample/library $n$, accounting for sequencing depth, etc.</dd>
-<dt>$\sigma_\rho$</dt><dd>prior standard deviation of the $\rho_n$'s.</dd>
-<dt>$s_\rho$</dt><dd>a constant, usually set to an arbitrary high value.</dd>
-<dt>$\e_{n, g}$</dt><dd>accounts for overdispersion relative to the Poisson likelihood.</dd>
-<dt>$\gamma_g$</dt><dd>the feature/gene-specific standard deviation of $\{\e_{1, g}, \ldots, \e_{N, g}\}$ (where $N$ is the number of samples/libraries). It serves the same purpose as a gene-specific negative binomial dispersion parameter.</dd>
-<dt>$\nu$</dt><dd>an inverse-scaled-chisquare degrees of freedom parameter. The higher it is, the more the $\gamma_g$ parameters "shrink" towards $\tau^2$.</dd>
-<dt>$\tau$</dt><dd>close to the square root of the mean of the $\gamma_g$'s.</dd>
-<dt>$\phi_g$</dt><dd>for feature/gene $g$, the mean of the log expression levels of the parents.</dd>
-<dt>$\theta_\phi$</dt><dd>prior mean of the $\phi_g$'s.</dd>
-<dt>$\sigma_\phi$</dt><dd>prior standard deviation of the $\phi_g$'s.</dd>
-<dt>$\alpha_g$</dt><dd>for feature/gene $g$, half the difference in log expression levels of the parents.</dd>
-<dt>$\theta_\alpha$</dt><dd>prior mean of the $\alpha_g$'s.</dd>
-<dt>$\sigma_\alpha$</dt><dd>prior standard deviation of the $\alpha_g$'s.</dd>
-<dt>$\delta_g$</dt><dd>for feature/gene $g$, the log expression level of hybrid minus the mean of the log expression levels of the parents.</dd>
-<dt>$\theta_\delta$</dt><dd>prior mean of the $\delta_g$'s.</dd>
-<dt>$\sigma_\delta$</dt><dd>prior standard deviation of the $\delta_g$'s.</dd>
-</dl>
-
-## Detecting heterosis genes
-
-The model immediately gives a posterior probability of heterosis for each gene.
-
-<dl>
-<dt>$P(\delta_g > |\alpha_g| \ | \ \text{data})$</dt><dd>Posterior probability of high-parent heterosis.</dd>
-<dt>$P(\delta_g < -|\alpha_g| \ | \ \text{data})$</dt><dd>Posterior probability of low-parent heterosis.</dd>
-<dt>$P(|\delta_g| > \e \ | \ \text{data},\  \e)$</dt><dd>Posterior probability of mid-parent heterosis given a threshold $\e$.</dd>
-</dl>
-
-The `heterosis` package estimates these probabilities using a Markov chain Monte Carlo (MCMC) algorithm. With parameter samples $\alpha_g^{(m)}$ and $\delta_g^{(m)}$ ($m = 1, \ldots, M$) from the MCMC,
+The parameters of interest are the $\beta_{\ell, g}$'s and their hyperparameters. Conditional on hyperparameters $\theta_\ell$, $\sigma_\ell^2$, and $\xi_{\ell, g}$, the $\beta_{\ell, g}$'s are independent with normal distributions.
 
 $$ \begin{align*}
-P(\delta_g > |\alpha_g| \ | \ \text{data}) &\approx M \nv \sum_{m = 1}^M P(\delta_g^{(m)} > |\alpha_g| \ | \ \text{data}) \\
-P(\delta_g < -|\alpha_g| \ | \ \text{data}) &\approx M \nv \sum_{m = 1}^M P(\delta_g^{(m)} < -|\alpha_g^{(m)}| \ | \ \text{data}) \\
-P(|\delta_g| > \e \ | \ \text{data},\  \e) &\approx M \nv \sum_{m = 1}^M P(|\delta_g^{(m)}| > \e \ | \ \text{data},\  \e) \\
+\beta_{\ell, g} \ | \ \theta_\ell, \ \sigma_\ell^2, \ \xi_{\ell, g} \stackrel{\text{ind}}{\sim} \text{Normal}(\theta_\ell, \ \sigma_\ell^2 \xi_{\ell, g})
+\end{align*} $$
+
+The design matrix $X$ should be chosen so that this independence assumption is justified as much as possible.
+
+The prior means $\theta_\ell$ of $\beta_{\ell, 1}, \beta_{\ell, G}$ are given normal priors. Conditional on the initialization constants $c_\ell^2$, the $\theta_\ell$'s are assumed to be independent.
+
+
+$$ \begin{align*}
+\theta_\ell \ | \ c_\ell^2 \stackrel{\text{ind}}{\sim} \text{Normal}(0, \ c_\ell^2)
+\end{align*} $$
+
+The $c_\ell$'s should be large so that the priors on the $\theta_\ell$'s are diffuse and thus less informative than otherwise.
+
+The $\sigma_\ell$ parameters are assumed to be independent conditional on initialization constants $s_\ell$.
+
+$$ \begin{align*}
+\sigma_\ell \ | \ s_\ell \stackrel{\text{ind}}{\sim} \text{Uniform}(0, \ s_\ell^2)
+\end{align*} $$
+
+This prior is equivalent to a $\sigma_\ell^{-1} \text{I}(\sigma_\ell < s_\ell)$ prior on $\sigma_\ell^2$. The $s_\ell$ constants should be chosen large. 
+
+
+The $\xi_{\ell, g}$ parameters are a computational tool for assigning different prior distributions to the $\beta_{\ell, g}$'s. Let the the $\xi_{\ell, g}$'s be conditionally independent given constants $k_\ell$ and $r_\ell$, and let 
+
+$$ \begin{align*}
+\xi_{\ell, g} \ | \ s_\ell \stackrel{\text{ind}}{\sim} p(\xi_{\ell, g} \ | \ k_\ell, \ r_\ell)
+\end{align*} $$
+
+If $p(\xi_{\ell, g} \ | \ k_\ell, \ r_\ell) = I(\xi_{\ell, g} = 1)$, then $\beta_{\ell, g}$ have conditionally independent normal priors. If $p(\xi_{\ell, g} \ | \ k_\ell, \ r_\ell) = Exp(\text{rate} = k_\ell)$, then the $\beta_{\ell, g}$'s are independent with Laplace distributions given $\theta_\ell$ and $\sigma_\ell^2$. If $p(\xi_{\ell, g} \ | \ k_\ell, \ r_\ell) = \text{Inverse-Gamma}(k_\ell, \ r_\ell)$, then the $\beta_{\ell, g}$'s are independent with Student-$t$ distributions given $\theta_\ell$ and $\sigma_\ell^2$. If $p(\xi_{\ell, g} \ | \ k_\ell, \ r_\ell) = \text{Half-Cauchy}(0, 1)$, then the $\beta_{\ell, g}$'s are independent with horseshoe distributions given $\theta_\ell$ and $\sigma_\ell^2$. For each $\ell$ separately, the user can choose among normal, Laplace, Student-$t$, and horseshoe priors on the $\beta_{\ell, g}$'s.
+
+
+## Noise
+
+The $\e_{n, g}$ terms are noise that the Poisson distribution does not account for. Conditional on their means $\rho_n$ and variances $\gamma_g$, the $\e_{n, g}$ parameters are independent with normal distrib{}utions.
+
+$$ \begin{align*}
+\e_{n,g} \ | \ \rho_n, \gamma_g \stackrel{\text{ind}}{\sim} \text{Normal}(\rho_n, \ \gamma_g)
+\end{align*} $$
+
+The $\rho_n$'s play the role of normalization factors in RNA-seq data, accounting for library-specific effects like sequencing depth. Unfortunately, sampling the $\rho_n$'s in the MCMC causes problems, and it is recommended that the $\rho_n$'s be set constant at their starting values. This is the package default. Otherwise, the $\rho_n$'s are treated as ordinary model parameters that, conditioned on their variance $\omega^2$, are independent with normal distributions.
+
+$$ \begin{align*}
+\rho_n \ | \ \omega^2 \stackrel{\text{ind}}{\sim} \text{Normal}(0, \ \omega^2)
+\end{align*} $$
+
+The $\gamma_g$'s play the role of overdispersion terms, analogous to the overdispersions in traditional negative-binomial likelihood models used in packages like `edgeR`. Conditioned on parameters $\nu$ and $\tau$, they have independent inverse-gamma distributions.
+
+$$ \begin{align*}
+\gamma_g \ | \ \nu, \ \tau \stackrel{\text{ind}}{\sim} \text{Inverse-Gamma} \left ( \frac{\nu}{2}, \ \frac{\nu \tau}{2} \right )
+\end{align*} $$
+
+We can interpret $\nu$ as the degree to which the $\gamma_g$'s "shrink" towards $\tau$. Given the initialization constant $d$, $\nu$ has a uniform prior distribution
+
+$$ \begin{align*}
+\nu \sim \text{Uniform}(0, \ d)
+\end{align*} $$
+
+And $\tau$ is the prior center of the $\gamma_g$'s (between the prior mean and prior mode). Given initialization constants $a$ and $b$, $\tau$ has a gamma prior.
+
+$$ \begin{align*}
+\tau \sim \text{Gamma}(a, \ \text{rate} = b)
+\end{align*} $$
+
+## Model summary
+
+
+$$ \begin{align*}
+&y_{n,g} \ | \ \boldsymbol{\beta}_g, \ \e_{n, g} &&\stackrel{\text{ind}}{\sim} \text{Poisson} \left (\exp \left (\boldsymbol{X}_n \boldsymbol{\beta}_g + \e_{n, g} \right ) \right ) \\
+&\qquad \beta_{\ell, g} \ | \ \theta_\ell, \ \sigma_\ell^2, \ \xi_{\ell, g} &&\stackrel{\text{ind}}{\sim} \text{Normal}(\theta_\ell, \ \sigma_\ell^2 \xi_{\ell, g}) \\
+&\qquad \qquad \theta_\ell \ | \ c_\ell^2 &&\stackrel{\text{ind}}{\sim} \text{Normal}(0, \ c_\ell^2) \\
+&\qquad \qquad \sigma_\ell \ | \ s_\ell &&\stackrel{\text{ind}}{\sim} \text{Uniform}(0, \ s_\ell^2) \\
+&\qquad \qquad \xi_{\ell, g} \ | \ s_\ell &&\stackrel{\text{ind}}{\sim} p(\xi_{\ell, g} \ | \ k_\ell, \ r_\ell) \\
+&\qquad \e_{n,g} \ | \ \rho_n, \gamma_g &&\stackrel{\text{ind}}{\sim} \text{Normal}(\rho_n, \ \gamma_g) \\
+&\qquad \qquad \rho_n \ | \ \omega^2 &&\stackrel{\text{ind}}{\sim} \text{Normal}(0, \ \omega^2) \\
+&\qquad \qquad \gamma_g \ | \ \nu, \ \tau &&\stackrel{\text{ind}}{\sim} \text{Inverse-Gamma} \left ( \frac{\nu}{2}, \ \frac{\nu \tau}{2} \right ) \\
+&\qquad \qquad \qquad \nu &&\sim \text{Uniform}(0, \ d) \\
+&\qquad \qquad \qquad \tau &&\sim \text{Gamma}(a, \ \text{rate} = b)
 \end{align*} $$
 
 
-# Fitting the model
 
-To fit the model and estimate heterosis probabilities, the `heterosis` package uses a slice-sampling-within-Gibbs Markov chain Monte Carlo algorithm, which is fully derived and explained in the manuscript. The package returns to the user MCMC parameter samples, heterosis probabilities, and the log full posterior density up to a proportionality constant (a useful convergence diagnostic).
+# Inference
+
+The inference is Bayesian. To explain, let $Y$ be the $N \times G$ matrix of the count data terms $y_{n, g}$. The joint posterior distribution of all the parameters given $Y$ is estimated using a slice-sampling-within-Gibbs Markov chain Monte Carlo algorithm. During the MCMC, gene-specific posterior probabilities of interest are calculated using Monte Carlo parameter samples of the $\beta_{\ell, g}$ parameters. The package can calculate posterior probabilities of logical conjunctions of inequalities involving arbitrary contrasts of the $\beta_{\ell, g}$'s. Examples of these posterior probabilities are
+
+$$ \begin{align*}
+&P\left( \left . \beta_{1, g} > 0 \  \right | \ Y \right) \\
+&P\left( \left . \beta_{2, g} - \beta_{3, g} > 1 \ \right | \ Y \right) \\
+&P\left( \left . \beta_{1, g} - \beta_{3, g} > 0 \text{  and  } \beta_{2, g} - \beta_{3, g} > \sqrt{2} \text{  and  } \beta_{4, g} > -\log(\pi) \ \right | \ Y \right) \\
+\end{align*} $$
+
+Any contrast can appear on the left side of each inequality, and any fixed number can appear on the right side. "Greater-than" is the only relation supported.
+
+
+
+
