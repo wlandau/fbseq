@@ -4,23 +4,12 @@
 \alias{scenario_heterosis_model}
 \title{Function \code{scenario_heterosis_model}}
 \usage{
-scenario_heterosis_model(genes = 35000, libraries = 12,
-  design = cbind(rep(1, libraries), rep(c(1, -1, 1), each =
-  floor(libraries/3)), rep(c(-1, 1, 1), each = floor(libraries/3))),
-  truth = Starts(nu = 10, omegaSquared = 0.01, sigmaSquared = c(1, 0.25,
-  0.25), tau = 0.1, theta = c(3, 0, 0)))
+scenario_heterosis_model(genes = 35000, libraries = 16)
 }
 \arguments{
 \item{genes}{number of genes/genes in the data}
 
 \item{libraries}{number of libraries/libraries in the data}
-
-\item{design}{Design matrix, with \code{N} rows and \code{L} columns.
-Same format as in \code{edgeR::glmFit}, with RNA-seq libraries/samples as rows
-and each \code{beta_{l, .}} as a column.}
-
-\item{truth}{a \code{Starts} object containing the necessary initialization constants
-and hyperparameters.}
 }
 \value{
 a \code{Scenario} object for the heterosis problem

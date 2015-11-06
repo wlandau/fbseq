@@ -4,34 +4,47 @@
 #' @return a \code{Scenario} object for the heterosis problem
 #' @param genes number of genes/genes in the data
 #' @param libraries number of libraries/libraries in the data
-#' @param design Design matrix, with \code{N} rows and \code{L} columns.
-#' Same format as in \code{edgeR::glmFit}, with RNA-seq libraries/samples as rows
-#' and each \code{beta_{l, .}} as a column.
-#' @param truth a \code{Starts} object containing the necessary initialization constants
-#' and hyperparameters.
-scenario_heterosis_model = function(genes = 3.5e4, libraries = 12,
-  design = cbind(rep(1, libraries), rep(c(1, -1, 1), each = floor(libraries/3)), rep(c(-1, 1, 1), each = floor(libraries/3))),
-  truth = Starts(nu = 10, omegaSquared = 0.01, sigmaSquared = c(1, 0.25, 0.25), tau = 0.1, theta = c(3, 0, 0))){
+scenario_heterosis_model = function(genes = 3.5e4, libraries = 16){
+  stopifnot(!(libraries %% 8))
+
+  truth = Starts(nu = 10, omegaSquared = 0.01, tau = 0.1,
+                        sigmaSquared = c(1, 0.25, 0.25, 0.25, 0.25), 
+                        theta = c(3, 0, 0, 0, 0))
+
+  design = cbind(
+    rep(1, libraries/4), 
+    rep(c(1, -1, 1, 1), each = libraries/4), 
+    rep(c(-1, 1, 1, 1), each = libraries/4),
+    rep(c(0, 0, 1, -1), each = libraries/4),
+    rep(rep(c(1, -1), each = ceiling(libraries/8)), times = 4))
+
+  colnames(design) = paste0("beta_", 1:5)
+  rownames(design) = paste0("library", 1:libraries)
 
   s = generate_data_from_model(genes = genes, design = design, truth = truth)
 
-  s@bounds = rep(0, 4)
-  names(s@bounds) = c("high-parent_1", "high-parent_2", "low-parent_1", "low-parent_2")
-
   s@contrasts = list(
-    c(0, 1, 0),
-    c(0, 0, 1),
-    c(0, -1, 0),
-    c(0, 0, -1))
+    "high-parent_hybrids_1" = c(beta_1 = 0, beta_2 =  1, beta_3 =  0, beta_4 = 0, beta_5 = 0),
+    "high-parent_hybrids_2" = c(beta_1 = 0, beta_2 =  0, beta_3 =  1, beta_4 = 0, beta_5 = 0),
+    "low-parent_hybrids_1"  = c(beta_1 = 0, beta_2 = -1, beta_3 =  0, beta_4 = 0, beta_5 = 0),
+    "low-parent_hybrids_2"  = c(beta_1 = 0, beta_2 = 0,  beta_3 = -1, beta_4 = 0, beta_5 = 0),
 
-  names(s@contrasts) = names(s@bounds)
-  for(i in 1:length(s@contrasts)) names(s@contrasts[[i]]) = paste0("beta_", 1:ncol(s@design))
+    "high-parent_hybrid1_1" = c(beta_1 = 0, beta_2 =  0, beta_3 =  2, beta_4 =  1, beta_5 = 0),
+    "high-parent_hybrid1_2" = c(beta_1 = 0, beta_2 =  2, beta_3 =  0, beta_4 =  1, beta_5 = 0),
+    "low-parent_hybrid1_1"  = c(beta_1 = 0, beta_2 =  0, beta_3 = -2, beta_4 = -1, beta_5 = 0),
+    "low-parent_hybrid1_2"  = c(beta_1 = 0, beta_2 = -2, beta_3 =  0, beta_4 = -1, beta_5 = 0),
 
-  rownames(s@design) = colnames(s@counts)
-  colnames(s@design) = paste0("beta_", 1:ncol(s@design))
+    "high-parent_hybrid2_1" = c(beta_1 = 0, beta_2 =  0, beta_3 =  2, beta_4 = -1, beta_5 = 0),
+    "high-parent_hybrid2_2" = c(beta_1 = 0, beta_2 =  2, beta_3 =  0, beta_4 = -1, beta_5 = 0),
+    "low-parent_hybrid2_1"  = c(beta_1 = 0, beta_2 =  0, beta_3 = -2, beta_4 =  1, beta_5 = 0),
+    "low-parent_hybrid2_2"  = c(beta_1 = 0, beta_2 = -2, beta_3 =  0, beta_4 =  1, beta_5 = 0))
 
-  s@propositions = list(1:2, 3:4)
-  names(s@propositions) = c("high-parent_heterosis", "low-parent_heterosis")
+  s@bounds = rep(0, length(s@contrasts))
+  names(s@bounds) = names(s@contrasts)
+
+  s@propositions = list(1:2, 3:4, 5:6, 7:8, 9:10, 11:12)
+  names(s@propositions) = gsub("_2", "", names(s@contrasts)[1:6*2])
+
   for(i in 1:length(s@propositions))
     names(s@propositions[[i]]) = names(s@contrasts)[s@propositions[[i]]]
 

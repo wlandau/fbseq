@@ -40,7 +40,7 @@ generate_data_from_model = function(genes, design, truth){
 
   counts = matrix(rpois(genes*libraries, exp(lambda + epsilon)), nrow = genes)
   rownames(counts) = paste("gene_", 1:genes, sep="")
-  colnames(counts) = paste("library_", 1:libraries, sep="")
+  colnames(counts) = rownames(design)
 
   truth@epsilon = as.vector(epsilon)
   Scenario(counts = counts, design = design, supplement = list(truth = truth))
