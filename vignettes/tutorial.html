@@ -124,6 +124,10 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ##   ..@ propositions: list()
 ##   ..@ supplement  : list()</code></pre>
 <p>Type <code>help(&quot;Scenario-class&quot;)</code> for details about the slots. When you have these slots ready, use the <code>Scenario</code> function to create a <code>Scenario</code> object.</p>
+<pre class="sourceCode r"><code class="sourceCode r">scenario =<span class="st"> </span><span class="kw">Scenario</span>(<span class="dt">counts =</span> counts, <span class="dt">design =</span> design, <span class="dt">contrasts =</span> contrasts, <span class="dt">bounds =</span> bounds, <span class="dt">propositions =</span> propositions, <span class="dt">supplement =</span> supplement)</code></pre>
+<p>With the exception of <code>Chain</code> objects, arguments passed to <code>Scenario</code> need to be explicitly passed to their slots. For example,</p>
+<pre class="sourceCode r"><code class="sourceCode r">scenario =<span class="st"> </span><span class="kw">Scenario</span>(counts, design, contrasts, bounds, propositions, supplement)</code></pre>
+<p>would throw an error.</p>
 <div id="example-scenario-from-paschold" class="section level3">
 <h3><span class="header-section-number">4.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></h3>
 <p>The package comes with a <code>Scenario</code> with data taken from <span class="citation">Paschold et al. (2012)</span>. The data is from an RNA-sequencing (RNA-seq) data experiment on maize described in the paper.</p>
@@ -365,13 +369,16 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ## low-parent_Mo17xB73_1 low-parent_Mo17xB73_2 
 ##                    11                    12</code></pre>
 <p>When the MCMC is run with the <code>fbseq</code> function, the package will estimate, for each gene, the probability that each of the 6 propositions is true.</p>
+<p>Note: every <code>Scenario</code> object has an optional <code>suppelement</code> slot with additional information about the scenario. In this case, <code>paschold@supplement</code> is an empty list.</p>
 </div>
 </div>
 <div id="optional-create-a-configs-object." class="section level2">
 <h2><span class="header-section-number">4.2</span> (Optional) create a <code>Configs</code> object.</h2>
+<p>The <code>Configs</code> S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so for many simple applications, you should be able to get away with calling the <code>Configs</code> function with no arguments. For a full list of slots and their explanations, type <code>help(&quot;Configs-class&quot;)</code>.</p>
 </div>
 <div id="optional-create-a-starts-object." class="section level2">
 <h2><span class="header-section-number">4.3</span> (Optional) create a <code>Starts</code> object.</h2>
+<p>The <code>Starts</code> S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as it is automatically generated for a given dataset and design with <code>generate_starts</code> inside the constructor of <code>Chain</code> class. However, the user may wish to modify individual slots. For more information, type <code>help(&quot;Starts-class&quot;)</code> and be sure to read the vignette on the hierarchical model.</p>
 </div>
 <div id="create-a-chain-object." class="section level2">
 <h2><span class="header-section-number">4.4</span> Create a <code>Chain</code> object.</h2>

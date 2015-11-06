@@ -76,6 +76,20 @@ str(new("Scenario"))
 
 Type `help("Scenario-class")` for details about the slots. When you have these slots ready, use the ``Scenario`` function to create a ``Scenario`` object.
 
+```{r, eval = F}
+scenario = Scenario(counts = counts, design = design, contrasts = contrasts, bounds = bounds, propositions = propositions, supplement = supplement)
+```
+
+With the exception of `Chain` objects, arguments passed to `Scenario` need to be explicitly passed to their slots. For example,
+
+```{r, eval = F}
+scenario = Scenario(counts, design, contrasts, bounds, propositions, supplement)
+```
+
+would throw an error.
+
+
+
 ### Example scenario from @paschold
 
 The package comes with a `Scenario` with data taken from @paschold. The data is from an RNA-sequencing (RNA-seq) data experiment on maize described in the paper.
@@ -147,12 +161,16 @@ paschold@propositions
 
 When the MCMC is run with the `fbseq` function, the package will estimate, for each gene, the probability that each of the 6 propositions is true.
 
+Note: every `Scenario` object has an optional `suppelement` slot with additional information about the scenario. In this case, `paschold@supplement` is an empty list.
+
 
 ## (Optional) create a `Configs` object.
 
-
+The `Configs` S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so for many simple applications, you should be able to get away with calling the `Configs` function with no arguments. For a full list of slots and their explanations, type `help("Configs-class")`.
 
 ## (Optional) create a `Starts` object.
+
+The `Starts` S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as it is automatically generated for a given dataset and design with `generate_starts` inside the constructor of `Chain` class. However, the user may wish to modify individual slots. For more information, type `help("Starts-class")` and be sure to read the vignette on the hierarchical model.
 
 ## Create a `Chain` object.
 

@@ -78,8 +78,6 @@ run_gelman_mcmc = function(chain){
   }
 
   chain = chain_list[[1]]
-  iterations = chain@iterations
-  for(i in 2:chain@nchains_diag) chain = concatenate(chain_list[[i]], chain)
   if(attempt == chain@max_attempts) warning(paste("In run_gelman_mcmc(), chain@max_attempts =", chain@max_attempts, "reached."))
   chain
 }
