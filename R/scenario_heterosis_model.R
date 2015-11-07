@@ -7,8 +7,8 @@
 scenario_heterosis_model = function(genes = 3.5e4, libraries = 16){
   stopifnot(!(libraries %% 8))
 
-  truth = Starts(nu = 5, omegaSquared = 0.01, tau = 0.1,
-                        sigmaSquared = c(1, 0.1, 0.1, 0.1, 0.1), 
+  truth = Starts(nu = 10, omegaSquared = 0.001, tau = 0.1,
+                        sigmaSquared = c(1, 0.1, 0.1, 0.05, 0.05), 
                         theta = c(3, 0, 0, 0, 0))
 
   design = cbind(

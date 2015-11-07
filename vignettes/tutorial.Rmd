@@ -164,6 +164,21 @@ When the MCMC is run with the `fbseq` function, the package will estimate, for e
 Note: every `Scenario` object has an optional `suppelement` slot with additional information about the scenario. In this case, `paschold@supplement` is an empty list.
 
 
+
+### Example simulated scenario with `scenario_heterosis_model`
+
+To simulate a heterosis scenario similar to that of @paschold, use the `scenario_heterosis_model` function. Count data are simulated from the model given fixed values for the hyperparameters. 
+
+```{r}
+s = scenario_heterosis_model(genes = 1000, libraries = 8)
+head(s@counts)
+s@design
+s@contrasts
+s@bounds
+s@propositions
+```
+
+
 ## (Optional) create a `Configs` object.
 
 The `Configs` S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so for many simple applications, you should be able to get away with calling the `Configs` function with no arguments. For a full list of slots and their explanations, type `help("Configs-class")`.

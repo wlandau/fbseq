@@ -51,7 +51,6 @@ generate_starts = function(counts, design, starts = Starts()){
   beta = t(OLS %*% t(logcounts))
 
   theta = apply(beta, 2, mean)
-  theta[!rowSums(OLS)] = 0
   sigmaSquared = apply(beta, 2, var)
   xi = rep(1, ncol(beta)*G)
 

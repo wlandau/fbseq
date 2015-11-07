@@ -68,6 +68,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <li><a href="#workflow-overview"><span class="toc-section-number">4</span> Workflow overview</a><ul>
 <li><a href="#create-a-scenario-object."><span class="toc-section-number">4.1</span> Create a <code>Scenario</code> object.</a><ul>
 <li><a href="#example-scenario-from-paschold"><span class="toc-section-number">4.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></a></li>
+<li><a href="#example-simulated-scenario-with-scenario_heterosis_model"><span class="toc-section-number">4.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></a></li>
 </ul></li>
 <li><a href="#optional-create-a-configs-object."><span class="toc-section-number">4.2</span> (Optional) create a <code>Configs</code> object.</a></li>
 <li><a href="#optional-create-a-starts-object."><span class="toc-section-number">4.3</span> (Optional) create a <code>Starts</code> object.</a></li>
@@ -371,6 +372,117 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 <p>When the MCMC is run with the <code>fbseq</code> function, the package will estimate, for each gene, the probability that each of the 6 propositions is true.</p>
 <p>Note: every <code>Scenario</code> object has an optional <code>suppelement</code> slot with additional information about the scenario. In this case, <code>paschold@supplement</code> is an empty list.</p>
 </div>
+<div id="example-simulated-scenario-with-scenario_heterosis_model" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></h3>
+<p>To simulate a heterosis scenario similar to that of <span class="citation">Paschold et al. (2012)</span>, use the <code>scenario_heterosis_model</code> function. Count data are simulated from the model given fixed values for the hyperparameters.</p>
+<pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">8</span>)
+<span class="kw">head</span>(s@counts)</code></pre>
+<pre><code>##        library1 library2 library3 library4 library5 library6 library7
+## gene_1        1        0        0        3        0        0        1
+## gene_2        2        3        6        4        5        3        6
+## gene_3        2        1        2        1        0        3        2
+## gene_4        0        2        1        0        1        1        0
+## gene_5       36       18       75       52       55       35       53
+## gene_6        0        1        0        0        0        0        0
+##        library8
+## gene_1        2
+## gene_2        7
+## gene_3        3
+## gene_4        2
+## gene_5       46
+## gene_6        0</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
+<pre><code>##          beta_1 beta_2 beta_3 beta_4 beta_5
+## library1      1      1     -1      0      1
+## library2      1      1     -1      0     -1
+## library3      1     -1      1      0      1
+## library4      1     -1      1      0     -1
+## library5      1      1      1      1      1
+## library6      1      1      1      1     -1
+## library7      1      1      1     -1      1
+## library8      1      1      1     -1     -1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">s@contrasts</code></pre>
+<pre><code>## $`high-parent_hybrids_1`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0      1      0      0      0 
+## 
+## $`high-parent_hybrids_2`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0      0      1      0      0 
+## 
+## $`low-parent_hybrids_1`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0     -1      0      0      0 
+## 
+## $`low-parent_hybrids_2`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0      0     -1      0      0 
+## 
+## $`high-parent_hybrid1_1`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0      2      0      1      0 
+## 
+## $`high-parent_hybrid1_2`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0      0      2      1      0 
+## 
+## $`low-parent_hybrid1_1`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0     -2      0     -1      0 
+## 
+## $`low-parent_hybrid1_2`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0      0     -2     -1      0 
+## 
+## $`high-parent_hybrid2_1`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0      2      0     -1      0 
+## 
+## $`high-parent_hybrid2_2`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0      0      2     -1      0 
+## 
+## $`low-parent_hybrid2_1`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0     -2      0      1      0 
+## 
+## $`low-parent_hybrid2_2`
+## beta_1 beta_2 beta_3 beta_4 beta_5 
+##      0      0     -2      1      0</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">s@bounds</code></pre>
+<pre><code>## high-parent_hybrids_1 high-parent_hybrids_2  low-parent_hybrids_1 
+##                     0                     0                     0 
+##  low-parent_hybrids_2 high-parent_hybrid1_1 high-parent_hybrid1_2 
+##                     0                     0                     0 
+##  low-parent_hybrid1_1  low-parent_hybrid1_2 high-parent_hybrid2_1 
+##                     0                     0                     0 
+## high-parent_hybrid2_2  low-parent_hybrid2_1  low-parent_hybrid2_2 
+##                     0                     0                     0</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">s@propositions</code></pre>
+<pre><code>## $`high-parent_hybrids`
+## high-parent_hybrids_1 high-parent_hybrids_2 
+##                     1                     2 
+## 
+## $`low-parent_hybrids`
+## low-parent_hybrids_1 low-parent_hybrids_2 
+##                    3                    4 
+## 
+## $`high-parent_hybrid1`
+## high-parent_hybrid1_1 high-parent_hybrid1_2 
+##                     5                     6 
+## 
+## $`low-parent_hybrid1`
+## low-parent_hybrid1_1 low-parent_hybrid1_2 
+##                    7                    8 
+## 
+## $`high-parent_hybrid2`
+## high-parent_hybrid2_1 high-parent_hybrid2_2 
+##                     9                    10 
+## 
+## $`low-parent_hybrid2`
+## low-parent_hybrid2_1 low-parent_hybrid2_2 
+##                   11                   12</code></pre>
+</div>
 </div>
 <div id="optional-create-a-configs-object." class="section level2">
 <h2><span class="header-section-number">4.2</span> (Optional) create a <code>Configs</code> object.</h2>
@@ -392,14 +504,14 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 <p>As an example, here is the <code>Chain</code> created from the <code>paschold</code> scenario visited earlier.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(paschold)
 <span class="kw">str</span>(chain)</code></pre>
-<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 95 slots
+<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 96 slots
 ##   ..@ bound_names               : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ contrast_names            : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ gene_names                : chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
 ##   ..@ library_names             : chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
 ##   ..@ proposition_names         : chr [1:6] &quot;high-parent_B73xMo17_Mo17xB73&quot; &quot;low-parent_B73xMo17_Mo17xB73&quot; &quot;high-parent_B73xMo17&quot; &quot;low-parent_B73xMo17&quot; ...
 ##   ..@ psrf                      : num(0) 
-##   ..@ supplement                : list()
+##   ..@ runtime                   : num(0) 
 ##   ..@ bounds                    : Named num [1:12] 0 0 0 0 0 0 0 0 0 0 ...
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ contrasts                 : Named num [1:60] 0 1 0 0 0 0 0 1 0 0 ...
@@ -407,6 +519,7 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ##   ..@ counts                    : int [1:634496] 1 3 2323 2 3 672 459 1184 551 245 ...
 ##   ..@ design                    : num [1:80] 1 1 1 1 1 1 1 1 1 1 ...
 ##   ..@ propositions              : int [1:72] 1 1 0 0 0 0 0 0 0 0 ...
+##   ..@ supplement                : list()
 ##   ..@ diag                      : chr &quot;gelman&quot;
 ##   ..@ ess                       : int 100
 ##   ..@ max_attempts              : num 5
@@ -472,7 +585,7 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
 ##   ..@ sigmaSquaredStart         : num [1:5] 6.1462 0.0507 0.0451 0.0109 0.061
 ##   ..@ tauStart                  : num 0.187
-##   ..@ thetaStart                : num [1:5] 3.37 0 0 0 0
+##   ..@ thetaStart                : num [1:5] 3.3665 0.0152 0.0468 -0.0105 0.0392
 ##   ..@ xiStart                   : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...
 ##   ..@ betaPostMean              : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ epsilonPostMean           : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
@@ -589,7 +702,7 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
 ##   ..@ sigmaSquared: num [1:5] 6.1462 0.0507 0.0451 0.0109 0.061
 ##   ..@ tau         : num 0.187
-##   ..@ theta       : num [1:5] 3.37 0 0 0 0
+##   ..@ theta       : num [1:5] 3.3665 0.0152 0.0468 -0.0105 0.0392
 ##   ..@ xi          : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 <p>Note that the unspecified starting values were automatically generated in the construction of the <code>Chain</code> object.</p>
 </div>
