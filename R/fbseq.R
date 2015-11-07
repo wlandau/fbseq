@@ -1,4 +1,4 @@
-#' @include effective_sample_size.R run_gelman_mcmc.R
+#' @include ess_criterion.R run_gelman_mcmc.R
 NULL
 
 #' @title Function \code{fbseq}
@@ -18,7 +18,7 @@ fbseq = function(chain){
   } else {
     chain = run_fixed_mcmc(chain)
   }
-  if(chain@ess > 0) chain = effective_sample_size(chain)
+  if(chain@ess > 0) chain = ess_criterion(chain)
   t1 = as.numeric(proc.time() - t0)
   names(t1) = names(t0)
   chain@runtime = t1

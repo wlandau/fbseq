@@ -30,7 +30,7 @@ Collate:
     'data.R'
     'effect_sizes.R'
     'run_fixed_mcmc.R'
-    'effective_sample_size.R'
+    'ess_criterion.R'
     'flatten.R'
     'estimates.R'
     'run_gelman_mcmc.R'
