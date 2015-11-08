@@ -10,6 +10,10 @@ A collection of MCMC control parameters.
 \section{Slots}{
 
 \describe{
+\item{\code{constrain_theta}}{Set to TRUE to fix some of the theta_l's at 0 based on the design matrix.
+Theta_l's likely to be near 0 are set to 0 to speed convergence. Be advised that the effects_update_theta
+slot is overwritten in the process.}
+
 \item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
 
 \item{\code{ess}}{Minimum effective sample size for all parameters}

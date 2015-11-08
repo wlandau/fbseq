@@ -65,6 +65,10 @@ generate_starts = function(counts, design, starts = Starts()){
   nu = nt$nu
   tau = nt$tau
 
+  if(tau < 0) tau = 1e-12
+  if(nu < 0) nu = 1e-12
+  if(nu > starts@d) nu = starts@d
+
   for(n in c("c", "k", "r", "s")){
     if(length(slot(starts, n)) == 0)
       slot(starts, n) = slot(Starts(), n)

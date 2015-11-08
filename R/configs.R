@@ -5,6 +5,9 @@ NULL
 #' @description A collection of MCMC control parameters.
 #' @exportClass Configs
 #' 
+#' @slot constrain_theta Set to TRUE to fix some of the theta_l's at 0 based on the design matrix. 
+#' Theta_l's likely to be near 0 are set to 0 to speed convergence. Be advised that the effects_update_theta
+#' slot is overwritten in the process.
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
 #' @slot max_attempts Maximum number of retries for assessing convergence and generating enough effective samples.
@@ -34,6 +37,7 @@ NULL
 #' If \code{verbose} > 0, then progress messages will also print during setup and cleanup.
 setClass("Configs", 
   slots = list(
+    constrain_theta = "logical",
     diag = "character",
     ess = "numeric",
     max_attempts = "numeric",
@@ -55,6 +59,7 @@ setClass("Configs",
     verbose = "numeric"
   ),
   prototype = list(
+    constrain_theta = T,
     diag = "gelman",
     ess = 1e2,
     max_attempts = 5,

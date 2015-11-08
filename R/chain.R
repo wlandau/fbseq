@@ -27,6 +27,9 @@ NULL
 #' @slot supplement a list containing supplementary information about the scenario: 
 #' for example, how the data were simulated, if applicable
 #' 
+#' @slot constrain_theta Set to TRUE to fix some of the theta_l's at 0 based on the design matrix. 
+#' Theta_l's likely to be near 0 are set to 0 to speed convergence. Be advised that the effects_update_theta
+#' slot is overwritten in the process.
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
 #' @slot max_attempts Maximum number of retries for assessing convergence and generating enough effective samples.
@@ -142,6 +145,7 @@ setClass("Chain",
     propositions = "integer",
     supplement = "list",
 
+    constrain_theta = "logical",
     diag = "character",
     ess = "integer",
     max_attempts = "numeric",
