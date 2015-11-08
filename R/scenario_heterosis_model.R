@@ -5,48 +5,47 @@
 #' @param genes number of genes/genes in the data
 #' @param libraries number of libraries/libraries in the data
 scenario_heterosis_model = function(genes = 3.5e4, libraries = 16){
-  stopifnot(!(libraries %% 8))
-
   truth = Starts(nu = 10, omegaSquared = 0.001, tau = 0.1,
                         sigmaSquared = c(1, 0.1, 0.1, 0.05, 0.05), 
                         theta = c(3, 0, 0, 0, 0))
 
-  design = cbind(
-    rep(1, libraries/4), 
-    rep(c(1, -1, 1, 1), each = libraries/4), 
-    rep(c(-1, 1, 1, 1), each = libraries/4),
-    rep(c(0, 0, 1, -1), each = libraries/4),
-    rep(rep(c(1, -1), each = ceiling(libraries/8)), times = 4))
+  data(paschold)
+  paschold = get("paschold")
+  stopifnot(libraries >= nrow(paschold@design))
 
-  colnames(design) = paste0("beta_", 1:5)
-  rownames(design) = paste0("library", 1:libraries)
-
+  ns = 0:(libraries -1) %% ncol(paschold@counts) + 1
+  design = paschold@design[ns,]
   s = generate_data_from_model(genes = genes, design = design, truth = truth)
 
-  s@contrasts = list(
-    "high-parent_hybrids_1" = c(beta_1 = 0, beta_2 =  1, beta_3 =  0, beta_4 = 0, beta_5 = 0),
-    "high-parent_hybrids_2" = c(beta_1 = 0, beta_2 =  0, beta_3 =  1, beta_4 = 0, beta_5 = 0),
-    "low-parent_hybrids_1"  = c(beta_1 = 0, beta_2 = -1, beta_3 =  0, beta_4 = 0, beta_5 = 0),
-    "low-parent_hybrids_2"  = c(beta_1 = 0, beta_2 = 0,  beta_3 = -1, beta_4 = 0, beta_5 = 0),
+  libnames = colnames(paschold@counts)
+  libnames = gsub("B73xMo17_Mo17xB73", "hybrids", libnames)
+  libnames = gsub("B73xMo17", "hybrid1", libnames)
+  libnames = gsub("Mo17xB73", "hybrid2", libnames)
+  libnames = gsub("B73", "parent1", libnames)
+  libnames = gsub("Mo17", "parent2", libnames)
+  libnames = gsub("_.*", "", libnames)
+  libnames = paste0(libnames[ns], "_", 1:libraries)
 
-    "high-parent_hybrid1_1" = c(beta_1 = 0, beta_2 =  2, beta_3 =  0, beta_4 =  1, beta_5 = 0),
-    "high-parent_hybrid1_2" = c(beta_1 = 0, beta_2 =  0, beta_3 =  2, beta_4 =  1, beta_5 = 0),
-    "low-parent_hybrid1_1"  = c(beta_1 = 0, beta_2 = -2, beta_3 =  0, beta_4 = -1, beta_5 = 0),
-    "low-parent_hybrid1_2"  = c(beta_1 = 0, beta_2 =  0, beta_3 = -2, beta_4 = -1, beta_5 = 0),
+  colnames(s@counts) = libnames
+  rownames(s@design) = libnames
+  colnames(s@design) = paste0("beta_", 1:ncol(design))
 
-    "high-parent_hybrid2_1" = c(beta_1 = 0, beta_2 =  2, beta_3 =  0, beta_4 = -1, beta_5 = 0),
-    "high-parent_hybrid2_2" = c(beta_1 = 0, beta_2 =  0, beta_3 =  2, beta_4 = -1, beta_5 = 0),
-    "low-parent_hybrid2_1"  = c(beta_1 = 0, beta_2 = -2, beta_3 =  0, beta_4 =  1, beta_5 = 0),
-    "low-parent_hybrid2_2"  = c(beta_1 = 0, beta_2 =  0, beta_3 = -2, beta_4 =  1, beta_5 = 0))
+  for(n in c("bounds", "contrasts", "propositions"))
+    slot(s, n) = slot(paschold, n)
 
-  s@bounds = rep(0, length(s@contrasts))
-  names(s@bounds) = names(s@contrasts)
-
-  s@propositions = list(1:2, 3:4, 5:6, 7:8, 9:10, 11:12)
-  names(s@propositions) = gsub("_2", "", names(s@contrasts)[1:6*2])
-
+  cnames = names(s@bounds)
+  cnames = gsub("B73xMo17_Mo17xB73", "hybrids", cnames)
+  cnames = gsub("B73xMo17", "hybrid1", cnames)
+  cnames = gsub("Mo17xB73", "hybrid2", cnames)
+  names(s@bounds) = names(s@contrasts) = cnames
   for(i in 1:length(s@propositions))
     names(s@propositions[[i]]) = names(s@contrasts)[s@propositions[[i]]]
+
+  pnames = names(s@propositions)
+  pnames = gsub("B73xMo17_Mo17xB73", "hybrids", pnames)
+  pnames = gsub("B73xMo17", "hybrid1", pnames)
+  pnames = gsub("Mo17xB73", "hybrid2", pnames)
+  names(s@propositions) = pnames
 
   s
 }
