@@ -12,7 +12,7 @@ estimates(chain, level = 0.95)
 \item{level}{level of the credible intervals from 0 to 1}
 }
 \value{
-a data frame of estimates: posterior means and approximate credible intervals.
+a data frame of marginal posterior parameter estimates: posterior means, poseterior standard deviations, and approximate credible intervals.
 Parameters not updeted in the MCMC are excluded.
 }
 \description{

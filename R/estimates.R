@@ -6,7 +6,7 @@ NULL
 #' from a \code{Chain} object. 
 #'
 #' @export
-#' @return a data frame of estimates: posterior means and approximate credible intervals.
+#' @return a data frame of marginal posterior parameter estimates: posterior means, poseterior standard deviations, and approximate credible intervals.
 #' Parameters not updeted in the MCMC are excluded.
 #' @param chain a \code{Chain} object
 #' @param level level of the credible intervals from 0 to 1
@@ -43,7 +43,7 @@ estimates = function(chain, level = 0.95){
   d[grep("omegaSquared", rownames(d)), "upper"] = pmin(d[grep("omegaSquared", rownames(d)), "upper"], chain@w^2)
   d[grep("sigmaSquared", rownames(d)), "upper"] = pmin(d[grep("sigmaSquared", rownames(d)), "upper"], chain@s^2)
 
-  out = data.frame(mean = d$mean, lower = d$lower, upper = d$upper)
+  out = data.frame(mean = d$mean, sd = d$sd, lower = d$lower, upper = d$upper)
   colnames(out) = c("mean", paste0(c("lower", "upper"), "_ci_", level))
   rownames(out) = names(Mean)
   out
