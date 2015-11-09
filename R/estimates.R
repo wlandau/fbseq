@@ -44,7 +44,7 @@ estimates = function(chain, level = 0.95){
   d[grep("sigmaSquared", rownames(d)), "upper"] = pmin(d[grep("sigmaSquared", rownames(d)), "upper"], chain@s^2)
 
   out = data.frame(mean = d$mean, sd = d$sd, lower = d$lower, upper = d$upper)
-  colnames(out) = c("mean", paste0(c("lower", "upper"), "_ci_", level))
+  colnames(out) = c("mean", "sd", paste0(c("lower", "upper"), "_ci_", level))
   rownames(out) = names(Mean)
   out
 }
