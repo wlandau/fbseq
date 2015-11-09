@@ -378,26 +378,26 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1         8        53        16        14        13        36
-## gene_2        38        17        58       107        29        44
-## gene_3         4         2         3         5        10         7
-## gene_4         5        14        17         7         7        13
-## gene_5         2         0         6         3        22        32
-## gene_6        51        51        55        46        98        60
+## gene_1        61        96        50        42       198       134
+## gene_2        36        50        17        28       156        60
+## gene_3         3         5         3         1        28        14
+## gene_4         1         5         0         5        12        22
+## gene_5        18        24        27        41         5        27
+## gene_6        32        39        21        61        39        21
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1         5         9        18         16         21         15
-## gene_2        63        73        18         14         41         76
-## gene_3        20         4         4          1          5          8
-## gene_4        24         8         4         18         21         19
-## gene_5        29        27        19         16          5         11
-## gene_6       145       147        53         73        154        147
+## gene_1       194       203       375        173        350        264
+## gene_2        55        50        71         56         69         39
+## gene_3        21         5         8         11          5          4
+## gene_4         5        13         9          4          9          5
+## gene_5        39        55        31         47         58         32
+## gene_6        26        36       104         49         50         90
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         25         33         21         22
-## gene_2         19         19         32         49
-## gene_3         12         14          7          4
-## gene_4         40         24         14         21
-## gene_5         12         32          7          6
-## gene_6         69         91        149        103</code></pre>
+## gene_1         78        145        145        159
+## gene_2         76         48         35         54
+## gene_3          6          6          5          2
+## gene_4          6          6         10         22
+## gene_5         36         36         39         53
+## gene_6        143        214         76         90</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -502,9 +502,8 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 <div id="optional-create-a-configs-object." class="section level2">
 <h2><span class="header-section-number">4.2</span> (Optional) create a <code>Configs</code> object.</h2>
 <p>The <code>Configs</code> S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so just for the sake of trying out the package, you should be able to get away with calling the <code>Configs</code> function with no arguments. For a full list of slots and their explanations, type <code>help(&quot;Configs-class&quot;)</code>.</p>
-<p>However, for serious analyses, pay particular attention to the <code>Configs</code> slots that apply constraints on model parameters. The <code>parameter_sets_update</code> controls which sets of parameters to update during the MCMC. All other parameters are fixed at constant values. Similarly, the <code>effects_update_beta</code> and <code>effects_update_theta</code> slots store the values of <span class="math">\(\ell\)</span> for which the <span class="math">\(\beta_{\ell, g}\)</span>’s and <span class="math">\(\theta_\ell\)</span>’s are updated. The <code>constrain_thetas</code> slot is a logical value. If it is set to <code>TRUE</code>, then <code>effects_update_theta</code> will be overwritten in the construction of the <code>Chain</code> object later. The new <code>effects_update_theta</code> will indicate the rows of <span class="math">\((X^T X)^{-1} X^T\)</span> that do not sum to zero.</p>
+<p>However, for serious analyses, you may want to adjust the <code>iterations</code>, <code>burnin</code>, and <code>thin</code> slots to control the duration of the MCMC. <code>burinin</code> is the number of throwaway iterations at the beginning of the MCMC, <code>iterations</code> is the number of iterations for which parameter samples are actually used, and <code>thin</code> is the number of iterations to throw away between each actually-used iteration. You may also want to adjust the <code>Configs</code> slots that apply constraints on model parameters. The <code>parameter_sets_update</code> controls which sets of parameters to update during the MCMC. All other parameters are fixed at constant values.</p>
 <p>The <code>diag</code> slot is also worth noting. If <code>diag</code> is set to <code>&quot;gelman&quot;</code>, Gelman-Rubin potential scale reduction factors will be used to assess convergence and then stored in the <code>psrf</code> slot of the subsequent <code>Chain</code>. For any other value, no such convergence diagnostic will be used. Similarly, the <code>ess</code> slot is important. If greater than 0, the program will make sure that an effective sample size of at least <code>ess</code> is reached for all returned parameters. Otherwise, no such checks will occur. The <code>max_attempts</code> slot controls the number of retries to meet these convergence diagnostics. It can be set to <code>Inf</code>, but this is not recommended because saved <code>Chain</code> objects can be restarted from where they left off with a single line of code.</p>
-<p>Finally, the <code>iterations</code>, <code>burnin</code>, and <code>thin</code> slots control the duration of the chain. <code>burinin</code> is the number of throwaway iterations at the beginning of the MCMC, <code>iterations</code> is the number of iterations for which parameter samples are actually used, and <code>thin</code> is the number of iterations to throw away between each actually-used iteration.</p>
 </div>
 <div id="optional-create-a-starts-object." class="section level2">
 <h2><span class="header-section-number">4.3</span> (Optional) create a <code>Starts</code> object.</h2>
@@ -536,7 +535,7 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ##   ..@ design                    : num [1:80] 1 1 1 1 1 1 1 1 1 1 ...
 ##   ..@ propositions              : int [1:72] 1 1 0 0 0 0 0 0 0 0 ...
 ##   ..@ supplement                : list()
-##   ..@ constrain_theta           : logi TRUE
+##   ..@ constrain_theta           : logi FALSE
 ##   ..@ diag                      : chr &quot;gelman&quot;
 ##   ..@ ess                       : int 100
 ##   ..@ max_attempts              : num 5
@@ -544,12 +543,12 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ##   ..@ psrf_tol                  : num 1.1
 ##   ..@ burnin                    : int 100000
 ##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
-##   ..@ effects_update_theta      : int 1
-##   ..@ genes_return              : int [1:3] 9045 16161 21928
-##   ..@ genes_return_epsilon      : int [1:3] 4337 13745 24525
+##   ..@ effects_update_theta      : int [1:5] 1 2 3 4 5
+##   ..@ genes_return              : int [1:3] 12065 28610 34163
+##   ..@ genes_return_epsilon      : int [1:3] 5040 28646 39462
 ##   ..@ iterations                : int 1000
-##   ..@ libraries_return          : int [1:3] 6 11 15
-##   ..@ libraries_return_epsilon  : int [1:3] 1 6 12
+##   ..@ libraries_return          : int [1:3] 8 11 13
+##   ..@ libraries_return_epsilon  : int [1:3] 5 5 12
 ##   ..@ parameter_sets_return     : Named int [1:10] 1 1 1 1 0 0 1 1 1 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:10] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update     : Named int [1:10] 1 1 1 1 0 0 1 1 1 0
@@ -567,7 +566,7 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ##   ..@ GreturnEpsilon            : int 3
 ##   ..@ L                         : int 5
 ##   ..@ Lupdate_beta              : int 5
-##   ..@ Lupdate_theta             : int 1
+##   ..@ Lupdate_theta             : int 5
 ##   ..@ N                         : int 16
 ##   ..@ Nreturn                   : int 3
 ##   ..@ NreturnEpsilon            : int 3
@@ -602,7 +601,7 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
 ##   ..@ sigmaSquaredStart         : num [1:5] 6.1462 0.0507 0.0451 0.0109 0.061
 ##   ..@ tauStart                  : num 0.187
-##   ..@ thetaStart                : num [1:5] 3.37 0 0 0 0
+##   ..@ thetaStart                : num [1:5] 3.3665 0.0152 0.0468 -0.0105 0.0392
 ##   ..@ xiStart                   : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...
 ##   ..@ betaPostMean              : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ epsilonPostMean           : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
@@ -681,7 +680,7 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 ##   ..@ supplement  : list()</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(configs)</code></pre>
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 19 slots
-##   ..@ constrain_theta         : logi TRUE
+##   ..@ constrain_theta         : logi FALSE
 ##   ..@ diag                    : chr &quot;gelman&quot;
 ##   ..@ ess                     : int 100
 ##   ..@ max_attempts            : num 5
@@ -689,12 +688,12 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 ##   ..@ psrf_tol                : num 1.1
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ effects_update_theta    : int 1
-##   ..@ genes_return            : int [1:3] 9045 16161 21928
-##   ..@ genes_return_epsilon    : int [1:3] 4337 13745 24525
+##   ..@ effects_update_theta    : int [1:5] 1 2 3 4 5
+##   ..@ genes_return            : int [1:3] 12065 28610 34163
+##   ..@ genes_return_epsilon    : int [1:3] 5040 28646 39462
 ##   ..@ iterations              : int 1000
-##   ..@ libraries_return        : int [1:3] 6 11 15
-##   ..@ libraries_return_epsilon: int [1:3] 1 6 12
+##   ..@ libraries_return        : int [1:3] 8 11 13
+##   ..@ libraries_return_epsilon: int [1:3] 5 5 12
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
@@ -720,7 +719,7 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
 ##   ..@ sigmaSquared: num [1:5] 6.1462 0.0507 0.0451 0.0109 0.061
 ##   ..@ tau         : num 0.187
-##   ..@ theta       : num [1:5] 3.37 0 0 0 0
+##   ..@ theta       : num [1:5] 3.3665 0.0152 0.0468 -0.0105 0.0392
 ##   ..@ xi          : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 <p>Note that the unspecified starting values were automatically generated in the construction of the <code>Chain</code> object.</p>
 </div>

@@ -27,9 +27,6 @@ NULL
 #' @slot supplement a list containing supplementary information about the scenario: 
 #' for example, how the data were simulated, if applicable
 #' 
-#' @slot constrain_theta Set to TRUE to fix some of the theta_l's at 0 based on the design matrix. 
-#' Theta_l's likely to be near 0 are set to 0 to speed convergence. Be advised that the effects_update_theta
-#' slot is overwritten in the process.
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
 #' @slot max_attempts Maximum number of retries for assessing convergence and generating enough effective samples.
@@ -40,7 +37,6 @@ NULL
 #' 
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
 #' @slot effects_update_beta bounds of l for which to update the beta_{l, g} parameters.
-#' @slot effects_update_theta bounds of l for which to update the theta_l parameters.
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
 #' Applies to all gene-specific parameters except for the epsilons.
 #' @slot genes_return_epsilon Indices of genes g for which epsilon_{n, g} is updated/returned.
@@ -68,7 +64,6 @@ NULL
 #' @slot GreturnEpsilon number of genes to return gene-specific MCMC epsilon parameter samples
 #' @slot L number of columns in the original design matrix
 #' @slot Lupdate_beta number of bounds of l for which to update the beta_{l, g} parameters.
-#' @slot Lupdate_theta number of bounds of l for which to update the theta_l parameters.
 #' @slot N number of libraries
 #' @slot Nreturn number of libraries to return library-specific MCMC parameter samples for (except the epsilons)
 #' @slot NreturnEpsilon number of libraries to return library-specific MCMC epsilon parameter samples
@@ -145,7 +140,6 @@ setClass("Chain",
     propositions = "integer",
     supplement = "list",
 
-    constrain_theta = "logical",
     diag = "character",
     ess = "integer",
     max_attempts = "numeric",
@@ -154,7 +148,6 @@ setClass("Chain",
 
     burnin = "integer",
     effects_update_beta = "integer",
-    effects_update_theta = "integer",
     genes_return = "integer",
     genes_return_epsilon = "integer",
     iterations = "integer",
@@ -176,7 +169,6 @@ setClass("Chain",
     GreturnEpsilon = "integer",
     L = "integer",
     Lupdate_beta = "integer",
-    Lupdate_theta = "integer",
     N = "integer",
     Nreturn = "integer",
     NreturnEpsilon = "integer",

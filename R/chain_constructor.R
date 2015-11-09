@@ -85,20 +85,7 @@ fill_easy_gaps = function(chain, scenario){
     c(out, rep(0, dim(scenario@design)[1] - length(out)))
   })
 
-  if(chain@constrain_theta){
-    OLS = solve(t(scenario@design) %*% scenario@design) %*%  t(scenario@design)
-    update = which(rowSums(OLS) != 0)
-    if(length(chain@effects_update_theta) && any(all.equal(update, chain@effects_update_theta) != TRUE))
-      warning("Rewriting the effects_update_theta slot because the constrain_theta slot is set to TRUE.")
-    chain@effects_update_theta = update
-    zero = which(rowSums(OLS) == 0)
-    chain@thetaStart[zero] = 0
-    names(chain@effects_update_theta) = NULL
-  }
-
   if(!length(chain@effects_update_beta)) chain@effects_update_beta = 1:ncol(scenario@design)
-  if(!length(chain@effects_update_theta)) chain@effects_update_theta = 1:ncol(scenario@design)
-
   if(!length(chain@genes_return)) chain@genes_return = sample.int(nrow(scenario@counts), 3, replace = T)
   if(!length(chain@genes_return_epsilon)) chain@genes_return_epsilon = sample.int(nrow(scenario@counts), 3, replace = T)
   if(!length(chain@libraries_return)) chain@libraries_return = sample.int(ncol(scenario@counts), 3, replace = T)

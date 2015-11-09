@@ -4,10 +4,7 @@ NULL
 #' @title Class \code{Configs}
 #' @description A collection of MCMC control parameters.
 #' @exportClass Configs
-#' 
-#' @slot constrain_theta Set to TRUE to fix some of the theta_l's at 0 based on the design matrix. 
-#' Theta_l's likely to be near 0 are set to 0 to speed convergence. Be advised that the effects_update_theta
-#' slot is overwritten in the process.
+#'
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
 #' @slot max_attempts Maximum number of retries for assessing convergence and generating enough effective samples.
@@ -17,8 +14,7 @@ NULL
 #' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
 #' 
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
-#' @slot effects_update_beta values of l for which to update the beta_{l, g} parameters.
-#' @slot effects_update_theta values of l for which to update the theta_l parameters.
+#' @slot effects_update_beta values of l for which to update the beta_{l, g} parameters. For debugging only.
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
 #' Applies to all gene-specific parameters except for the epsilons.
 #' @slot genes_return_epsilon Indices of genes g for which epsilon_{n, g} is updated/returned.
@@ -37,7 +33,6 @@ NULL
 #' If \code{verbose} > 0, then progress messages will also print during setup and cleanup.
 setClass("Configs", 
   slots = list(
-    constrain_theta = "logical",
     diag = "character",
     ess = "numeric",
     max_attempts = "numeric",
@@ -46,7 +41,6 @@ setClass("Configs",
 
     burnin = "numeric",
     effects_update_beta = "numeric",
-    effects_update_theta = "numeric",
     genes_return = "numeric",
     genes_return_epsilon = "numeric",
     iterations = "numeric",
@@ -59,7 +53,6 @@ setClass("Configs",
     verbose = "numeric"
   ),
   prototype = list(
-    constrain_theta = T,
     diag = "gelman",
     ess = 1e2,
     max_attempts = 5,

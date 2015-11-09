@@ -49,7 +49,7 @@ setClass("Starts",
   prototype = list(
     a = 1,
     b = 1,
-    c = 10,
+    c = 1,
     d = 1000,
     k = 5,
     r = 5,
