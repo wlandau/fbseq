@@ -112,7 +112,6 @@ fill_easy_gaps = function(chain, scenario){
   chain@libraries_return_epsilon = sort(chain@libraries_return_epsilon)
   chain@L = L = ncol(scenario@design)
   chain@Lupdate_beta = length(chain@effects_update_beta)
-  chain@Lupdate_theta = length(chain@effects_update_theta)
   chain@N = N = nrow(scenario@design)
   chain@Nreturn = Nreturn = length(chain@libraries_return)
   chain@NreturnEpsilon = NreturnEpsilon = length(chain@libraries_return_epsilon)
