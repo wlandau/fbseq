@@ -10,10 +10,6 @@ A collection of MCMC control parameters.
 \section{Slots}{
 
 \describe{
-\item{\code{constrain_theta}}{Set to TRUE to fix some of the theta_l's at 0 based on the design matrix.
-Theta_l's likely to be near 0 are set to 0 to speed convergence. Be advised that the effects_update_theta
-slot is overwritten in the process.}
-
 \item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
 
 \item{\code{ess}}{Minimum effective sample size for all parameters}
@@ -28,9 +24,7 @@ convergence diagnostics that require multiple chains.}
 
 \item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
 
-\item{\code{effects_update_beta}}{values of l for which to update the beta_{l, g} parameters.}
-
-\item{\code{effects_update_theta}}{values of l for which to update the theta_l parameters.}
+\item{\code{effects_update_beta}}{values of l for which to update the beta_{l, g} parameters. For debugging only.}
 
 \item{\code{genes_return}}{Indices of genes whose parameter samples you want to return.
 Applies to all gene-specific parameters except for the epsilons.}

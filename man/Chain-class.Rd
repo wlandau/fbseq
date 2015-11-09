@@ -43,10 +43,6 @@ sets of gene-specific variables.}
 \item{\code{supplement}}{a list containing supplementary information about the scenario:
 for example, how the data were simulated, if applicable}
 
-\item{\code{constrain_theta}}{Set to TRUE to fix some of the theta_l's at 0 based on the design matrix.
-Theta_l's likely to be near 0 are set to 0 to speed convergence. Be advised that the effects_update_theta
-slot is overwritten in the process.}
-
 \item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
 
 \item{\code{ess}}{Minimum effective sample size for all parameters}
@@ -62,8 +58,6 @@ convergence diagnostics that require multiple chains.}
 \item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
 
 \item{\code{effects_update_beta}}{bounds of l for which to update the beta_{l, g} parameters.}
-
-\item{\code{effects_update_theta}}{bounds of l for which to update the theta_l parameters.}
 
 \item{\code{genes_return}}{Indices of genes whose parameter samples you want to return.
 Applies to all gene-specific parameters except for the epsilons.}
@@ -110,8 +104,6 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 \item{\code{L}}{number of columns in the original design matrix}
 
 \item{\code{Lupdate_beta}}{number of bounds of l for which to update the beta_{l, g} parameters.}
-
-\item{\code{Lupdate_theta}}{number of bounds of l for which to update the theta_l parameters.}
 
 \item{\code{N}}{number of libraries}
 
