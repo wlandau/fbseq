@@ -52,14 +52,13 @@ generate_starts = function(counts, design, starts = Starts()){
   rhomat = matrix(rep(rho, each = G), ncol = N)
 
   OLS = solve(t(design) %*% design) %*%  t(design)
-  PROJ = design %*% OLS
   beta = t(OLS %*% t(logcounts - rhomat))
 
   theta = apply(beta, 2, mean)
   sigmaSquared = apply(beta, 2, var)
   xi = rep(1, ncol(beta)*G)
 
-  epsilon = logcounts - t(PROJ %*% t(logcounts - rhomat))
+  epsilon = logcounts - t(design %*% t(beta))
   gamma = get_nonzeros(apply(epsilon, 1, var, na.rm = T))
 
   nt = nu_tau(gamma)
@@ -84,7 +83,6 @@ generate_starts = function(counts, design, starts = Starts()){
 
   starts
 }
-
 
 #' @title Function \code{dispersed_set}
 #' @description Produces a dispersed starting values (relative to the estimated posterior so far)
