@@ -32,7 +32,7 @@ ess_criterion = function(chain){
     min_ess = round(min(ess), 3)
     which_min_ess = names(ess)[which.min(ess)]
     if(min_ess >= chain@ess){
-      chain@ess_attempts = i
+      chain@ess_attempts = as.integer(i)
       return(chain)
     }
 
@@ -42,11 +42,12 @@ ess_criterion = function(chain){
     configs@burnin = 0
     configs@iterations = iterations
     new_chain = Chain(Scenario(chain), configs, Starts(chain))
+    new_chain@psrf_attempts = chain@psrf_attempts
     new_chain = run_fixed_mcmc(new_chain)
     chain = concatenate(chain, new_chain)
   }
 
   warning(paste("In effectiveSampleSize(), chain@max_attempts =", chain@max_attempts, "reached."))
-  chain@ess_attempts = i
+  chain@ess_attempts = as.integer(i)
   chain
 }

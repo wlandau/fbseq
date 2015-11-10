@@ -79,6 +79,6 @@ run_gelman_mcmc = function(chain){
 
   chain = chain_list[[1]]
   if(attempt == chain@max_attempts) warning(paste("In run_gelman_mcmc(), chain@max_attempts =", chain@max_attempts, "reached."))
-  chain@psrf_attempts = attempt
+  chain@psrf_attempts = as.integer(attempt)
   chain
 }
