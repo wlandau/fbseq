@@ -29,10 +29,13 @@ NULL
 #' 
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
+#' @slot ess_attempts number of attempts made to reach a high enough effective sample size
 #' @slot max_attempts Maximum number of retries for assessing convergence and generating enough effective samples.
 #' Can be set to Inf to run indefinitely.
 #' @slot nchains_diag number of independent chains to run (including this one) to use
 #' convergence diagnostics that require multiple chains. 
+#' @slot psrf_attempts number of attempts made to reach apparent convergence according to Gelman-Rubin
+#' potential scale reduction factors
 #' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
 #' 
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
@@ -142,8 +145,10 @@ setClass("Chain",
 
     diag = "character",
     ess = "integer",
+    ess_attempts = "integer",
     max_attempts = "numeric",
     nchains_diag = "integer",
+    psrf_attempts = "integer",
     psrf_tol = "numeric",
 
     burnin = "integer",
@@ -228,5 +233,9 @@ setClass("Chain",
     tauPostMeanSquare = "numeric",
     thetaPostMeanSquare = "numeric",
     xiPostMeanSquare = "numeric"
+  ),
+  prototype = list(
+    ess_attempts = as.integer(0),
+    psrf_attempts = as.integer(0)
   )
 )

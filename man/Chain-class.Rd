@@ -47,11 +47,16 @@ for example, how the data were simulated, if applicable}
 
 \item{\code{ess}}{Minimum effective sample size for all parameters}
 
+\item{\code{ess_attempts}}{number of attempts made to reach a high enough effective sample size}
+
 \item{\code{max_attempts}}{Maximum number of retries for assessing convergence and generating enough effective samples.
 Can be set to Inf to run indefinitely.}
 
 \item{\code{nchains_diag}}{number of independent chains to run (including this one) to use
 convergence diagnostics that require multiple chains.}
+
+\item{\code{psrf_attempts}}{number of attempts made to reach apparent convergence according to Gelman-Rubin
+potential scale reduction factors}
 
 \item{\code{psrf_tol}}{upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")}
 

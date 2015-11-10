@@ -29,7 +29,7 @@ generate_data_from_model = function(genes, design, truth){
   truth@gamma = 1/rgamma(genes, shape = truth@nu/2, 
     rate = truth@nu*truth@tau/2)
 
-  truth@rho = rnorm(libraries, 0, sqrt(truth@omegaSquared))
+  truth@rho = rep(0, libraries) # rnorm(libraries, 0, sqrt(truth@omegaSquared))
   rhomat = matrix(rep(truth@rho, each = genes), ncol = libraries)
 
   gammat = matrix(rep(truth@gamma, times = libraries), ncol = libraries)

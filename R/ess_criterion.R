@@ -31,7 +31,10 @@ ess_criterion = function(chain){
 
     min_ess = round(min(ess), 3)
     which_min_ess = names(ess)[which.min(ess)]
-    if(min_ess >= chain@ess) return(chain)
+    if(min_ess >= chain@ess){
+      chain@ess_attempts = i
+      return(chain)
+    }
 
     if(chain@verbose) print(paste0("Only ", min_ess, " effective samples obtained for ", which_min_ess, ". Continuing until ", chain@ess, " effective samples reached."))
 
@@ -44,5 +47,6 @@ ess_criterion = function(chain){
   }
 
   warning(paste("In effectiveSampleSize(), chain@max_attempts =", chain@max_attempts, "reached."))
+  chain@ess_attempts = i
   chain
 }
