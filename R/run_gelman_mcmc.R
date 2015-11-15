@@ -39,6 +39,8 @@ run_gelman_mcmc = function(chain){
 
   if(chain@burnin < 1e5) warning("small burnin. Chains generated with disperse_starts() may be slow to converge.")
   pilot_chain = run_fixed_mcmc(chain)
+  burnin = pilot_chain@burnin
+  pilot_chain@burnin = pilot_chain@burnin_diag
 
   if(chain@verbose) print(paste0("Generating dispersed starting values for the other ", chain@nchains_diag - 1," chains using pilot chain."))
   chain_list = list(pilot_chain)
@@ -48,9 +50,9 @@ run_gelman_mcmc = function(chain){
   betas = which(apply(do.call(rbind, Scenario(chain)@contrasts), 2, function(x) any(x != 0)))
   pattern = paste(c(paste0("beta_", betas), "nu",  "omegaSquared", "sigmaSquared", "tau", "theta"), collapse = "|")
 
-  while(attempt < chain@max_attempts){
+  while(attempt < chain@max_attempts_diag){
     attempt = attempt + 1
-    if(chain@verbose) print(paste0("Attempt ", attempt, " of ", chain@max_attempts,
+    if(chain@verbose) print(paste0("Attempt ", attempt, " of ", chain@max_attempts_diag,
       ": running ", chain@nchains_diag, " parallel chains."))
     chain_list = lapply(chain_list, run_fixed_mcmc)
 
@@ -70,15 +72,12 @@ run_gelman_mcmc = function(chain){
       print(paste0(high, " are greater than ", chain@psrf_tol, "."))
     }
 
-    if(any(psrf > chain@psrf_tol, na.rm = T)){
-      chain_list = lapply(chain_list, function(chain){chain@burnin = as.integer(0); chain})
-    } else {
-      break
-    }
+    if(all(psrf < chain@psrf_tol, na.rm = T)) break
   }
 
   chain = chain_list[[1]]
-  if(attempt == chain@max_attempts) warning(paste("In run_gelman_mcmc(), chain@max_attempts =", chain@max_attempts, "reached."))
-  chain@psrf_attempts = as.integer(attempt)
+  if(attempt == chain@max_attempts_diag) warning(paste("In run_gelman_mcmc(), chain@max_attempts_diag =", chain@max_attempts_diag, "reached."))
+  pilot_chain@burnin = as.integer(burnin)
+  chain@attempts_diag = as.integer(attempt)
   chain
 }

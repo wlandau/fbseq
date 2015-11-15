@@ -5,9 +5,16 @@ NULL
 #' @description A collection of MCMC control parameters.
 #' @exportClass Configs
 #'
+#' @slot burnin_diag burnin for situations where multiple chains are run to assess convergence. 
+#' This is not the initial burnin (see the \code{burnin} slot. This burnin is used after the initial burnin
+#' is already run. For example, after multiple chains are generated from a pilot chain to assess
+#' convergence using Gelman-Rubin potential scale reduction factors, the burnin of each chain,
+#' along with that of the already-run pilot chain, is changed (from \code{burnin}) to \code{burinin_diag}.
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
-#' @slot max_attempts Maximum number of retries for assessing convergence and generating enough effective samples.
+#' @slot max_attempts_diag Maximum number of retries for assessing convergence.
+#' Can be set to Inf to run indefinitely.
+#' @slot max_attempts_ess Maximum number of retries for generating enough effective samples.
 #' Can be set to Inf to run indefinitely.
 #' @slot nchains_diag number of independent chains to run (including this one) to use
 #' convergence diagnostics that require multiple chains. 
@@ -33,9 +40,11 @@ NULL
 #' If \code{verbose} > 0, then progress messages will also print during setup and cleanup.
 setClass("Configs", 
   slots = list(
+    burnin_diag = "numeric",
     diag = "character",
     ess = "numeric",
-    max_attempts = "numeric",
+    max_attempts_diag = "numeric",
+    max_attempts_ess = "numeric",
     nchains_diag = "numeric",
     psrf_tol = "numeric",
 
@@ -53,9 +62,11 @@ setClass("Configs",
     verbose = "numeric"
   ),
   prototype = list(
+    burnin_diag = 1e3,
     diag = "gelman",
     ess = 1e2,
-    max_attempts = 10,
+    max_attempts_diag = 10,
+    max_attempts_ess = 10,
     nchains_diag = 4,
     psrf_tol = 1.1,
 
@@ -68,7 +79,7 @@ setClass("Configs",
     parameter_sets_return = setdiff(parameters(), c("rho", "omegaSquared")),
     parameter_sets_update = setdiff(parameters(), c("rho", "omegaSquared")),
     priors = "normal",
-    thin = 1e2,
+    thin = 10,
     verbose = 1e1
   )
 )

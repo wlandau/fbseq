@@ -43,20 +43,28 @@ sets of gene-specific variables.}
 \item{\code{supplement}}{a list containing supplementary information about the scenario:
 for example, how the data were simulated, if applicable}
 
+\item{\code{attempts_diag}}{number of attempts made to reach apparent convergence}
+
+\item{\code{attempts_ess}}{number of attempts made to reach enough effective samples}
+
+\item{\code{burnin_diag}}{burnin for situations where multiple chains are run to assess convergence.
+This is not the initial burnin (see the \code{burnin} slot. This burnin is used after the initial burnin
+is already run. For example, after multiple chains are generated from a pilot chain to assess
+convergence using Gelman-Rubin potential scale reduction factors, the burnin of each chain,
+along with that of the already-run pilot chain, is changed (from \code{burnin}) to \code{burinin_diag}.}
+
 \item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
 
 \item{\code{ess}}{Minimum effective sample size for all parameters}
 
-\item{\code{ess_attempts}}{number of attempts made to reach a high enough effective sample size}
+\item{\code{max_attempts_diag}}{Maximum number of retries for assessing convergence.
+Can be set to Inf to run indefinitely.}
 
-\item{\code{max_attempts}}{Maximum number of retries for assessing convergence and generating enough effective samples.
+\item{\code{max_attempts_ess}}{Maximum number of retries for generating enough effective samples.
 Can be set to Inf to run indefinitely.}
 
 \item{\code{nchains_diag}}{number of independent chains to run (including this one) to use
 convergence diagnostics that require multiple chains.}
-
-\item{\code{psrf_attempts}}{number of attempts made to reach apparent convergence according to Gelman-Rubin
-potential scale reduction factors}
 
 \item{\code{psrf_tol}}{upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")}
 

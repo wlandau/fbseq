@@ -10,7 +10,7 @@ NULL
 ess_criterion = function(chain){
   i = 0
   iterations = chain@iterations
-  while(i < chain@max_attempts){
+  while(i < chain@max_attempts_ess){
     i = i + 1
     flat = flatten(chain)
 
@@ -24,7 +24,7 @@ ess_criterion = function(chain){
     ess = ess[grep(pattern, names(ess))]
 
     if(chain@verbose) {
-      print(paste0("Attempt ", i, " of ", chain@max_attempts, ": trying to obtain ", chain@ess, " effective samples for every parameter with returned samples."))
+      print(paste0("Attempt ", i, " of ", chain@max_attempts_ess, ": trying to obtain ", chain@ess, " effective samples for every parameter with returned samples."))
       print("Summary of effective sample sizes of returned parameters:")
       print(summary(ess))
     }
@@ -32,7 +32,7 @@ ess_criterion = function(chain){
     min_ess = round(min(ess), 3)
     which_min_ess = names(ess)[which.min(ess)]
     if(min_ess >= chain@ess){
-      chain@ess_attempts = as.integer(i)
+      chain@attempts_ess = as.integer(i)
       return(chain)
     }
 
@@ -42,12 +42,12 @@ ess_criterion = function(chain){
     configs@burnin = 0
     configs@iterations = iterations
     new_chain = Chain(Scenario(chain), configs, Starts(chain))
-    new_chain@psrf_attempts = chain@psrf_attempts
+    new_chain@attempts_diag = chain@attempts_diag
     new_chain = run_fixed_mcmc(new_chain)
     chain = concatenate(chain, new_chain)
   }
 
-  warning(paste("In effectiveSampleSize(), chain@max_attempts =", chain@max_attempts, "reached."))
-  chain@ess_attempts = as.integer(i)
+  warning(paste("In effectiveSampleSize(), chain@max_attempts_ess =", chain@max_attempts_ess, "reached."))
+  chain@attempts_ess = as.integer(i)
   chain
 }
