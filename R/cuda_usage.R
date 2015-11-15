@@ -4,7 +4,7 @@
 #' @export
 check_fbseqCUDA = function(){
   if(!requireNamespace("fbseqCUDA", quietly = T))
-    stop("this function requires a CUDA-capable NVIDIA GPU, a working installation of CUDA with the correct drivers, and the fbseqCUDA package.")
+    stop("function fbseq requires a CUDA-capable NVIDIA GPU, a working installation of CUDA with the correct drivers, and the fbseqCUDA package.")
 }
 
 #' @title Function \code{getDevice}
