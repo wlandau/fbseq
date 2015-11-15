@@ -77,7 +77,7 @@ run_gelman_mcmc = function(chain){
 
   chain = chain_list[[1]]
   if(attempt == chain@max_attempts_diag) warning(paste("In run_gelman_mcmc(), chain@max_attempts_diag =", chain@max_attempts_diag, "reached."))
-  pilot_chain@burnin = as.integer(burnin)
+  chain@burnin = as.integer(burnin)
   chain@attempts_diag = as.integer(attempt)
   chain
 }

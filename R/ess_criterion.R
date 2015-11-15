@@ -9,6 +9,7 @@ NULL
 #' @param chain a \code{Chain} object
 ess_criterion = function(chain){
   i = 0
+  burnin = chain@burnin
   iterations = chain@iterations
   while(i < chain@max_attempts_ess){
     i = i + 1
@@ -33,6 +34,7 @@ ess_criterion = function(chain){
     which_min_ess = names(ess)[which.min(ess)]
     if(min_ess >= chain@ess){
       chain@attempts_ess = as.integer(i)
+      chain@burnin = as.integer(burnin)
       return(chain)
     }
 
@@ -49,5 +51,6 @@ ess_criterion = function(chain){
 
   warning(paste("In effectiveSampleSize(), chain@max_attempts_ess =", chain@max_attempts_ess, "reached."))
   chain@attempts_ess = as.integer(i)
+  chain@burnin = as.integer(burnin)
   chain
 }
