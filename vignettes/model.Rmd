@@ -83,6 +83,12 @@ $$ \begin{align*}
 \rho_n \ | \ \omega^2 \stackrel{\text{ind}}{\sim} \text{Normal}(0, \ \omega^2)
 \end{align*} $$
 
+$\omega$ has a uniform prior, equivalent to a truncated $\omega^{-1}$ prior on $\omega^2$.
+
+$$ \begin{align*}
+\omega \sim \text{Uniform}(0, \ w)
+\end{align*} $$
+
 The $\gamma_g$'s play the role of overdispersion terms, analogous to the overdispersions in traditional negative-binomial likelihood models used in packages like `edgeR`. Conditioned on parameters $\nu$ and $\tau$, they have independent inverse-gamma distributions.
 
 $$ \begin{align*}
@@ -112,6 +118,7 @@ $$ \begin{align*}
 &\qquad \qquad \xi_{\ell, g} \ | \ s_\ell &&\stackrel{\text{ind}}{\sim} p(\xi_{\ell, g} \ | \ k_\ell, \ r_\ell) \\
 &\qquad \e_{n,g} \ | \ \rho_n, \gamma_g &&\stackrel{\text{ind}}{\sim} \text{Normal}(\rho_n, \ \gamma_g) \\
 &\qquad \qquad \rho_n \ | \ \omega^2 &&\stackrel{\text{ind}}{\sim} \text{Normal}(0, \ \omega^2) \\
+& \qquad \qquad \qquad \omega && \sim \text{Uniform}(0, \ w) \\
 &\qquad \qquad \gamma_g \ | \ \nu, \ \tau &&\stackrel{\text{ind}}{\sim} \text{Inverse-Gamma} \left ( \frac{\nu}{2}, \ \frac{\nu \tau}{2} \right ) \\
 &\qquad \qquad \qquad \nu &&\sim \text{Uniform}(0, \ d) \\
 &\qquad \qquad \qquad \tau &&\sim \text{Gamma}(a, \ \text{rate} = b)
