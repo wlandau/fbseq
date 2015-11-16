@@ -73,7 +73,7 @@ setClass("Configs",
     parameter_sets_update = setdiff(parameters(), c("rho", "omegaSquared")),
     priors = "normal",
     thin = 1e2,
-    verbose = 1e2
+    verbose = 10
   )
 )
 
