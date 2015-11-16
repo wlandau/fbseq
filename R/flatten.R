@@ -99,7 +99,7 @@ flatten_starts = function(starts){
     starts@epsilon,
     starts@gamma,
     nu = starts@nu,
-    starts@omegaSquared,
+    omegaSquared = starts@omegaSquared,
     starts@rho,
     starts@sigmaSquared,
     tau = starts@tau,

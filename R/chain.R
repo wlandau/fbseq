@@ -29,6 +29,8 @@ NULL
 #' 
 #' @slot attempts_diag number of attempts made to reach apparent convergence 
 #' @slot attempts_ess number of attempts made to reach enough effective samples
+#' @slot attempts_redisperse number of retries to start chains at overdispersed
+#' starting values relative to the pilot chain.
 #'
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
@@ -36,6 +38,8 @@ NULL
 #' Can be set to Inf to run indefinitely.
 #' @slot max_attempts_ess Maximum number of retries for generating enough effective samples.
 #' Can be set to Inf to run indefinitely.
+#' @slot max_attempts_redisperse Maximum number of retries to start chains at overdispersed
+#' starting values relative to the pilot chain. Can be set to Inf to run indefinitely.
 #' @slot nchains_diag number of independent chains to run (including this one) to use
 #' convergence diagnostics that require multiple chains. 
 #' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
@@ -147,11 +151,13 @@ setClass("Chain",
 
     attempts_diag = "integer",
     attempts_ess = "integer",
+    attempts_redisperse = "integer",
 
     diag = "character",
     ess = "integer",
     max_attempts_diag = "integer",
     max_attempts_ess = "integer",
+    max_attempts_redisperse = "integer",
     nchains_diag = "integer",
     psrf_tol = "numeric",
 

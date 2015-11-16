@@ -5,9 +5,12 @@
 #' @param genes number of genes/genes in the data
 #' @param libraries number of libraries/libraries in the data
 scenario_heterosis_model = function(genes = 3.5e4, libraries = 16){
-  truth = Starts(nu = 10, omegaSquared = 0.001, tau = 0.1,
-                        sigmaSquared = c(1, 0.1, 0.1, 0.05, 0.05), 
-                        theta = c(3, 0, 0, 0, 0))
+  truth = Starts(
+    nu = 2.55, 
+    omegaSquared = 0.00206, 
+    tau = 0.007,
+    sigmaSquared = c(1.143e1, 4.46e-2, 3.4e-2, 4.71e-4, 7.63e-2), 
+    theta = c(2.79, 0.0175, 0.0481, -0.0152, 0.0524))
 
   data(paschold)
   paschold = get("paschold")

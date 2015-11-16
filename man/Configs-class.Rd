@@ -20,6 +20,9 @@ Can be set to Inf to run indefinitely.}
 \item{\code{max_attempts_ess}}{Maximum number of retries for generating enough effective samples.
 Can be set to Inf to run indefinitely.}
 
+\item{\code{max_attempts_redisperse}}{Maximum number of retries to start chains at overdispersed
+starting values relative to the pilot chain. Can be set to Inf to run indefinitely.}
+
 \item{\code{nchains_diag}}{number of independent chains to run (including this one) to use
 convergence diagnostics that require multiple chains.}
 
