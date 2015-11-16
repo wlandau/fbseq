@@ -40,7 +40,6 @@ run_gelman_mcmc = function(chain){
   if(chain@burnin < 1e5) warning("small burnin. Chains generated with disperse_starts() may be slow to converge.")
   pilot_chain = run_fixed_mcmc(chain)
   burnin = pilot_chain@burnin
-  pilot_chain@burnin = pilot_chain@burnin_diag
 
   if(chain@verbose) print(paste0("Generating dispersed starting values for the other ", chain@nchains_diag - 1," chains using pilot chain."))
   chain_list = list(pilot_chain)
@@ -73,6 +72,7 @@ run_gelman_mcmc = function(chain){
     }
 
     if(all(psrf < chain@psrf_tol, na.rm = T)) break
+    chain_list = lapply(chain_list, function(ch){ch@burnin = as.integer(0); ch})
   }
 
   chain = chain_list[[1]]

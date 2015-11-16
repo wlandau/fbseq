@@ -30,11 +30,6 @@ NULL
 #' @slot attempts_diag number of attempts made to reach apparent convergence 
 #' @slot attempts_ess number of attempts made to reach enough effective samples
 #'
-#' @slot burnin_diag burnin for situations where multiple chains are run to assess convergence. 
-#' This is not the initial burnin (see the \code{burnin} slot. This burnin is used after the initial burnin
-#' is already run. For example, after multiple chains are generated from a pilot chain to assess
-#' convergence using Gelman-Rubin potential scale reduction factors, the burnin of each chain,
-#' along with that of the already-run pilot chain, is changed (from \code{burnin}) to \code{burinin_diag}.
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
 #' @slot ess Minimum effective sample size for all parameters
 #' @slot max_attempts_diag Maximum number of retries for assessing convergence.
@@ -153,7 +148,6 @@ setClass("Chain",
     attempts_diag = "integer",
     attempts_ess = "integer",
 
-    burnin_diag = "integer",
     diag = "character",
     ess = "integer",
     max_attempts_diag = "integer",

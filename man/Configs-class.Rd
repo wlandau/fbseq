@@ -10,12 +10,6 @@ A collection of MCMC control parameters.
 \section{Slots}{
 
 \describe{
-\item{\code{burnin_diag}}{burnin for situations where multiple chains are run to assess convergence.
-This is not the initial burnin (see the \code{burnin} slot. This burnin is used after the initial burnin
-is already run. For example, after multiple chains are generated from a pilot chain to assess
-convergence using Gelman-Rubin potential scale reduction factors, the burnin of each chain,
-along with that of the already-run pilot chain, is changed (from \code{burnin}) to \code{burinin_diag}.}
-
 \item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
 
 \item{\code{ess}}{Minimum effective sample size for all parameters}
