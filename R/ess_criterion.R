@@ -45,7 +45,6 @@ ess_criterion = function(chain){
     configs@iterations = iterations
     new_chain = Chain(Scenario(chain), configs, Starts(chain))
     new_chain@attempts_diag = chain@attempts_diag
-    new_chain@attempts_redisperse = chain@attempts_redisperse
     new_chain = run_fixed_mcmc(new_chain)
     chain = concatenate(chain, new_chain)
   }

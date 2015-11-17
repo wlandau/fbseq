@@ -14,6 +14,10 @@ volcano = function(chain){
     stat_binhex(aes_string(x = "Effect", y = "Probability", fill="log(..count..)"), bins = 100) + 
       xlab("\nEstimated Effect Size") + 
       ylab("Probability\n") + 
+      labs(fill = "Log count") + 
       scale_fill_continuous(low = "darkGrey", high = "black") +
-      facet_wrap(~Proposition, scales = "free_x")
+      facet_wrap(~Proposition, scales = "free_x") + 
+      theme(panel.background = element_rect(fill='white'),
+                  panel.grid.major = element_line(color="lightgray"),
+                  panel.border = element_rect(color="black", fill = NA))
 }

@@ -44,7 +44,8 @@ generate_starts = function(counts, design, starts = Starts()){
   colnames(design) = NULL
 
   counts = as.matrix(counts)
-  logcounts = log(counts + 1)
+  counts[counts < 1] = 0.5
+  logcounts = log(counts)
 
   rho = apply(logcounts, 2, mean)
   rho = rho - mean(rho)

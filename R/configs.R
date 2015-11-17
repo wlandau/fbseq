@@ -11,8 +11,6 @@ NULL
 #' Can be set to Inf to run indefinitely.
 #' @slot max_attempts_ess Maximum number of retries for generating enough effective samples.
 #' Can be set to Inf to run indefinitely.
-#' @slot max_attempts_redisperse Maximum number of retries to start chains at overdispersed
-#' starting values relative to the pilot chain. Can be set to Inf to run indefinitely.
 #' @slot nchains_diag number of independent chains to run (including this one) to use
 #' convergence diagnostics that require multiple chains. 
 #' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
@@ -41,7 +39,6 @@ setClass("Configs",
     ess = "numeric",
     max_attempts_diag = "numeric",
     max_attempts_ess = "numeric",
-    max_attempts_redisperse = "numeric",
     nchains_diag = "numeric",
     psrf_tol = "numeric",
 
@@ -61,22 +58,21 @@ setClass("Configs",
   prototype = list(
     diag = "gelman",
     ess = 1e2,
-    max_attempts_diag = 5,
-    max_attempts_ess = 5,
-    max_attempts_redisperse = 10,
+    max_attempts_diag = 10,
+    max_attempts_ess = 10,
     nchains_diag = 4,
     psrf_tol = 1.1,
 
-    burnin = 1e5,
+    burnin = 1e4,
     genes_return = numeric(0),
     genes_return_epsilon = numeric(0),
-    iterations = 1e3,
+    iterations = 2e3,
     libraries_return = numeric(0),
     libraries_return_epsilon = numeric(0),
     parameter_sets_return = setdiff(parameters(), c("rho", "omegaSquared")),
     parameter_sets_update = setdiff(parameters(), c("rho", "omegaSquared")),
     priors = "normal",
-    thin = 1e2,
+    thin = 10,
     verbose = 5
   )
 )
