@@ -32,8 +32,8 @@ run_gelman_mcmc = function(chain){
     if(all(chain_list[[1]]@psrf[grepl(pattern, names(chain_list[[1]]@psrf))] < chain@psrf_tol, na.rm = T)) break
     if(attempt < chain@max_attempts_diag)
       chain_list = lapply(chain_list, function(ch){
-        ch@burnin = as.integer(2*ch@burnin)
-        ch@thin = as.integer(2*ch@thin)
+        ch@burnin = as.integer(2*ch@burnin + (ch@burnin < 1))
+        ch@thin = as.integer(2*ch@thin + (ch@thin < 1))
         ch
       })
   }
