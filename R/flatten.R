@@ -68,7 +68,6 @@ flatten_chain = function(chain){
 #' @return an array of MCMC parameter libraries.
 #' @param starts a \code{Starts} object.
 flatten_starts = function(starts){
-
   G = tryCatch(length(starts@gamma), warning = function(w) 0, error = function(w) 0)
   L = length(starts@beta)/ifelse(G, G, 1)
   N = tryCatch(max(length(starts@rho), length(starts@epsilon)/G), warning = function(w) 0, error = function(w) 0)
@@ -77,7 +76,7 @@ flatten_starts = function(starts){
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste0(x, "_", rep(1:L, each = G), "_", rep(1:G, times = L))
 
-  for(x in c("c", "k", "r", "s", "gamma", "omegaSquared", "rho", "sigmaSquared", "theta"))
+  for(x in c("c", "k", "r", "s", "gamma", "rho", "sigmaSquared", "theta"))
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste(x, 1:length(slot(starts, x)), sep = "_")
 
