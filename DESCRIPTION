@@ -18,11 +18,11 @@ Suggests:
 VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
-    'alternate_priors.R'
     'flatten.R'
     'calc_gelman.R'
     'starts.R'
     'chain.R'
+    'special_beta_priors.R'
     'generate_starts.R'
     'chain_constructor.R'
     'concatenate.R'

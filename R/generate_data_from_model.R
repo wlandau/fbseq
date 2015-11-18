@@ -2,8 +2,9 @@
 NULL
 
 #' @title Function \code{generate_data_from_model}
-#' @description Simulates count data fromt the model given hyperparameters. All hyperparameters must
-#' be given in the \code{truth} slot of the \code{Scenario} object argument.
+#' @description Simulates count data fromt the Laplace-prior version of the model 
+#' given hyperparameters. All hyperparameters must be given in the \code{truth} slot 
+#' of the \code{Scenario} object argument.
 #' @export
 #' 
 #' @return a list: a \code{Scenario} object with the scenario and a \code{Starts} object
@@ -21,15 +22,18 @@ generate_data_from_model = function(genes, design, truth){
   stopifnot(libraries >= 3)
   stopifnot(libraries == nrow(design))
 
-  truth@xi = rep(1, ncol(design)*genes)
+  truth@xi = numeric(0)
   truth@beta = numeric(0)
-  for(l in 1:ncol(design))
-    truth@beta = c(truth@beta, rnorm(genes, truth@theta[l], sqrt(truth@sigmaSquared[l])))
-  
-  truth@gamma = 1/rgamma(genes, shape = truth@nu/2, 
-    rate = truth@nu*truth@tau/2)
+  for(l in 1:ncol(design)){
+    xi = rexp(genes)
+    beta = rnorm(n = genes, mean = truth@theta[l], sd = sqrt(truth@sigmaSquared[l] * xi))
+    truth@xi = c(truth@xi, xi)
+    truth@beta = c(truth@beta, beta)
+  }  
 
-  truth@rho = rep(0, libraries) # rnorm(libraries, 0, sqrt(truth@omegaSquared))
+  truth@gamma = 1/rgamma(genes, shape = truth@nu/2, rate = truth@nu*truth@tau/2)
+
+  truth@rho = rnorm(libraries, 0, sqrt(truth@omegaSquared))
   rhomat = matrix(rep(truth@rho, each = genes), ncol = libraries)
 
   gammat = matrix(rep(truth@gamma, times = libraries), ncol = libraries)

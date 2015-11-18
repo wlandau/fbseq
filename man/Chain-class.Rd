@@ -85,7 +85,7 @@ you want to return}
 during the MCMC.}
 
 \item{\code{priors}}{Names of the family of priors on the betas after integrating out the xi's.
-Can be any value returned by \code{alternate_priors()}. All other bounds will default to the normal prior.}
+Can be any value returned by \code{special_beta_priors()}. All other bounds will default to the normal prior.}
 
 \item{\code{thin}}{MCMC thinning interval, number of iterations to skip in between iterations to return.}
 

@@ -1,4 +1,4 @@
-#' @include alternate_priors.R generate_starts.R
+#' @include special_beta_priors.R generate_starts.R
 NULL
 
 #' @title Function \code{Chain}
@@ -48,7 +48,7 @@ plug_in_chain = function(chain, scenario, configs, starts){
     names(slot(chain, n)) = parameters()
   }
 
-  chain@priors = ifelse(configs@priors %in% alternate_priors(), which(alternate_priors() == configs@priors), as.integer(0))
+  chain@priors = ifelse(configs@priors %in% special_beta_priors(), which(special_beta_priors() == configs@priors), as.integer(0))
   if(length(chain@priors) == 1) chain@priors = rep(chain@priors, ncol(scenario@design))
   stopifnot(length(chain@priors) == ncol(scenario@design))
 

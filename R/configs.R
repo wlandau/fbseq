@@ -1,4 +1,4 @@
-#' @include alternate_priors.R parameters.R
+#' @include special_beta_priors.R parameters.R
 NULL
 
 #' @title Class \code{Configs}
@@ -29,7 +29,7 @@ NULL
 #' @slot parameter_sets_update Character vector naming the variables to calculate/update
 #' during the MCMC.
 #' @slot priors Names of the family of priors on the betas after integrating out the xi's. 
-#' Can be any value returned by \code{alternate_priors()}. All other values will default to the normal prior.
+#' Can be any value returned by \code{special_beta_priors()}. All other values will default to the normal prior.
 #' @slot thin MCMC thinning interval, number of iterations to skip in between iterations to return.
 #' @slot verbose Number of times to print out progress during burnin and the actual MCMC.
 #' If \code{verbose} > 0, then progress messages will also print during setup and cleanup.
@@ -58,8 +58,8 @@ setClass("Configs",
   prototype = list(
     diag = "gelman",
     ess = 1e2,
-    max_attempts_diag = 10,
-    max_attempts_ess = 10,
+    max_attempts_diag = 5,
+    max_attempts_ess = 5,
     nchains_diag = 4,
     psrf_tol = 1.1,
 
@@ -107,10 +107,10 @@ Configs = function(obj = NULL, ...){
     for(n in c("parameter_sets_return", "parameter_sets_update"))
       slot(configs, n) = as(names(slot(obj, n))[as.logical(slot(obj, n))], class(slot(configs, n)))
 
-    configs@priors = as(ifelse(obj@priors > 0, alternate_priors()[obj@priors], "normal"), class(configs@priors))
+    configs@priors = as(ifelse(obj@priors > 0, special_beta_priors()[obj@priors], "normal"), class(configs@priors))
   }
 
-  if(!any(configs@priors %in% alternate_priors())){
+  if(!any(configs@priors %in% special_beta_priors())){
     configs@parameter_sets_return = setdiff(configs@parameter_sets_return, "xi")
     configs@parameter_sets_update = setdiff(configs@parameter_sets_update, "xi")
   }

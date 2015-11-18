@@ -22,7 +22,8 @@ with the true parameters that the count dataset in the \code{Scenario} object
 was simulated from.
 }
 \description{
-Simulates count data fromt the model given hyperparameters. All hyperparameters must
-be given in the \code{truth} slot of the \code{Scenario} object argument.
+Simulates count data fromt the Laplace-prior version of the model
+given hyperparameters. All hyperparameters must be given in the \code{truth} slot
+of the \code{Scenario} object argument.
 }
 

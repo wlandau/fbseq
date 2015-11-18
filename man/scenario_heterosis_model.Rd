@@ -5,8 +5,9 @@
 \title{Function \code{scenario_heterosis_model}}
 \usage{
 scenario_heterosis_model(genes = 35000, libraries = 16, truth = Starts(nu
-  = 10, omegaSquared = 0.001, tau = 0.1, sigmaSquared = c(1, 0.1, 0.1, 0.05,
-  0.05), theta = c(3, 0, 0, 0, 0)))
+  = 2.812224, omegaSquared = 0.006808205, tau = 0.006780517, sigmaSquared = c(1,
+  0.03724313, 0.0324207, 0.0006229287, 0.06410533), theta = c(3, -0.005734982,
+  -0.02541216, -0.004763663, -0.06341044)))
 }
 \arguments{
 \item{genes}{number of genes/genes in the data}
