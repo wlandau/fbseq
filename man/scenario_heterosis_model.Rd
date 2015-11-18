@@ -4,12 +4,17 @@
 \alias{scenario_heterosis_model}
 \title{Function \code{scenario_heterosis_model}}
 \usage{
-scenario_heterosis_model(genes = 35000, libraries = 16)
+scenario_heterosis_model(genes = 35000, libraries = 16, truth = Starts(nu
+  = 10, omegaSquared = 0.001, tau = 0.1, sigmaSquared = c(1, 0.1, 0.1, 0.05,
+  0.05), theta = c(3, 0, 0, 0, 0)))
 }
 \arguments{
 \item{genes}{number of genes/genes in the data}
 
 \item{libraries}{number of libraries/libraries in the data}
+
+\item{truth}{\code{Starts} object of hyperparameters underlying simulation
+all hyperparameters must be specified.}
 }
 \value{
 a \code{Scenario} object for the heterosis problem

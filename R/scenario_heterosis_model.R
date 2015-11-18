@@ -4,10 +4,12 @@
 #' @return a \code{Scenario} object for the heterosis problem
 #' @param genes number of genes/genes in the data
 #' @param libraries number of libraries/libraries in the data
-scenario_heterosis_model = function(genes = 3.5e4, libraries = 16){
-  truth = Starts(nu = 10, omegaSquared = 0.001, tau = 0.1,
+#' @param truth \code{Starts} object of hyperparameters underlying simulation
+#' all hyperparameters must be specified.
+scenario_heterosis_model = function(genes = 3.5e4, libraries = 16,
+   truth = Starts(nu = 10, omegaSquared = 0.001, tau = 0.1,
                         sigmaSquared = c(1, 0.1, 0.1, 0.05, 0.05), 
-                        theta = c(3, 0, 0, 0, 0))
+                        theta = c(3, 0, 0, 0, 0))){
 
   data(paschold)
   paschold = get("paschold")

@@ -15,6 +15,6 @@ NULL
 #' then the function will continue the MCMC from where it left off.
 run_fixed_mcmc = function(chain){
   check_fbseqCUDA()
-  chain@seeds = sample.int(1e3 * chain@N * chain@G, chain@N * chain@G)
+  chain@seeds = as.integer(sample.int(1e3 * chain@N * chain@G, chain@N * chain@G))
   fbseqCUDA::fbseqCUDA(chain)
 }
