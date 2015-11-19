@@ -58,7 +58,7 @@ setClass("Configs",
   prototype = list(
     diag = "gelman",
     ess = 1e2,
-    max_attempts_diag = 5,
+    max_attempts_diag = 1,
     max_attempts_ess = 5,
     nchains_diag = 4,
     psrf_tol = 1.1,
