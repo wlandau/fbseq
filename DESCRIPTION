@@ -11,8 +11,7 @@ Imports:
     coda,
     ggplot2,
     methods,
-    reshape2,
-    truncnorm
+    reshape2
 Suggests:
     fbseqCUDA,
     knitr
