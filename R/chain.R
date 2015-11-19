@@ -12,8 +12,8 @@ NULL
 #' @slot gene_names names of genes, taken from the row names of the count data matrix
 #' @slot library_names names of the libraries/samples, taken from the column names of the count data matrix
 #' @slot proposition_names names of \code{propositions} slot in the \code{Scenario} object
-#' @slot psrf Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the 
-#' actual MCMC parameter samples are not returned)
+#' @slot psrf_all Gelman-Rubin potential scale reduction factors for all parameters
+#' @slot psrf_important Gelman-Rubin potential scale reduction factors for just the parameters of interest
 #' @slot runtime runtime of the call to the \code{fbseq} function as measured by \code{proc.time}.
 #'
 #' @slot bounds values to compare contrasts to. The comparison is to see if the contrast is greater than
@@ -136,7 +136,8 @@ setClass("Chain",
     gene_names = "character",
     library_names = "character",
     proposition_names = "character",
-    psrf = "numeric",
+    psrf_all = "numeric",
+    psrf_important = "numeric",
     runtime = "numeric",
 
     bounds = "numeric",

@@ -22,8 +22,9 @@ by feeding one into \code{single_chain()}.
 
 \item{\code{proposition_names}}{names of \code{propositions} slot in the \code{Scenario} object}
 
-\item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for the sampled parameters (even if the
-actual MCMC parameter samples are not returned)}
+\item{\code{psrf_all}}{Gelman-Rubin potential scale reduction factors for all parameters}
+
+\item{\code{psrf_important}}{Gelman-Rubin potential scale reduction factors for just the parameters of interest}
 
 \item{\code{runtime}}{runtime of the call to the \code{fbseq} function as measured by \code{proc.time}.}
 

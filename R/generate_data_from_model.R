@@ -39,7 +39,7 @@ generate_data_from_model = function(genes, design, truth, priors = "Laplace"){
     }
     xi[xi > 10] = sample(xi[xi <= 10], sum(xi > 10), replace = T)
 
-    beta = rnorm(n = genes, mean = truth@theta[l], sd = sqrt(truth@sigmaSquared[l] * xi))
+    beta = rtruncnorm(n = genes, mean = truth@theta[l], sd = sqrt(truth@sigmaSquared[l] * xi), a = -15, b = 15)
     truth@xi = c(truth@xi, xi)
     truth@beta = c(truth@beta, beta)
   }  

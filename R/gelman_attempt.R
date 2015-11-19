@@ -14,8 +14,11 @@ gelman_attempt = function(chain_list, pattern){
   chain_list = lapply(chain_list, run_fixed_mcmc)
   all_psrf = calc_gelman(chain_list)
   all_psrf[!is.finite(all_psrf)] = 0
-  for(i in 1:chain_list[[1]]@nchains_diag) chain_list[[i]]@psrf = all_psrf
   psrf = all_psrf[grepl(pattern, names(all_psrf))]
+  for(i in 1:chain_list[[1]]@nchains_diag){
+    chain_list[[i]]@psrf_all = all_psrf
+    chain_list[[i]]@psrf_important = psrf
+  }
   tol = chain_list[[1]]@psrf_tol
 
   if(chain_list[[1]]@verbose) {

@@ -63,10 +63,10 @@ This prior is equivalent to a $\sigma_\ell^{-1} \text{I}(\sigma_\ell < s_\ell)$ 
 The $\xi_{\ell, g}$ parameters are a computational tool for assigning different prior distributions to the $\beta_{\ell, g}$'s. Let the the $\xi_{\ell, g}$'s be conditionally independent given constants $k_\ell$, $q_\ell$, and $r_\ell$, and let 
 
 $$ \begin{align*}
-\xi_{\ell, g} \stackrel{\text{ind}}{\sim} p(\xi_{\ell, g} \ | \ k_\ell, q_\ell, \ \ r_\ell)
+\xi_{\ell, g} \stackrel{\text{ind}}{\sim} p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ \ r_\ell)
 \end{align*} $$
 
-If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = I(\xi_{\ell, g} = 1)$, then $\beta_{\ell, g}$ have conditionally independent normal priors. If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = Exp(\text{rate} = k_\ell)$, then the $\beta_{\ell, g}$'s are independent with Laplace distributions given $\theta_\ell$ and $\sigma_\ell^2$. If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = \text{Inverse-Gamma}(q_\ell, \ r_\ell)$, then the $\beta_{\ell, g}$'s are independent with Student-$t$ distributions given $\theta_\ell$ and $\sigma_\ell^2$. If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = \text{Half-Cauchy}(0, 1)$, then the $\beta_{\ell, g}$'s are independent with horseshoe distributions given $\theta_\ell$ and $\sigma_\ell^2$. For each $\ell$ separately, the user can choose among normal, Laplace, Student-$t$, and horseshoe priors on the $\beta_{\ell, g}$'s.
+If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = I(\xi_{\ell, g} = 1)$, then $\beta_{\ell, g}$ have conditionally independent normal priors. If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = Exp(\text{rate} = k_\ell)$, then the $\beta_{\ell, g}$'s are independent with Laplace distributions given $\theta_\ell$ and $\sigma_\ell^2$ (default: mean $\theta_\ell$ and variance $\sigma_\ell^2$). Laplace is the recommended and default setting. If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = \text{Inverse-Gamma}(q_\ell, \ r_\ell)$, then the $\beta_{\ell, g}$'s are independent with Student-$t$ distributions given $\theta_\ell$ and $\sigma_\ell^2$ (default: mean $\theta_\ell$ and variance $\sigma_\ell^2$). If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = \text{Half-Cauchy}(0, 1)$, then the $\beta_{\ell, g}$'s are independent with horseshoe distributions given $\theta_\ell$ and $\sigma_\ell^2$. For each $\ell$ separately, the user can choose among normal, Laplace, Student-$t$, and horseshoe priors on the $\beta_{\ell, g}$'s.
 
 
 ## Noise
@@ -115,7 +115,7 @@ $$ \begin{align*}
 &\qquad \beta_{\ell, g} \ | \ \theta_\ell, \ \sigma_\ell^2, \ \xi_{\ell, g} &&\stackrel{\text{ind}}{\sim} \text{Normal}(\theta_\ell, \ \sigma_\ell^2 \xi_{\ell, g}) \\
 &\qquad \qquad \theta_\ell \ | \ c_\ell^2 &&\stackrel{\text{ind}}{\sim} \text{Normal}(0, \ c_\ell^2) \\
 &\qquad \qquad \sigma_\ell \ | \ s_\ell &&\stackrel{\text{ind}}{\sim} \text{Uniform}(0, \ s_\ell^2) \\
-&\qquad \qquad \xi_{\ell, g} \ | \ s_\ell &&\stackrel{\text{ind}}{\sim} p(\xi_{\ell, g} \ | \ k_\ell, \ r_\ell) \\
+&\qquad \qquad \xi_{\ell, g} &&\stackrel{\text{ind}}{\sim} p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) \\
 &\qquad \e_{n,g} \ | \ \rho_n, \gamma_g &&\stackrel{\text{ind}}{\sim} \text{Normal}(\rho_n, \ \gamma_g) \\
 &\qquad \qquad \rho_n \ | \ \omega^2 &&\stackrel{\text{ind}}{\sim} \text{Normal}(0, \ \omega^2) \\
 & \qquad \qquad \qquad \omega && \sim \text{Uniform}(0, \ w) \\
