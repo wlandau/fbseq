@@ -13,7 +13,7 @@ concatenate = function(chain1, chain2){
   chain = chain2
   chain@iterations = chain1@iterations + chain2@iterations
 
-  for(sn in "psrf")
+  for(sn in c("psrf_all", "psrf_important"))
     if(!length(slot(chain, sn)))
       slot(chain, sn) = slot(chain1, sn)
 
