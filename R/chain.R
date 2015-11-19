@@ -81,6 +81,7 @@ NULL
 #' @slot c initialization constants 
 #' @slot d initialization constant 
 #' @slot k initialization constants 
+#' @slot q initialization constants 
 #' @slot r initialization constants 
 #' @slot s initialization constants 
 #' @slot w initialization constants 
@@ -190,6 +191,7 @@ setClass("Chain",
     c = "numeric",
     d = "numeric",
     k = "numeric",
+    q = "numeric",
     r = "numeric",
     s = "numeric",
     w = "numeric",

@@ -16,7 +16,9 @@ NULL
 #' and each \code{beta_{l, .}} as a column.
 #' @param truth a \code{Starts} object containing the necessary initialization constants
 #' and hyperparameters. All hyperparameters must be supplied.
-generate_data_from_model = function(genes, design, truth){
+#' @param priors character string, either a member of \code{special_beta_priors()} or 
+#' another string for normal priors on the betas.
+generate_data_from_model = function(genes, design, truth, priors = "Laplace"){
   libraries = nrow(design)
 
   stopifnot(libraries >= 3)
@@ -25,7 +27,18 @@ generate_data_from_model = function(genes, design, truth){
   truth@xi = numeric(0)
   truth@beta = numeric(0)
   for(l in 1:ncol(design)){
-    xi = rexp(genes)
+    
+    if(priors == "Laplace"){
+      xi = rexp(genes, rate = truth@k[1])
+    } else if(priors == "t"){
+      xi = 1/rgamma(genes, shape = truth@q[1], rate = truth@r[1])
+    } else if(priors == "horseshoe"){
+      xi = abs(rcauchy(genes))
+    } else {
+      xi = rep(1, genes)
+    }
+    xi[xi > 10] = sample(xi[xi <= 10], sum(xi > 10), replace = T)
+
     beta = rnorm(n = genes, mean = truth@theta[l], sd = sqrt(truth@sigmaSquared[l] * xi))
     truth@xi = c(truth@xi, xi)
     truth@beta = c(truth@beta, beta)

@@ -9,6 +9,7 @@
 #' @slot c initialization constants 
 #' @slot d initialization constant 
 #' @slot k initialization constants 
+#' @slot q initialization constants 
 #' @slot r initialization constants 
 #' @slot s initialization constants 
 #' @slot w initialization constants 
@@ -30,6 +31,7 @@ setClass("Starts",
     c = "numeric",
     d = "numeric",
     k = "numeric",
+    q = "numeric",
     r = "numeric",
     s = "numeric",
     w = "numeric",
@@ -52,7 +54,8 @@ setClass("Starts",
     c = 10,
     d = 1000,
     k = 1,
-    r = 1,
+    q = 3,
+    r = 2,
     s = 100,
     w = 100
   )

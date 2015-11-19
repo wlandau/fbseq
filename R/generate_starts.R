@@ -70,7 +70,7 @@ generate_starts = function(counts, design, starts = Starts()){
   if(nu < 0) nu = 1e-12
   if(nu > starts@d) nu = starts@d
 
-  for(n in c("c", "k", "r", "s")){
+  for(n in c("c", "k", "q", "r", "s")){
     if(length(slot(starts, n)) == 0)
       slot(starts, n) = slot(Starts(), n)
     if(length(slot(starts, n)) == 1)

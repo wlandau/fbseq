@@ -134,6 +134,8 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{k}}{initialization constants}
 
+\item{\code{q}}{initialization constants}
+
 \item{\code{r}}{initialization constants}
 
 \item{\code{s}}{initialization constants}

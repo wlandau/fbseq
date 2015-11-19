@@ -17,7 +17,7 @@ Chain = function(scenario, configs = Configs(), starts = Starts(), slots = NULL)
 
   if(!is.null(slots) & class(slots) == "list" & !is.data.frame(slots)){
     for(n in intersect(names(slots), slotNames(chain)))
-       slot(chain, n) = as(slots[[n]], class(slot(chain, n)))
+      slot(chain, n) = as(slots[[n]], class(slot(chain, n)))
     return(chain)
   }
 
