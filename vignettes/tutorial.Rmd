@@ -183,20 +183,24 @@ s@propositions
  
 The `Configs` S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so just for the sake of trying out the package, you should be able to get away with calling the `Configs` function with no arguments. For a full list of slots and their explanations, type `help("Configs-class")`.
 
-However, for serious analyses, you may want to adjust the `iterations`, `burnin`, and `thin` slots to control the duration of the MCMC. `burinin` is the number of throwaway iterations at the beginning of the MCMC, `iterations` is the number of iterations for which parameter samples are actually used, and `thin` is the number of iterations to throw away between each actually-used iteration. If the `ess` slot is greater than 0, the MCMC will rerun until `ess` effective samples are obtained for each hyperparameter or until `max_attempts_ess` is reached. You may also want to adjust the `Configs` slots that apply constraints on model parameters. The `parameter_sets_update` controls which sets of parameters to update during the MCMC. All other parameters are fixed at constant values. 
+However, for serious analyses, you may want to adjust the `iterations`, `burnin`, and `thin` slots to control the duration of the MCMC. `burinin` is the number of throwaway iterations at the beginning of the MCMC, `iterations` is the number of iterations for which parameter samples are actually used, and `thin` is the number of iterations to throw away between each actually-used iteration. You may also want to adjust the `Configs` slots that apply constraints on model parameters. The `parameter_sets_update` controls which sets of parameters to update during the MCMC. All other parameters are fixed at constant values. The `parameter_sets_return`, `genes_return`, `libraries_return`, `genes_return_epsilon`, and `libraries_return_epsilon` slots control which Monte Carlo parameter samples to return to the user.
+
 
 ### Assessing convergence with Gelman-Rubin potential scale reduction factors
 
-If `diag` is set to `"gelman"` (default), Gelman-Rubin potential scale reduction factors will be used to assess convergence and then stored in the `psrf` slot of the subsequent `Chain`. (For any other value of `diag`, no such convergence diagnostic will be used.). For more information on Gelman-Rubin potential scale reduction factors, see @bda.
+If `diag` is set to `"gelman"` (default), Gelman-Rubin potential scale reduction factors will be used to assess convergence and then stored in the `psrf_all` and `psrf_important` slots of the subsequent `Chain` object. (For any other value of `diag`, no such convergence diagnostic will be used.). For more information on Gelman-Rubin potential scale reduction factors, see @bda.
 
-If `diag="gelman"`, the workflow of the whole model-fitting procedure (see the `fbseq` function, discussed later) will be as follows.
+Specifically, the MCMC will rerun the following procedure `max_attempts_diag` times or until all important potential scale reduction factors are less than `psrf_tol` ("important" meaning the hyperparameters and all $\beta_{\ell, g}$'s involved in contrasts). 
 
-1. Run a pilot MCMC chain for a fixed number of iterations determined by `burnin`, `thin`, and `iterations` (all `Configs` slots).
-2. For `max_attempts_redisperse` attempts or until all Gelman-Rubin potential scale reduction factors of interest (i.e., for hyperparameters and $\beta_{\ell, g}$'s involved in contrasts) are less than `psrf_tol`,
-    a. (re)initialize `nchains_diag - 1` other MCMC chains at starting values overdispersed relative to the joint posterior distribution estimated by the pilot chain.
-    b. Run each chain separately and compute Gelman-Rubin potential scale reduction factors of interest.
-3. For `max_attempts_diag` attempts or until all Gelman-Rubin potential scale reduction factors of interest are less than `psrf_tol`, continue each of the `nchains_diag` chains and recompute Gelman factors.
+1. Run a pilot MCMC chain by itself for a fixed number of iterations determined by `burnin`, `thin`, and `iterations` (only done once). 
+2. Initialize `nchains_diag - 1` new MCMC chains at starting values overdispersed relative to the joint posterior distribution estimated by the pilot chain.
+3. Run each chain separately and compute Gelman-Rubin potential scale reduction factors of interest using all `nchains_diag` chains.
+4. If all important potential scale reduction factors are less than `psrf_tol`, stop. Otherwise, multiply `burnin` and `thin` by 2 (or ad d 1 if 0). 
 
+
+### Effective sample size calculations
+
+If `diag` is `"gelman"`, extract the pilot chain at the end of the procedure in the previous section. Otherwise, there is only one chain to use. If the corresponding `ess` and `max_attempts_ess` slots are greater than 0, that MCMC chain will rerun `max_attempts_ess` times or until `ess` effective samples are obtained for each hyperparameter.
 
 
 ## (Optional) create a `Starts` object.
