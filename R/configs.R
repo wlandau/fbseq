@@ -59,7 +59,7 @@ setClass("Configs",
     diag = "gelman",
     ess = 1e2,
     max_attempts_diag = 1,
-    max_attempts_ess = 5,
+    max_attempts_ess = 0,
     nchains_diag = 4,
     psrf_tol = 1.1,
 
@@ -71,7 +71,7 @@ setClass("Configs",
     libraries_return_epsilon = numeric(0),
     parameter_sets_return = setdiff(parameters(), c("rho", "omegaSquared")),
     parameter_sets_update = setdiff(parameters(), c("rho", "omegaSquared")),
-    priors = "Laplace",
+    priors = "normal",
     thin = 10,
     verbose = 5
   )
