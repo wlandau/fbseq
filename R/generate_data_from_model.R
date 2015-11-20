@@ -16,30 +16,18 @@ NULL
 #' and each \code{beta_{l, .}} as a column.
 #' @param truth a \code{Starts} object containing the necessary initialization constants
 #' and hyperparameters. All hyperparameters must be supplied.
-#' @param priors character string, either a member of \code{special_beta_priors()} or 
-#' another string for normal priors on the betas.
-generate_data_from_model = function(genes, design, truth, priors = "Laplace"){
+generate_data_from_model = function(genes, design, truth){
   libraries = nrow(design)
 
   stopifnot(libraries >= 3)
   stopifnot(libraries == nrow(design))
 
   counts = NA
-  while(!all(is.finite(counts))){
+  while(any(!is.finite(counts))){
     truth@xi = numeric(0)
     truth@beta = numeric(0)
     for(l in 1:ncol(design)){
-      if(priors == "Laplace"){
-        xi = rexp(genes, rate = truth@k[1])
-      } else if(priors == "t"){
-        xi = 1/rgamma(genes, shape = truth@q[1], rate = truth@r[1])
-      } else if(priors == "horseshoe"){
-        xi = abs(rcauchy(genes))
-      } else {
-        xi = rep(1, genes)
-      }
-      xi[xi > 5] = sample(xi[xi <= 5], sum(xi > 5), replace = T)
-
+      xi = rep(1, genes)
       beta = rnorm(n = genes, mean = truth@theta[l], sd = sqrt(truth@sigmaSquared[l] * xi))
       truth@xi = c(truth@xi, xi)
       truth@beta = c(truth@beta, beta)
@@ -57,6 +45,7 @@ generate_data_from_model = function(genes, design, truth, priors = "Laplace"){
 
     suppressWarnings(counts <- matrix(rpois(genes*libraries, exp(lambda + epsilon)), nrow = genes))
   }
+
   rownames(counts) = paste("gene_", 1:genes, sep="")
   colnames(counts) = rownames(design)
 

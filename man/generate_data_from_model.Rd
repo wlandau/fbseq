@@ -4,7 +4,7 @@
 \alias{generate_data_from_model}
 \title{Function \code{generate_data_from_model}}
 \usage{
-generate_data_from_model(genes, design, truth, priors = "Laplace")
+generate_data_from_model(genes, design, truth)
 }
 \arguments{
 \item{genes}{number of genes/features/response variables in the data}
@@ -15,9 +15,6 @@ and each \code{beta_{l, .}} as a column.}
 
 \item{truth}{a \code{Starts} object containing the necessary initialization constants
 and hyperparameters. All hyperparameters must be supplied.}
-
-\item{priors}{character string, either a member of \code{special_beta_priors()} or
-another string for normal priors on the betas.}
 }
 \value{
 a list: a \code{Scenario} object with the scenario and a \code{Starts} object
