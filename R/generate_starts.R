@@ -47,15 +47,13 @@ generate_starts = function(counts, design, starts = Starts()){
   counts[counts < 1] = 0.5
   logcounts = log(counts)
 
-rho = rep(0, N)
-omegaSquared = 0
-#  rho = apply(logcounts, 2, mean)
-#  rho = rho - mean(rho)
-#  omegaSquared = var(rho)
+  rho = apply(logcounts, 2, mean)
+  rho = rho - mean(rho)
+  omegaSquared = var(rho)
 #  rhomat = matrix(rep(rho, each = G), ncol = N)
 
   OLS = solve(t(design) %*% design) %*%  t(design)
-  beta = t(OLS %*% t(logcounts)) # t(OLS %*% t(logcounts - rhomat))
+  beta = t(OLS %*% t(logcounts))
 
   theta = apply(beta, 2, mean)
   sigmaSquared = apply(beta, 2, var)
@@ -116,7 +114,7 @@ dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
   lower = pmax(lower, Mean - 4*Sd)
   upper = pmin(upper, Mean + 4*Sd)
 
-  df = 1
+  df = 5
   out = rep(NA, n)
   while(any(is.na(out))){
     i = is.na(out)
