@@ -97,24 +97,36 @@ generate_starts = function(counts, design, starts = Starts()){
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 #' @param parm character string specifying the parameter set to work on.
 #' @param lower lower bound for nonnegative parameters.
-#' @param upper upper bound for nonnegative parameters.
-dispersed_set = function(chain, parm, lower = NA, upper = NA){
-  if(!length(lower)) lower = NA
-  if(!length(upper)) upper = NA
+#' @param upper upper bound for some parameters.
+dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
   m = chain@iterations
   Mean = slot(chain, paste0(parm, "PostMean"))
   MeanSquare = slot(chain, paste0(parm, "PostMeanSquare"))
   Sd =  sqrt(m*(MeanSquare - Mean^2)/(m - 1))
   n = length(Mean)
 
-#  out = rt(n, 5)*Sd + Mean
-#  if(all(is.finite(lower))) out[out <= lower] = lower
-#  if(all(is.finite(upper))) out[out >= upper] = upper
-#  out
+  if(!length(lower)) lower = -Inf
+  if(!length(upper)) upper = Inf
 
-  Min = pmax(rep(lower, n/length(lower)), Mean - 3*Sd, na.rm = T)
-  Max = pmin(rep(upper, n/length(upper)), Mean + 3*Sd, na.rm = T) 
-  runif(n, Min, Max)
+  lower = rep(lower, n/length(lower))
+  upper = rep(upper, n/length(upper))
+
+  lower = pmax(lower, Mean - 4*Sd)
+  upper = pmin(upper, Mean + 4*Sd)
+
+  df = 1
+  out = rep(NA, n)
+  while(any(is.na(out))){
+    i = is.na(out)
+    out[i] = rt(sum(i), df = df)*Sd[i]*sqrt((df-2)/df) + Mean[i]
+    out[out <= lower] = NA
+    out[out >= upper] = NA
+  }
+  out
+
+#  Min = pmax(lower, Mean - 3*Sd, na.rm = T)
+#  Max = pmin(upper, Mean + 3*Sd, na.rm = T) 
+#  runif(n, Min, Max)
 }
 
 #' @title Function \code{disperse_starts}

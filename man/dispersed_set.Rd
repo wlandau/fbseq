@@ -4,7 +4,7 @@
 \alias{dispersed_set}
 \title{Function \code{dispersed_set}}
 \usage{
-dispersed_set(chain, parm, lower = NA, upper = NA)
+dispersed_set(chain, parm, lower = -Inf, upper = Inf)
 }
 \arguments{
 \item{chain}{\code{Chain} object that has already been run with \code{run_mcmc()}.}
@@ -13,7 +13,7 @@ dispersed_set(chain, parm, lower = NA, upper = NA)
 
 \item{lower}{lower bound for nonnegative parameters.}
 
-\item{upper}{upper bound for nonnegative parameters.}
+\item{upper}{upper bound for some parameters.}
 }
 \value{
 a vector with a dispersed starting values (relative to the estimated posterior so far)
