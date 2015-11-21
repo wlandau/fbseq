@@ -34,11 +34,11 @@ generate_data_from_model = function(genes, design, truth){
     }  
 
     truth@gamma = 1/rgamma(genes, shape = truth@nu/2, rate = truth@nu*truth@tau/2)
-    truth@rho = rnorm(libraries, 0, sqrt(truth@omegaSquared))
+    truth@rho = rep(0, libraries) #rnorm(libraries, 0, sqrt(truth@omegaSquared))
     rhomat = matrix(rep(truth@rho, each = genes), ncol = libraries)
 
     gammat = matrix(rep(truth@gamma, times = libraries), ncol = libraries)
-    epsilon = matrix(rnorm(libraries*genes, rhomat, sqrt(gammat)), ncol = libraries)
+    epsilon = matrix(rnorm(libraries*genes, 0, sqrt(gammat)), ncol = libraries) #matrix(rnorm(libraries*genes, rhomat, sqrt(gammat)), ncol = libraries)
 
     beta = matrix(truth@beta, nrow = genes)
     lambda = t(design %*% t(beta))

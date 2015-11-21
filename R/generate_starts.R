@@ -47,13 +47,15 @@ generate_starts = function(counts, design, starts = Starts()){
   counts[counts < 1] = 0.5
   logcounts = log(counts)
 
-  rho = apply(logcounts, 2, mean)
-  rho = rho - mean(rho)
-  omegaSquared = var(rho)
-  rhomat = matrix(rep(rho, each = G), ncol = N)
+rho = rep(0, N)
+omegaSquared = 0
+#  rho = apply(logcounts, 2, mean)
+#  rho = rho - mean(rho)
+#  omegaSquared = var(rho)
+#  rhomat = matrix(rep(rho, each = G), ncol = N)
 
   OLS = solve(t(design) %*% design) %*%  t(design)
-  beta = t(OLS %*% t(logcounts - rhomat))
+  beta = t(OLS %*% t(logcounts)) # t(OLS %*% t(logcounts - rhomat))
 
   theta = apply(beta, 2, mean)
   sigmaSquared = apply(beta, 2, var)
