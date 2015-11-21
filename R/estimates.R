@@ -12,7 +12,7 @@ NULL
 #' @param level level of the credible intervals from 0 to 1
 estimates = function(chain, level = 0.95){
   normals = c("beta", "epsilon", "theta")
-  gammas = c("gamma", "nu", "omegaSquared", "rho", "sigmaSquared", "tau", "xi")
+  gammas = c("gamma", "nu", "sigmaSquared", "tau", "xi")
 
   Mean = flatten_post(chain)
   MeanSq = flatten_post(chain, square = T)
@@ -40,7 +40,6 @@ estimates = function(chain, level = 0.95){
   }
 
   d["nu", "upper"] = pmin(d["nu", "upper"], chain@d)
-  d[grep("omegaSquared", rownames(d)), "upper"] = pmin(d[grep("omegaSquared", rownames(d)), "upper"], chain@w^2)
   d[grep("sigmaSquared", rownames(d)), "upper"] = pmin(d[grep("sigmaSquared", rownames(d)), "upper"], chain@s^2)
 
   out = data.frame(mean = d$mean, sd = d$sd, lower = d$lower, upper = d$upper)

@@ -13,7 +13,7 @@ run_gelman_mcmc = function(chain){
   stopifnot(chain@nchains_diag > 1)
 
   betas = which(apply(do.call(rbind, Scenario(chain)@contrasts), 2, function(x) any(x != 0)))
-  pattern = paste(c(paste0("beta_", betas), "nu",  "omegaSquared", "sigmaSquared", "tau", "theta"), collapse = "|")
+  pattern = paste(c(paste0("beta_", betas), "nu", "sigmaSquared", "tau", "theta"), collapse = "|")
 
   if(chain@verbose){
     print(paste("Using Gelman-Rubin potential scale reduction factors on", chain@nchains_diag, "parallel chains to assess convergence."))

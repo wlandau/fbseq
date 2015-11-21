@@ -20,6 +20,8 @@ objects from scratch.
 
 \item{\code{d}}{initialization constant}
 
+\item{\code{h}}{initialization constants}
+
 \item{\code{k}}{initialization constants}
 
 \item{\code{q}}{initialization constants}
@@ -28,8 +30,6 @@ objects from scratch.
 
 \item{\code{s}}{initialization constants}
 
-\item{\code{w}}{initialization constants}
-
 \item{\code{beta}}{MCMC starting values}
 
 \item{\code{epsilon}}{MCMC starting values}
@@ -37,10 +37,6 @@ objects from scratch.
 \item{\code{gamma}}{MCMC starting values}
 
 \item{\code{nu}}{MCMC starting values}
-
-\item{\code{omegaSquared}}{MCMC starting values}
-
-\item{\code{rho}}{MCMC starting values}
 
 \item{\code{sigmaSquared}}{MCMC starting values}
 

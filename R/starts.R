@@ -8,18 +8,16 @@
 #' @slot b initialization constant 
 #' @slot c initialization constants 
 #' @slot d initialization constant 
+#' @slot h initialization constants 
 #' @slot k initialization constants 
 #' @slot q initialization constants 
 #' @slot r initialization constants 
 #' @slot s initialization constants 
-#' @slot w initialization constants 
 #' 
 #' @slot beta MCMC starting values
 #' @slot epsilon MCMC starting values
 #' @slot gamma MCMC starting values
 #' @slot nu MCMC starting values
-#' @slot omegaSquared MCMC starting values
-#' @slot rho MCMC starting values
 #' @slot sigmaSquared MCMC starting values
 #' @slot tau MCMC starting values
 #' @slot theta MCMC starting values
@@ -30,18 +28,16 @@ setClass("Starts",
     b = "numeric",
     c = "numeric",
     d = "numeric",
+    h = "numeric",
     k = "numeric",
     q = "numeric",
     r = "numeric",
     s = "numeric",
-    w = "numeric",
 
     beta = "numeric",
     epsilon = "numeric",
     gamma = "numeric",
     nu = "numeric",
-    omegaSquared = "numeric",
-    rho = "numeric",
     sigmaSquared = "numeric",
     tau = "numeric",
     theta = "numeric",
@@ -56,8 +52,7 @@ setClass("Starts",
     k = 1,
     q = 3,
     r = 2,
-    s = 100,
-    w = 100
+    s = 100
   )
 )
 

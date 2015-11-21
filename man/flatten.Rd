@@ -14,7 +14,7 @@ one of the following, depending on the class of the argument object.
 \describe{
   \item{\code{Chain} argument}{a data frame parameter libraries.}
   \item{\code{Starts} argument}{a named numeric vector of starting values. If
-\code{epsilon} is set in \code{obj}, then one of \code{rho}, \code{phi}, \code{alp},
+\code{epsilon} is set in \code{obj}, then one of \code{phi}, \code{alp},
 or \code{gamma} must be set too.}
 }
 }

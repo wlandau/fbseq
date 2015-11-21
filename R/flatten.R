@@ -6,7 +6,7 @@
 #' \describe{
 #'   \item{\code{Chain} argument}{a data frame parameter libraries.}
 #'   \item{\code{Starts} argument}{a named numeric vector of starting values. If
-#' \code{epsilon} is set in \code{obj}, then one of \code{rho}, \code{phi}, \code{alp},
+#' \code{epsilon} is set in \code{obj}, then one of \code{phi}, \code{alp},
 #' or \code{gamma} must be set too.}
 #' }
 #' @param obj The argument, either a \code{Chain} or a \code{Starts} object.
@@ -27,7 +27,7 @@ flatten = function(obj){
 flatten_chain = function(chain){
   ret = list()
 
-  for(x in c("nu", "omegaSquared", "tau"))
+  for(x in c("nu", "tau"))
     if(length(slot(chain, x)))
       ret[[x]] = slot(chain, x)
   
@@ -54,11 +54,6 @@ flatten_chain = function(chain){
     colnames(ret$gamma) = paste("gamma", chain@genes_return, sep = "_")
   }
 
-  if(length(chain@rho)){
-    ret$rho = matrix(chain@rho, ncol = chain@Nreturn, byrow = T)
-    colnames(ret$rho) = paste("rho", chain@libraries_return, sep = "_")
-  }
-
   as.data.frame(do.call(cbind, ret))
 }
 
@@ -70,13 +65,13 @@ flatten_chain = function(chain){
 flatten_starts = function(starts){
   G = tryCatch(length(starts@gamma), warning = function(w) 0, error = function(w) 0)
   L = length(starts@beta)/ifelse(G, G, 1)
-  N = tryCatch(max(length(starts@rho), length(starts@epsilon)/G), warning = function(w) 0, error = function(w) 0)
+  N = tryCatch(max(length(starts@h), length(starts@epsilon)/G), warning = function(w) 0, error = function(w) 0)
 
   for(x in c("beta", "xi"))
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste0(x, "_", rep(1:L, each = G), "_", rep(1:G, times = L))
 
-  for(x in c("c", "k", "q", "r", "s", "gamma", "rho", "sigmaSquared", "theta"))
+  for(x in c("c", "k", "q", "r", "s", "gamma", "sigmaSquared", "theta"))
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste(x, 1:length(slot(starts, x)), sep = "_")
 
@@ -99,8 +94,6 @@ flatten_starts = function(starts){
     starts@epsilon,
     starts@gamma,
     nu = starts@nu,
-    omegaSquared = starts@omegaSquared,
-    starts@rho,
     starts@sigmaSquared,
     tau = starts@tau,
     starts@theta,

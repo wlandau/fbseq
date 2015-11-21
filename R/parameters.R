@@ -4,7 +4,7 @@
 #' @export
 #' @return Character vector of parameter names.
 parameters = function(){
-  c("beta", "epsilon", "gamma", "nu", "omegaSquared", "rho", "sigmaSquared", "tau", "theta", "xi")
+  c("beta", "epsilon", "gamma", "nu", "sigmaSquared", "tau", "theta", "xi")
 }
 
 #' @title Function \code{contstants}
@@ -13,5 +13,5 @@ parameters = function(){
 #' @export
 #' @return Character vector of parameter names.
 constants = function(){
-  c("a", "b", "c", "d", "k", "q", "r", "s", "w")
+  c("a", "b", "c", "d", "h", "k", "q", "r", "s")
 }

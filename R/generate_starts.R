@@ -47,10 +47,10 @@ generate_starts = function(counts, design, starts = Starts()){
   counts[counts < 1] = 0.5
   logcounts = log(counts)
 
-  rho = apply(logcounts, 2, mean)
-  rho = rho - mean(rho)
-  omegaSquared = var(rho)
-#  rhomat = matrix(rep(rho, each = G), ncol = N)
+  if(!length(starts@h)) starts@h = colMeans(logcounts) - mean(colMeans(logcounts))
+  if(length(starts@h) != N) starts@h = rep(starts@h, length.out = N)
+  h = matrix(rep(starts@h, each = G), ncol = N)
+  logcounts = logcounts - h
 
   OLS = solve(t(design) %*% design) %*%  t(design)
   beta = t(OLS %*% t(logcounts))
@@ -143,9 +143,8 @@ dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
   configs = Configs(chain)
-  lower = list(nu = 0, gamma = min(Starts(chain)@gamma), omegaSquared = 0, sigmaSquared = 0, 
-                    tau = 0, xi = min(Starts(chain)@xi))
-  upper = list(nu = chain@d, omegaSquared = chain@w^2, sigmaSquared = chain@s^2)
+  lower = list(nu = 0, gamma = min(Starts(chain)@gamma), sigmaSquared = 0, tau = 0, xi = min(Starts(chain)@xi))
+  upper = list(nu = chain@d, sigmaSquared = chain@s^2)
 
   for(v in configs@parameter_sets_update)
     slot(chain, paste0(v, "Start")) = dispersed_set(chain, v, lower[[v]], upper[[v]])

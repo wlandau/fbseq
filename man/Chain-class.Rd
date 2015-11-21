@@ -133,6 +133,8 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{d}}{initialization constant}
 
+\item{\code{h}}{initialization constants}
+
 \item{\code{k}}{initialization constants}
 
 \item{\code{q}}{initialization constants}
@@ -141,8 +143,6 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{s}}{initialization constants}
 
-\item{\code{w}}{initialization constants}
-
 \item{\code{beta}}{MCMC parameter samples}
 
 \item{\code{epsilon}}{MCMC parameter samples}
@@ -150,10 +150,6 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 \item{\code{gamma}}{MCMC parameter samples}
 
 \item{\code{nu}}{MCMC parameter samples}
-
-\item{\code{omegaSquared}}{MCMC parameter samples}
-
-\item{\code{rho}}{MCMC parameter samples}
 
 \item{\code{sigmaSquared}}{MCMC parameter samples}
 
@@ -171,10 +167,6 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{nuStart}}{MCMC starting bounds}
 
-\item{\code{omegaSquaredStart}}{MCMC starting bounds}
-
-\item{\code{rhoStart}}{MCMC starting bounds}
-
 \item{\code{sigmaSquaredStart}}{MCMC starting bounds}
 
 \item{\code{tauStart}}{MCMC starting bounds}
@@ -191,10 +183,6 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{nuPostMean}}{estimated posterior mean}
 
-\item{\code{omegaSquaredPostMean}}{estimated posterior means}
-
-\item{\code{rhoPostMean}}{estimated posterior means}
-
 \item{\code{sigmaSquaredPostMean}}{estimated posterior means}
 
 \item{\code{tauPostMean}}{estimated posterior mean}
@@ -210,10 +198,6 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 \item{\code{gammaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
 \item{\code{nuPostMeanSquare}}{estimated posterior mean of the square of the parameter}
-
-\item{\code{omegaSquaredPostMeanSquare}}{estimated posterior means of the squares of parameters}
-
-\item{\code{rhoPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
 \item{\code{sigmaSquaredPostMeanSquare}}{estimated posterior means of the squares of parameters}
 

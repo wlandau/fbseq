@@ -34,16 +34,16 @@ generate_data_from_model = function(genes, design, truth){
     }  
 
     truth@gamma = 1/rgamma(genes, shape = truth@nu/2, rate = truth@nu*truth@tau/2)
-    truth@rho = rep(0, libraries) #rnorm(libraries, 0, sqrt(truth@omegaSquared))
-    rhomat = matrix(rep(truth@rho, each = genes), ncol = libraries)
+    if(!length(truth@h)) truth@h = 0
+    if(length(truth@h) != libraries) truth@h = rep(truth@h, length.out = libraries)
+    h = matrix(rep(truth@h, each = genes), ncol = libraries)
 
     gammat = matrix(rep(truth@gamma, times = libraries), ncol = libraries)
-    epsilon = matrix(rnorm(libraries*genes, 0, sqrt(gammat)), ncol = libraries) #matrix(rnorm(libraries*genes, rhomat, sqrt(gammat)), ncol = libraries)
-
+    epsilon = matrix(rnorm(libraries*genes, 0, sqrt(gammat)), ncol = libraries)
     beta = matrix(truth@beta, nrow = genes)
-    lambda = t(design %*% t(beta))
+    mu = t(design %*% t(beta))
 
-    suppressWarnings(counts <- matrix(rpois(genes*libraries, exp(lambda + epsilon)), nrow = genes))
+    suppressWarnings(counts <- matrix(rpois(genes*libraries, exp(h + epsilon + mu)), nrow = genes))
   }
 
   rownames(counts) = paste("gene_", 1:genes, sep="")
