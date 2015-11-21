@@ -23,12 +23,13 @@ generate_data_from_model = function(genes, design, truth){
   stopifnot(libraries == nrow(design))
 
   counts = NA
+  truth@xi = rep(1, genes*ncol(design))
+
   while(any(!is.finite(counts))){
-    truth@xi = numeric(0)
     truth@beta = numeric(0)
     for(l in 1:ncol(design)){
       xi = rep(1, genes)
-      beta = rnorm(n = genes, mean = truth@theta[l], sd = sqrt(truth@sigmaSquared[l] * xi))
+      beta = rnorm(n = genes, mean = truth@theta[l], sd = sqrt(truth@sigmaSquared[l]))
       truth@xi = c(truth@xi, xi)
       truth@beta = c(truth@beta, beta)
     }  
