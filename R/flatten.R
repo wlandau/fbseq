@@ -71,7 +71,7 @@ flatten_starts = function(starts){
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste0(x, "_", rep(1:L, each = G), "_", rep(1:G, times = L))
 
-  for(x in c("c", "k", "q", "r", "s", "gamma", "sigmaSquared", "theta"))
+  for(x in c("c", "h", "k", "q", "r", "s", "gamma", "sigmaSquared", "theta"))
     if(length(slot(starts, x)))
       names(slot(starts, x)) = paste(x, 1:length(slot(starts, x)), sep = "_")
 
@@ -84,11 +84,11 @@ flatten_starts = function(starts){
     b = starts@b,
     starts@c,
     d = starts@d,
+    starts@h,
     starts@k,
     starts@q,
     starts@r,
     starts@s,
-    starts@w,
 
     starts@beta,
     starts@epsilon,

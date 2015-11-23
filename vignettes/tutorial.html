@@ -284,7 +284,16 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 </tr>
 </tbody>
 </table>
-<p>Each linear combination of the <span class="math">\(\beta_{\ell, g}\)</span>’s is a contrast, and each row of the table is a logical proposition. We want a posterior probability for each proposition. Hence, the Paschold scenario has the 12 contrasts,</p>
+<p>Each linear combination of the <span class="math">\(\beta_{\ell, g}\)</span>’s is a contrast, and each row of the table is a logical proposition. We want a posterior probability for each proposition. Let <span class="math">\(\text{I}(\cdot)\)</span> be the indicator function, <span class="math">\(m = 1, \ldots, M\)</span> be an MCMC iteration (excluding burn-in and thinning), and <span class="math">\(\beta_{\ell, g}^{(m)}\)</span> be the MCMC sample of <span class="math">\(\beta_{\ell, g}\)</span> for iteration <span class="math">\(m\)</span>. Then, the posterior probabilities of interest should be calculated as:</p>
+<p><span class="math">\[ \begin{align*}
+P(\text{high-parent heterosis, both hybrids} \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left (\beta_{2, g}^{(m)} &gt; 0 \text{ and } \beta_{3, g}^{(m)} &gt; 0 \right ) \\
+P(\text{low-parent heterosis, both hybrids}) \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( -\beta_{2, g}^{(m)} &gt; 0 \text{ and } -\beta_{3, g}^{(m)} &gt; 0 \right ) \\
+P(\text{high-parent heterosis, B73xMo17}) \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( 2\beta_{2, g}^{(m)} + \beta_{4, g}^{(m)} &gt; 0 \text{ and } 2\beta_{3, g}^{(m)} + \beta_{4, g}^{(m)} &gt; 0 \right ) \\
+P(\text{low-parent heterosis, B73xMo17}) \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( -2\beta_{2, g}^{(m)} - \beta_{4, g}^{(m)} &gt; 0 \text{ and } -2\beta_{3, g}^{(m)} - \beta_{4, g}^{(m)} &gt; 0 \right ) \\
+P(\text{high-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( 2\beta_{2, g}^{(m)} - \beta_{4, g}^{(m)} &gt; 0 \text{ and } 2\beta_{3, g}^{(m)} - \beta_{4, g}^{(m)} &gt; 0 \right ) \\
+P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( -2\beta_{2, g}^{(m)} + \beta_{4, g}^{(m)} &gt; 0 \text{ and }-2\beta_{3, g}^{(m)} + \beta_{4, g}^{(m)} &gt; 0 \right )
+\end{align*} \]</span></p>
+<p>To tell the package to calculate these posterior probabilities, be sure to make use of the <code>contrasts</code>, <code>bounds</code>, and <code>propositions</code> slots. The Paschold scenario has the 12 contrasts,</p>
 <pre class="sourceCode r"><code class="sourceCode r">paschold@contrasts</code></pre>
 <pre><code>## $`high-parent_B73xMo17_Mo17xB73_1`
 ## beta_1 beta_2 beta_3 beta_4 beta_5 
@@ -381,26 +390,26 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1        15        22        36        31        40        45
-## gene_2        38        38        14        66        43        38
-## gene_3        20        12        25        20        15        18
-## gene_4        16        17        14         7        26        12
-## gene_5        32        34        31        36        97        56
-## gene_6        22        36        55        40        38        35
+## gene_1         7         8        13         4         4         4
+## gene_2        26        25        52        39        51        28
+## gene_3        21        20        25        39        13        13
+## gene_4         5         8         6         7         6         9
+## gene_5        17        22        11         9        24        24
+## gene_6         3         6         9         5         9         6
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1        64        70        23         21         49         47
-## gene_2        38        47        27         20         39         20
-## gene_3        15        18        22         25         11          9
-## gene_4         6         5        20         16         14          5
-## gene_5        80        83        42         39         28         31
-## gene_6        55        31        27         32         42         46
+## gene_1         4         4        10         11         14         14
+## gene_2        66        51        33         51         57         52
+## gene_3        26        41         7         20         27         30
+## gene_4         3         7         6          4          7          6
+## gene_5        19        15        13         18          8          6
+## gene_6        16        13         1          6          6          8
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         22         35         58         47
-## gene_2         15         35         25         10
-## gene_3         20         21         24          9
-## gene_4         23         16          5          9
-## gene_5         28         22         35         63
-## gene_6         37         38         38         34</code></pre>
+## gene_1          7          9          7         15
+## gene_2         33         15         49         52
+## gene_3         10         13         22         31
+## gene_4          7          5          6          5
+## gene_5         26         11         11         11
+## gene_6          5          4          5          4</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -536,7 +545,7 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 <p>As an example, here is the <code>Chain</code> created from the <code>paschold</code> scenario visited earlier.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(paschold)
 <span class="kw">str</span>(chain)</code></pre>
-<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 99 slots
+<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 91 slots
 ##   ..@ bound_names               : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ contrast_names            : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ gene_names                : chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
@@ -558,21 +567,21 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ##   ..@ diag                      : chr &quot;gelman&quot;
 ##   ..@ ess                       : int 100
 ##   ..@ max_attempts_diag         : int 1
-##   ..@ max_attempts_ess          : int 5
+##   ..@ max_attempts_ess          : int 0
 ##   ..@ nchains_diag              : int 4
 ##   ..@ psrf_tol                  : num 1.1
 ##   ..@ burnin                    : int 10000
 ##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
-##   ..@ genes_return              : int [1:3] 431 18759 21272
-##   ..@ genes_return_epsilon      : int [1:3] 31056 33416 33776
+##   ..@ genes_return              : int [1:3] 4269 36291 38752
+##   ..@ genes_return_epsilon      : int [1:3] 20276 29617 34200
 ##   ..@ iterations                : int 1000
-##   ..@ libraries_return          : int [1:3] 1 8 12
-##   ..@ libraries_return_epsilon  : int [1:3] 5 7 12
-##   ..@ parameter_sets_return     : Named int [1:10] 1 1 1 1 0 0 1 1 1 1
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:10] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
-##   ..@ parameter_sets_update     : Named int [1:10] 1 1 1 1 0 0 1 1 1 1
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:10] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
-##   ..@ priors                    : int [1:5] 1 1 1 1 1
+##   ..@ libraries_return          : int [1:3] 6 8 15
+##   ..@ libraries_return_epsilon  : int [1:3] 2 7 8
+##   ..@ parameter_sets_return     : Named int [1:8] 1 1 1 1 1 1 1 0
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
+##   ..@ parameter_sets_update     : Named int [1:8] 1 1 1 1 1 1 1 0
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
+##   ..@ priors                    : int [1:5] 0 0 0 0 0
 ##   ..@ thin                      : int 10
 ##   ..@ verbose                   : int 5
 ##   ..@ C                         : int 12
@@ -595,39 +604,33 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ##   ..@ b                         : num 1
 ##   ..@ c                         : num [1:5] 10 10 10 10 10
 ##   ..@ d                         : num 1000
+##   ..@ h                         : Named num [1:16] 0.0653 -0.0384 -0.1794 -0.1501 0.034 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
 ##   ..@ k                         : num [1:5] 1 1 1 1 1
 ##   ..@ q                         : num [1:5] 3 3 3 3 3
 ##   ..@ r                         : num [1:5] 2 2 2 2 2
 ##   ..@ s                         : num [1:5] 100 100 100 100 100
-##   ..@ w                         : num 100
 ##   ..@ beta                      : num [1:15000] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ epsilon                   : num [1:9000] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ gamma                     : num [1:3000] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ nu                        : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ omegaSquared              : num(0) 
-##   ..@ rho                       : num(0) 
 ##   ..@ sigmaSquared              : num [1:5000] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ tau                       : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ theta                     : num [1:5000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ xi                        : num [1:15000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ xi                        : num(0) 
 ##   ..@ betaStart                 : num [1:198280] -0.311 1.833 7.593 0.807 2.336 ...
-##   ..@ epsilonStart              : num [1:634496] 0.0988 0.3065 0.2435 0.268 0.0882 ...
-##   ..@ gammaStart                : Named num [1:39656] 0.1385 0.3271 0.0221 0.2895 0.1904 ...
+##   ..@ epsilonStart              : num [1:634496] 0.0335 0.2412 0.1782 0.2027 0.0229 ...
+##   ..@ gammaStart                : Named num [1:39656] 0.1408 0.3233 0.0138 0.2646 0.1845 ...
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
-##   ..@ nuStart                   : num 5.08
-##   ..@ omegaSquaredStart         : num 0.00681
-##   ..@ rhoStart                  : Named num [1:16] 0.0653 -0.0384 -0.1794 -0.1501 0.034 ...
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
+##   ..@ nuStart                   : num 4.94
 ##   ..@ sigmaSquaredStart         : num [1:5] 7.4795 0.0665 0.0618 0.0154 0.0698
-##   ..@ tauStart                  : num 0.233
-##   ..@ thetaStart                : num [1:5] 3.17 -5.42e-17 3.78e-17 5.74e-18 -5.27e-17
+##   ..@ tauStart                  : num 0.222
+##   ..@ thetaStart                : num [1:5] 3.17 5.07e-17 -1.90e-17 1.14e-17 3.36e-17
 ##   ..@ xiStart                   : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...
 ##   ..@ betaPostMean              : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ epsilonPostMean           : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ gammaPostMean             : num [1:39656] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ nuPostMean                : num 0
-##   ..@ omegaSquaredPostMean      : num 0
-##   ..@ rhoPostMean               : num [1:16] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ sigmaSquaredPostMean      : num [1:5] 0 0 0 0 0
 ##   ..@ tauPostMean               : num 0
 ##   ..@ thetaPostMean             : num [1:5] 0 0 0 0 0
@@ -636,8 +639,6 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 ##   ..@ epsilonPostMeanSquare     : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ gammaPostMeanSquare       : num [1:39656] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ nuPostMeanSquare          : num 0
-##   ..@ omegaSquaredPostMeanSquare: num 0
-##   ..@ rhoPostMeanSquare         : num [1:16] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ sigmaSquaredPostMeanSquare: num [1:5] 0 0 0 0 0
 ##   ..@ tauPostMeanSquare         : num 0
 ##   ..@ thetaPostMeanSquare       : num [1:5] 0 0 0 0 0
@@ -702,43 +703,41 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 ##   ..@ diag                    : chr &quot;gelman&quot;
 ##   ..@ ess                     : int 100
 ##   ..@ max_attempts_diag       : int 1
-##   ..@ max_attempts_ess        : int 5
+##   ..@ max_attempts_ess        : int 0
 ##   ..@ nchains_diag            : int 4
 ##   ..@ psrf_tol                : num 1.1
 ##   ..@ burnin                  : int 10000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 431 18759 21272
-##   ..@ genes_return_epsilon    : int [1:3] 31056 33416 33776
+##   ..@ genes_return            : int [1:3] 4269 36291 38752
+##   ..@ genes_return_epsilon    : int [1:3] 20276 29617 34200
 ##   ..@ iterations              : int 1000
-##   ..@ libraries_return        : int [1:3] 1 8 12
-##   ..@ libraries_return_epsilon: int [1:3] 5 7 12
-##   ..@ parameter_sets_return   : chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
-##   ..@ parameter_sets_update   : chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
-##   ..@ priors                  : chr [1:5] &quot;Laplace&quot; &quot;Laplace&quot; &quot;Laplace&quot; &quot;Laplace&quot; ...
+##   ..@ libraries_return        : int [1:3] 6 8 15
+##   ..@ libraries_return_epsilon: int [1:3] 2 7 8
+##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
+##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
+##   ..@ priors                  : chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
 ##   ..@ thin                    : int 10
 ##   ..@ verbose                 : int 5</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(starts)</code></pre>
-<pre><code>## Formal class 'Starts' [package &quot;fbseq&quot;] with 19 slots
+<pre><code>## Formal class 'Starts' [package &quot;fbseq&quot;] with 17 slots
 ##   ..@ a           : num 1
 ##   ..@ b           : num 1
 ##   ..@ c           : num [1:5] 10 10 10 10 10
 ##   ..@ d           : num 1000
+##   ..@ h           : Named num [1:16] 0.0653 -0.0384 -0.1794 -0.1501 0.034 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
 ##   ..@ k           : num [1:5] 1 1 1 1 1
 ##   ..@ q           : num [1:5] 3 3 3 3 3
 ##   ..@ r           : num [1:5] 2 2 2 2 2
 ##   ..@ s           : num [1:5] 100 100 100 100 100
-##   ..@ w           : num 100
 ##   ..@ beta        : num [1:198280] -0.311 1.833 7.593 0.807 2.336 ...
-##   ..@ epsilon     : num [1:634496] 0.0988 0.3065 0.2435 0.268 0.0882 ...
-##   ..@ gamma       : Named num [1:39656] 0.1385 0.3271 0.0221 0.2895 0.1904 ...
+##   ..@ epsilon     : num [1:634496] 0.0335 0.2412 0.1782 0.2027 0.0229 ...
+##   ..@ gamma       : Named num [1:39656] 0.1408 0.3233 0.0138 0.2646 0.1845 ...
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
-##   ..@ nu          : num 5.08
-##   ..@ omegaSquared: num 0.00681
-##   ..@ rho         : Named num [1:16] 0.0653 -0.0384 -0.1794 -0.1501 0.034 ...
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
+##   ..@ nu          : num 4.94
 ##   ..@ sigmaSquared: num [1:5] 7.4795 0.0665 0.0618 0.0154 0.0698
-##   ..@ tau         : num 0.233
-##   ..@ theta       : num [1:5] 3.17 -5.42e-17 3.78e-17 5.74e-18 -5.27e-17
+##   ..@ tau         : num 0.222
+##   ..@ theta       : num [1:5] 3.17 5.07e-17 -1.90e-17 1.14e-17 3.36e-17
 ##   ..@ xi          : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 <p>Note that the unspecified starting values were automatically generated in the construction of the <code>Chain</code> object.</p>
 </div>

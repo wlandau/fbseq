@@ -29,7 +29,7 @@ The `fbseq` package fits a hierarchical model to RNA-seq data in (nearly) fully 
 Let $y_{n, g}$ be the fully preprocessed RNA-sequencing read count for library/column $n$ ($n = 1, \ldots, N)$ and gene/row $g$ ($g = 1, \ldots, G)$. Let $X$ be the $N \times L$ design matrix for gene-specific effects $\boldsymbol{\beta}_g = (\beta_{1, g}, \ \ldots, \ \beta_{L, g})$. Let $\boldsymbol{X}_n$ be the $n$'th row of $X$. Conditioned on the parameters $\boldsymbol{\beta}_{ g}$ and $\e_{n, g}$, the $y_{n, g}$'s are treated as independent and Poisson-distributed in the likelihood.
 
 $$ \begin{align*}
-y_{n,g} \ | \ \boldsymbol{\beta}_g, \ \e_{n, g} \stackrel{\text{ind}}{\sim} \text{Poisson} \left (\exp \left (\boldsymbol{X}_n \boldsymbol{\beta}_g + \e_{n, g} \right ) \right )
+y_{n,g} \ | \ \boldsymbol{\beta}_g, \ \e_{n, g} \stackrel{\text{ind}}{\sim} \text{Poisson} \left (\exp \left (h_n + \e_{n, g} + \boldsymbol{X}_n \boldsymbol{\beta}_g  \right ) \right )
 \end{align*} $$
 
 ## Signal
@@ -71,22 +71,12 @@ If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = I(\xi_{\ell, g} = 1)$, t
 
 ## Noise
 
-The $\e_{n, g}$ terms are noise that the Poisson distribution does not account for. Conditional on their means $\rho_n$ and variances $\gamma_g$, the $\e_{n, g}$ parameters are independent with normal distrib{}utions.
+The $h_n$ terms are constants estimated from the data before the MCMC. These play the role of customary log-scale RNA-seq normalization factors, accounting for library-specific nuisance effects such as different sequencing depths. Unfortunately, they need to be constants, not model parameters. In test versions of the package, they were given priors and treated as parameters, and they did not converge in the MCMC. This may be because of a lack of identifiability.
+
+The $\e_{n, g}$ terms are noise that the Poisson distribution does not account for. Conditional on their variances $\gamma_g$, the $\e_{n, g}$ parameters are independent with normal distributions.
 
 $$ \begin{align*}
-\e_{n,g} \ | \ \rho_n, \gamma_g \stackrel{\text{ind}}{\sim} \text{Normal}(\rho_n, \ \gamma_g)
-\end{align*} $$
-
-The $\rho_n$'s play the role of normalization factors in RNA-seq data, accounting for library-specific effects like sequencing depth. Unfortunately, sampling the $\rho_n$'s in the MCMC causes problems, and it is recommended that the $\rho_n$'s be set constant at their starting values. This is the package default. Otherwise, the $\rho_n$'s are treated as ordinary model parameters that, conditioned on their variance $\omega^2$, are independent with normal distributions.
-
-$$ \begin{align*}
-\rho_n \ | \ \omega^2 \stackrel{\text{ind}}{\sim} \text{Normal}(0, \ \omega^2)
-\end{align*} $$
-
-$\omega$ has a uniform prior, equivalent to a truncated $\omega^{-1}$ prior on $\omega^2$.
-
-$$ \begin{align*}
-\omega \sim \text{Uniform}(0, \ w)
+\e_{n,g} \ | \ \gamma_g \stackrel{\text{ind}}{\sim} \text{Normal}(0, \ \gamma_g)
 \end{align*} $$
 
 The $\gamma_g$'s play the role of overdispersion terms, analogous to the overdispersions in traditional negative-binomial likelihood models used in packages like `edgeR`. Conditioned on parameters $\nu$ and $\tau$, they have independent inverse-gamma distributions.
@@ -111,14 +101,12 @@ $$ \begin{align*}
 
 
 $$ \begin{align*}
-&y_{n,g} \ | \ \boldsymbol{\beta}_g, \ \e_{n, g} &&\stackrel{\text{ind}}{\sim} \text{Poisson} \left (\exp \left (\boldsymbol{X}_n \boldsymbol{\beta}_g + \e_{n, g} \right ) \right ) \\
+&y_{n,g} \ | \ \boldsymbol{\beta}_g, \ \e_{n, g} &&\stackrel{\text{ind}}{\sim} \text{Poisson} \left (\exp \left (h_n + \e_{n, g} + \boldsymbol{X}_n \boldsymbol{\beta}_g \right ) \right ) \\
 &\qquad \beta_{\ell, g} \ | \ \theta_\ell, \ \sigma_\ell^2, \ \xi_{\ell, g} &&\stackrel{\text{ind}}{\sim} \text{Normal}(\theta_\ell, \ \sigma_\ell^2 \xi_{\ell, g}) \\
 &\qquad \qquad \theta_\ell \ | \ c_\ell^2 &&\stackrel{\text{ind}}{\sim} \text{Normal}(0, \ c_\ell^2) \\
 &\qquad \qquad \sigma_\ell \ | \ s_\ell &&\stackrel{\text{ind}}{\sim} \text{Uniform}(0, \ s_\ell^2) \\
 &\qquad \qquad \xi_{\ell, g} &&\stackrel{\text{ind}}{\sim} p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) \\
-&\qquad \e_{n,g} \ | \ \rho_n, \gamma_g &&\stackrel{\text{ind}}{\sim} \text{Normal}(\rho_n, \ \gamma_g) \\
-&\qquad \qquad \rho_n \ | \ \omega^2 &&\stackrel{\text{ind}}{\sim} \text{Normal}(0, \ \omega^2) \\
-& \qquad \qquad \qquad \omega && \sim \text{Uniform}(0, \ w) \\
+&\qquad \e_{n,g} \ | \ \gamma_g &&\stackrel{\text{ind}}{\sim} \text{Normal}(0, \ \gamma_g) \\
 &\qquad \qquad \gamma_g \ | \ \nu, \ \tau &&\stackrel{\text{ind}}{\sim} \text{Inverse-Gamma} \left ( \frac{\nu}{2}, \ \frac{\nu \tau}{2} \right ) \\
 &\qquad \qquad \qquad \nu &&\sim \text{Uniform}(0, \ d) \\
 &\qquad \qquad \qquad \tau &&\sim \text{Gamma}(a, \ \text{rate} = b)

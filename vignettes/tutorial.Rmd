@@ -141,7 +141,18 @@ With these interpretations, the table of conditions becomes
 | high-parent heterosis, `Mo17xB73`   |	|  $2\beta_{2, g} - \beta_{4, g} > 0$ and $2\beta_{3, g} - \beta_{4, g} > 0$  | 
 | low-parent heterosis, `Mo17xB73`    |	| $-2\beta_{2, g} + \beta_{4, g} > 0$ and $-2\beta_{3, g} + \beta_{4, g} > 0$ | 
 
-Each linear combination of the $\beta_{\ell, g}$'s is a contrast, and each row of the table is a logical proposition. We want a posterior probability for each proposition. Hence, the Paschold scenario has the 12 contrasts,
+Each linear combination of the $\beta_{\ell, g}$'s is a contrast, and each row of the table is a logical proposition. We want a posterior probability for each proposition. Let $\text{I}(\cdot)$ be the indicator function, $m = 1, \ldots, M$ be an MCMC iteration (excluding burn-in and thinning), and $\beta_{\ell, g}^{(m)}$ be the MCMC sample of $\beta_{\ell, g}$ for iteration $m$. Then, the posterior probabilities of interest should be calculated as:
+
+$$ \begin{align*}
+P(\text{high-parent heterosis, both hybrids} \ | \ \text{data}) &\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left (\beta_{2, g}^{(m)} > 0 \text{ and } \beta_{3, g}^{(m)} > 0 \right ) \\
+P(\text{low-parent heterosis, both hybrids}) \ | \ \text{data}) &\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( -\beta_{2, g}^{(m)} > 0 \text{ and } -\beta_{3, g}^{(m)} > 0 \right ) \\
+P(\text{high-parent heterosis, B73xMo17}) \ | \ \text{data}) &\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( 2\beta_{2, g}^{(m)} + \beta_{4, g}^{(m)} > 0 \text{ and } 2\beta_{3, g}^{(m)} + \beta_{4, g}^{(m)} > 0 \right ) \\
+P(\text{low-parent heterosis, B73xMo17}) \ | \ \text{data}) &\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( -2\beta_{2, g}^{(m)} - \beta_{4, g}^{(m)} > 0 \text{ and } -2\beta_{3, g}^{(m)} - \beta_{4, g}^{(m)} > 0 \right ) \\
+P(\text{high-parent heterosis, Mo17xB73}) \ | \ \text{data}) &\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( 2\beta_{2, g}^{(m)} - \beta_{4, g}^{(m)} > 0 \text{ and } 2\beta_{3, g}^{(m)} - \beta_{4, g}^{(m)} > 0 \right ) \\
+P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( -2\beta_{2, g}^{(m)} + \beta_{4, g}^{(m)} > 0 \text{ and }-2\beta_{3, g}^{(m)} + \beta_{4, g}^{(m)} > 0 \right )
+\end{align*} $$
+
+To tell the package to calculate these posterior probabilities, be sure to make use of the `contrasts`, `bounds`, and `propositions` slots. The Paschold scenario has the 12 contrasts,
 
 ```{r}
 paschold@contrasts
