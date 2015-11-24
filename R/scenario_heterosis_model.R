@@ -7,9 +7,9 @@
 #' @param truth \code{Starts} object of hyperparameters underlying simulation
 #' all hyperparameters must be specified.
 scenario_heterosis_model = function(genes = 3e4, libraries = 16,
-  truth = Starts(nu = 2.812224, tau = 0.006780517, sigmaSquared = c(1, 
-        0.03724313, 0.0324207, 0.0006229287, 0.06410533), theta = c(3, 
-        -0.005734982, -0.02541216, -0.004763663, -0.06341044))){
+  truth = Starts(nu = 2.58, tau = 0.00677, sigmaSquared = c(1, 
+        0.0447, 0.0340, 0.000473, 0.0763), theta = c(3, 
+        0.00224, -0.00730, -0.00451, 0.00794))){
 
   data(paschold)
   paschold = get("paschold")

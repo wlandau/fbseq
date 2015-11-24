@@ -63,16 +63,16 @@ setClass("Configs",
     nchains_diag = 4,
     psrf_tol = 1.1,
 
-    burnin = 1e4,
+    burnin = 4e4,
     genes_return = numeric(0),
     genes_return_epsilon = numeric(0),
-    iterations = 1e3,
+    iterations = 4e3,
     libraries_return = numeric(0),
     libraries_return_epsilon = numeric(0),
     parameter_sets_return = parameters(),
     parameter_sets_update = parameters(),
     priors = "normal",
-    thin = 10,
+    thin = 40,
     verbose = 5
   )
 )
