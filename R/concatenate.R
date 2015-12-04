@@ -12,6 +12,8 @@
 concatenate = function(chain1, chain2){
   chain = chain2
   chain@iterations = chain1@iterations + chain2@iterations
+  i1 = chain1@iterations * chain1@thin
+  i2 = chain2@iterations * chain2@thin
 
   for(sn in c("psrf_all", "psrf_important"))
     if(!length(slot(chain, sn)))
@@ -22,7 +24,7 @@ concatenate = function(chain1, chain2){
   sn = sn[grepl(pattern, sn)]
 
   for(p in sn)
-    slot(chain, p) = (chain1@iterations * slot(chain1, p) + chain2@iterations * slot(chain2, p))/(chain1@iterations + chain2@iterations)
+    slot(chain, p) = (i1 * slot(chain1, p) + i2 * slot(chain2, p))/(i1 + i2)
 
   for(p in parameters())
     if(chain@parameter_sets_return[p])
