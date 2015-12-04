@@ -20,7 +20,10 @@ NULL
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
 #' Applies to all gene-specific parameters except for the epsilons.
 #' @slot genes_return_epsilon Indices of genes g for which epsilon_{n, g} is updated/returned.
-#' @slot iterations Number of MCMC iterations (not including burnin or thinning)
+#' @slot iterations Total MCMC iterations after burnin.
+#' @slot iterations Number of MCMC iterations after burnin for which selected parameter samples are kept.
+#' Total MCMC iterations = burnin + thin * "iterations", and the whole "thin * iterations" portion
+#' is used to calculate posterior means, mean squares, and probabilities.
 #' @slot libraries_return Indices of RNA-seq libraries whose parameter samples you want to return.
 #' @slot libraries_return_epsilon Indices of RNA-seq libraries n for which epsilon_{n, g} is updated/returned.
 #' Applies to all library-specific parameters except for the epsilons.
@@ -30,7 +33,10 @@ NULL
 #' during the MCMC.
 #' @slot priors Names of the family of priors on the betas after integrating out the xi's. 
 #' Can be any value returned by \code{special_beta_priors()}. All other values will default to the normal prior.
-#' @slot thin MCMC thinning interval, number of iterations to skip in between iterations to return.
+#' @slot thin MCMC thinning interval. \code{thin = 1} means parameter samples will be saved for every iterations
+#' after burnin. \code{thin = 10} means parameter samples will be saved every 10th iteration after burnin.
+#' Total MCMC iterations = burnin + thin * "iterations", and the whole "thin * iterations" portion
+#' is used to calculate posterior means, mean squares, and probabilities.
 #' @slot verbose Number of times to print out progress during burnin and the actual MCMC.
 #' If \code{verbose} > 0, then progress messages will also print during setup and cleanup.
 setClass("Configs", 
@@ -63,16 +69,16 @@ setClass("Configs",
     nchains_diag = 4,
     psrf_tol = 1.1,
 
-    burnin = 4e4,
+    burnin = 1e4,
     genes_return = numeric(0),
     genes_return_epsilon = numeric(0),
-    iterations = 4e3,
+    iterations = 1e3,
     libraries_return = numeric(0),
     libraries_return_epsilon = numeric(0),
     parameter_sets_return = parameters(),
     parameter_sets_update = parameters(),
     priors = "normal",
-    thin = 40,
+    thin = 10,
     verbose = 5
   )
 )
