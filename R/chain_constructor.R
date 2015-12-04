@@ -39,6 +39,8 @@ Chain = function(scenario, configs = Configs(), starts = Starts(), slots = NULL)
 #' @param starts A \code{Starts} object of model parameter starting bounds.
 plug_in_chain = function(chain, scenario, configs, starts){
   chain@iterations = as.integer(configs@iterations)
+  stopifnot(configs@thin > 0)
+
   subtract = c("parameter_sets_return", "parameter_sets_update", "priors")
   for(n in setdiff(intersect(slotNames(chain), slotNames(configs)), subtract))
     slot(chain, n) = as(slot(configs, n), class(slot(chain, n)))

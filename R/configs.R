@@ -116,6 +116,8 @@ Configs = function(obj = NULL, ...){
     configs@priors = as(ifelse(obj@priors > 0, special_beta_priors()[obj@priors], "normal"), class(configs@priors))
   }
 
+  configs@thin = max(1, configs@thin)
+
   if(!any(configs@priors %in% special_beta_priors())){
     configs@parameter_sets_return = setdiff(configs@parameter_sets_return, "xi")
     configs@parameter_sets_update = setdiff(configs@parameter_sets_update, "xi")
