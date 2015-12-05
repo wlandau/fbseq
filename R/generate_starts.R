@@ -99,7 +99,7 @@ generate_starts = function(counts, design, starts = Starts()){
 #' @param lower lower bound for nonnegative parameters.
 #' @param upper upper bound for some parameters.
 dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
-  m = chain@iterations
+  m = chain@iterations * chain@thin
   Mean = slot(chain, paste0(parm, "PostMean"))
   MeanSquare = slot(chain, paste0(parm, "PostMeanSquare"))
   Sd =  sqrt(m*(MeanSquare - Mean^2)/(m - 1))
