@@ -63,13 +63,13 @@ setClass("Configs",
   ),
   prototype = list(
     diag = "gelman",
-    ess = 1e2,
+    ess = 0,
     max_attempts_diag = 1,
     max_attempts_ess = 0,
-    nchains_diag = 4,
+    nchains_diag = 3,
     psrf_tol = 1.1,
 
-    burnin = 1e4,
+    burnin = 1e5,
     genes_return = numeric(0),
     genes_return_epsilon = numeric(0),
     iterations = 1e3,
@@ -78,7 +78,7 @@ setClass("Configs",
     parameter_sets_return = parameters(),
     parameter_sets_update = parameters(),
     priors = "normal",
-    thin = 10,
+    thin = 1e2,
     verbose = 5
   )
 )
