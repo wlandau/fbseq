@@ -6,14 +6,8 @@ NULL
 #' @exportClass Configs
 #'
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
-#' @slot ess Minimum effective sample size for all parameters
-#' @slot max_attempts_diag Maximum number of retries for assessing convergence.
-#' Can be set to Inf to run indefinitely.
-#' @slot max_attempts_ess Maximum number of retries for generating enough effective samples.
-#' Can be set to Inf to run indefinitely.
-#' @slot nchains_diag number of independent chains to run (including this one) to use
-#' convergence diagnostics that require multiple chains. 
-#' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
+#' @slot nchains number of independent chains to run (including the pilot chain) to use for
+#' convergence diagnostics (such as Gelman factors) that require multiple chains. 
 #' 
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
 #' @slot effects_update_beta values of l for which to update the beta_{l, g} parameters. For debugging only.
@@ -42,11 +36,7 @@ NULL
 setClass("Configs", 
   slots = list(
     diag = "character",
-    ess = "numeric",
-    max_attempts_diag = "numeric",
-    max_attempts_ess = "numeric",
-    nchains_diag = "numeric",
-    psrf_tol = "numeric",
+    nchains = "numeric",
 
     burnin = "numeric",
     effects_update_beta = "numeric",
@@ -63,13 +53,9 @@ setClass("Configs",
   ),
   prototype = list(
     diag = "gelman",
-    ess = 1e2,
-    max_attempts_diag = 1,
-    max_attempts_ess = 0,
-    nchains_diag = 4,
-    psrf_tol = 1.1,
+    nchains = 3,
 
-    burnin = 1e4,
+    burnin = 1e5,
     genes_return = numeric(0),
     genes_return_epsilon = numeric(0),
     iterations = 1e3,
@@ -78,7 +64,7 @@ setClass("Configs",
     parameter_sets_return = parameters(),
     parameter_sets_update = parameters(),
     priors = "normal",
-    thin = 10,
+    thin = 1e2,
     verbose = 5
   )
 )

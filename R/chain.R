@@ -12,8 +12,7 @@ NULL
 #' @slot gene_names names of genes, taken from the row names of the count data matrix
 #' @slot library_names names of the libraries/samples, taken from the column names of the count data matrix
 #' @slot proposition_names names of \code{propositions} slot in the \code{Scenario} object
-#' @slot psrf_all Gelman-Rubin potential scale reduction factors for all parameters
-#' @slot psrf_important Gelman-Rubin potential scale reduction factors for just the parameters of interest
+#' @slot psrf Gelman-Rubin potential scale reduction factors for all parameters
 #' @slot runtime runtime of the call to the \code{fbseq} function as measured by \code{proc.time}.
 #'
 #' @slot bounds values to compare contrasts to. The comparison is to see if the contrast is greater than
@@ -26,19 +25,10 @@ NULL
 #' @slot propositions propositions of inequalities involving contrasts from the \code{Scenario} object.
 #' @slot supplement a list containing supplementary information about the scenario: 
 #' for example, how the data were simulated, if applicable
-#' 
-#' @slot attempts_diag number of attempts made to reach apparent convergence 
-#' @slot attempts_ess number of attempts made to reach enough effective samples
 #'
 #' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
-#' @slot ess Minimum effective sample size for all parameters
-#' @slot max_attempts_diag Maximum number of retries for assessing convergence.
-#' Can be set to Inf to run indefinitely.
-#' @slot max_attempts_ess Maximum number of retries for generating enough effective samples.
-#' Can be set to Inf to run indefinitely.
-#' @slot nchains_diag number of independent chains to run (including this one) to use
-#' convergence diagnostics that require multiple chains. 
-#' @slot psrf_tol upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")
+#' @slot nchains number of independent chains to run (including the pilot chain) to use for
+#' convergence diagnostics (such as Gelman factors) that require multiple chains. 
 #' 
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
 #' @slot effects_update_beta bounds of l for which to update the beta_{l, g} parameters.
@@ -133,8 +123,7 @@ setClass("Chain",
     gene_names = "character",
     library_names = "character",
     proposition_names = "character",
-    psrf_all = "numeric",
-    psrf_important = "numeric",
+    psrf = "numeric",
     runtime = "numeric",
 
     bounds = "numeric",
@@ -144,15 +133,8 @@ setClass("Chain",
     propositions = "integer",
     supplement = "list",
 
-    attempts_diag = "integer",
-    attempts_ess = "integer",
-
     diag = "character",
-    ess = "integer",
-    max_attempts_diag = "integer",
-    max_attempts_ess = "integer",
-    nchains_diag = "integer",
-    psrf_tol = "numeric",
+    nchains = "integer",
 
     burnin = "integer",
     effects_update_beta = "integer",
@@ -229,9 +211,5 @@ setClass("Chain",
     tauPostMeanSquare = "numeric",
     thetaPostMeanSquare = "numeric",
     xiPostMeanSquare = "numeric"
-  ),
-  prototype = list(
-    ess_attempts = as.integer(0),
-    psrf_attempts = as.integer(0)
   )
 )

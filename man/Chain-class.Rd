@@ -22,9 +22,7 @@ by feeding one into \code{single_chain()}.
 
 \item{\code{proposition_names}}{names of \code{propositions} slot in the \code{Scenario} object}
 
-\item{\code{psrf_all}}{Gelman-Rubin potential scale reduction factors for all parameters}
-
-\item{\code{psrf_important}}{Gelman-Rubin potential scale reduction factors for just the parameters of interest}
+\item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for all parameters}
 
 \item{\code{runtime}}{runtime of the call to the \code{fbseq} function as measured by \code{proc.time}.}
 
@@ -44,24 +42,10 @@ sets of gene-specific variables.}
 \item{\code{supplement}}{a list containing supplementary information about the scenario:
 for example, how the data were simulated, if applicable}
 
-\item{\code{attempts_diag}}{number of attempts made to reach apparent convergence}
-
-\item{\code{attempts_ess}}{number of attempts made to reach enough effective samples}
-
 \item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
 
-\item{\code{ess}}{Minimum effective sample size for all parameters}
-
-\item{\code{max_attempts_diag}}{Maximum number of retries for assessing convergence.
-Can be set to Inf to run indefinitely.}
-
-\item{\code{max_attempts_ess}}{Maximum number of retries for generating enough effective samples.
-Can be set to Inf to run indefinitely.}
-
-\item{\code{nchains_diag}}{number of independent chains to run (including this one) to use
-convergence diagnostics that require multiple chains.}
-
-\item{\code{psrf_tol}}{upper threshold for Gelman-Rubin potential scale reduction factors (if diag is "gelman")}
+\item{\code{nchains}}{number of independent chains to run (including the pilot chain) to use for
+convergence diagnostics (such as Gelman factors) that require multiple chains.}
 
 \item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
 
