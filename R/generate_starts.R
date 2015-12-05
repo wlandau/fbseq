@@ -142,6 +142,7 @@ dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
 #' @return a \code{Chain} object with dispersed MCMC starting values.
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
+  chain@thin = max(1, chain@thin)
   configs = Configs(chain)
   lower = list(nu = 0, gamma = min(Starts(chain)@gamma), sigmaSquared = 0, tau = 0, xi = min(Starts(chain)@xi))
   upper = list(nu = chain@d, sigmaSquared = chain@s^2)
