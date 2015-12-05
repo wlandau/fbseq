@@ -58,13 +58,13 @@ setClass("Configs",
     burnin = 1e5,
     genes_return = numeric(0),
     genes_return_epsilon = numeric(0),
-    iterations = 1e3,
+    iterations = 4e3,
     libraries_return = numeric(0),
     libraries_return_epsilon = numeric(0),
     parameter_sets_return = parameters(),
     parameter_sets_update = parameters(),
     priors = "normal",
-    thin = 1e2,
+    thin = 50,
     verbose = 5
   )
 )
