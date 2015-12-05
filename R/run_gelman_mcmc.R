@@ -15,7 +15,7 @@ run_gelman_mcmc = function(chain){
 
   if(chain@verbose){
     print(paste("Using Gelman-Rubin potential scale reduction factors on", chain@nchains, "separate chains to assess convergence."))
-    print("Running pilot chain first to get dispersed starting values relative to the joint posterior.")
+    print("Running pilot chain from good starting values.")
   }
  
   pilot = run_fixed_mcmc(chain)
