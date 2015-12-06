@@ -55,16 +55,16 @@ setClass("Configs",
     diag = "gelman",
     nchains = 3,
 
-    burnin = 1e5,
+    burnin = 2e5,
     genes_return = numeric(0),
     genes_return_epsilon = numeric(0),
-    iterations = 4e3,
+    iterations = 5e3,
     libraries_return = numeric(0),
     libraries_return_epsilon = numeric(0),
     parameter_sets_return = parameters(),
     parameter_sets_update = parameters(),
     priors = "normal",
-    thin = 50,
+    thin = 40,
     verbose = 5
   )
 )
