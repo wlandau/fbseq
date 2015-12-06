@@ -40,8 +40,9 @@ estimates = function(obj, level = 0.95){
     d[n,] = s
   }
 
-  d["nu", "upper"] = pmin(d["nu", "upper"], obj[[1]]@d)
-  d[grep("sigmaSquared", rownames(d)), "upper"] = pmin(d[grep("sigmaSquared", rownames(d)), "upper"], obj[[1]]@s^2)
+  if(any(grepl("nu", rownames(d)))) d["nu", "upper"] = pmin(d["nu", "upper"], obj[[1]]@d)
+  if(any(grepl("sigmaSquared", rownames(d))))
+    d[grep("sigmaSquared", rownames(d)), "upper"] = pmin(d[grep("sigmaSquared", rownames(d)), "upper"], obj[[1]]@s^2)
 
   out = data.frame(mean = d$mean, sd = d$sd, lower = d$lower, upper = d$upper)
   colnames(out) = c("mean", "sd", paste0(c("lower", "upper"), "_ci_", level))
