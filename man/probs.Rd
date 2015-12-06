@@ -4,16 +4,17 @@
 \alias{probs}
 \title{Function \code{probs}}
 \usage{
-probs(chain)
+probs(obj)
 }
 \arguments{
-\item{chain}{a \code{Chain} object}
+\item{obj}{a \code{Chain} object or a list of \code{Chain} objects returned by \code{fbseq()}.}
 }
 \value{
 a data frame of estimated posterior probabilities, with rows corresponding to genes and columns
-corresponding to the propositions in \code{Scenario(chain)@propositions}.
+corresponding to the propositions in the relevant \code{Scenario} object.
 }
 \description{
 Extracts estimated posterior probs from a \code{Chain} object.
+or a list of \code{Chain} objects returned by \code{fbseq()}.
 }
 
