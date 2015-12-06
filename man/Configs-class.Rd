@@ -10,11 +10,6 @@ A collection of MCMC control parameters.
 \section{Slots}{
 
 \describe{
-\item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
-
-\item{\code{nchains}}{number of independent chains to run (including the pilot chain) to use for
-convergence diagnostics (such as Gelman factors) that require multiple chains.}
-
 \item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
 
 \item{\code{effects_update_beta}}{values of l for which to update the beta_{l, g} parameters. For debugging only.}

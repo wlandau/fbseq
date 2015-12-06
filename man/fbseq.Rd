@@ -4,15 +4,20 @@
 \alias{fbseq}
 \title{Function \code{fbseq}}
 \usage{
-fbseq(chain)
+fbseq(chain, additional_chains = 3)
 }
 \arguments{
 \item{chain}{object of type \code{Chain}. See the package vignette for details.}
+
+\item{additional_chains}{If > 0, \code{additional_chains} additional \code{Chain} objects will be created from the
+original \code{chain} argument and run. This is useful for calculating convergence diagnostics
+such as Gelman-Rubin potential scale reduction factors. The additional chains will be run after
+the first chain and have starting values overdispersed to the full joint posterior distribution, as estimated
+by the results of the first chain.}
 }
 \value{
-a \code{Chain} object with updated parameter values. You can feed
-this object back into another call to \code{run_mcmc()} to continue the chain
-from where you left off.
+a \code{Chain} object or a list of \code{Chain} objects, depending on
+the value of \code{additional_chains}.
 }
 \description{
 Top-level function. Runs an MCMC with the runtime

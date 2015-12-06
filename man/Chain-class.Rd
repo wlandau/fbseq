@@ -22,10 +22,6 @@ by feeding one into \code{single_chain()}.
 
 \item{\code{proposition_names}}{names of \code{propositions} slot in the \code{Scenario} object}
 
-\item{\code{psrf}}{Gelman-Rubin potential scale reduction factors for all parameters}
-
-\item{\code{runtime}}{runtime of the call to the \code{fbseq} function as measured by \code{proc.time}.}
-
 \item{\code{bounds}}{values to compare contrasts to. The comparison is to see if the contrast is greater than
 its corresponding element in \code{bounds} (from the \code{Scenario} object)}
 
@@ -41,11 +37,6 @@ sets of gene-specific variables.}
 
 \item{\code{supplement}}{a list containing supplementary information about the scenario:
 for example, how the data were simulated, if applicable}
-
-\item{\code{diag}}{convergence diagnostic to use. Can be "gelman" or "none".}
-
-\item{\code{nchains}}{number of independent chains to run (including the pilot chain) to use for
-convergence diagnostics (such as Gelman factors) that require multiple chains.}
 
 \item{\code{burnin}}{MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj}
 

@@ -12,8 +12,6 @@ NULL
 #' @slot gene_names names of genes, taken from the row names of the count data matrix
 #' @slot library_names names of the libraries/samples, taken from the column names of the count data matrix
 #' @slot proposition_names names of \code{propositions} slot in the \code{Scenario} object
-#' @slot psrf Gelman-Rubin potential scale reduction factors for all parameters
-#' @slot runtime runtime of the call to the \code{fbseq} function as measured by \code{proc.time}.
 #'
 #' @slot bounds values to compare contrasts to. The comparison is to see if the contrast is greater than
 #' its corresponding element in \code{bounds} (from the \code{Scenario} object)
@@ -26,10 +24,6 @@ NULL
 #' @slot supplement a list containing supplementary information about the scenario: 
 #' for example, how the data were simulated, if applicable
 #'
-#' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
-#' @slot nchains number of independent chains to run (including the pilot chain) to use for
-#' convergence diagnostics (such as Gelman factors) that require multiple chains. 
-#' 
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
 #' @slot effects_update_beta bounds of l for which to update the beta_{l, g} parameters.
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
@@ -123,8 +117,6 @@ setClass("Chain",
     gene_names = "character",
     library_names = "character",
     proposition_names = "character",
-    psrf = "numeric",
-    runtime = "numeric",
 
     bounds = "numeric",
     contrasts = "numeric",
@@ -132,9 +124,6 @@ setClass("Chain",
     design = "numeric",
     propositions = "integer",
     supplement = "list",
-
-    diag = "character",
-    nchains = "integer",
 
     burnin = "integer",
     effects_update_beta = "integer",

@@ -5,10 +5,6 @@ NULL
 #' @description A collection of MCMC control parameters.
 #' @exportClass Configs
 #'
-#' @slot diag convergence diagnostic to use. Can be "gelman" or "none".
-#' @slot nchains number of independent chains to run (including the pilot chain) to use for
-#' convergence diagnostics (such as Gelman factors) that require multiple chains. 
-#' 
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
 #' @slot effects_update_beta values of l for which to update the beta_{l, g} parameters. For debugging only.
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
@@ -35,9 +31,6 @@ NULL
 #' If \code{verbose} > 0, then progress messages will also print during setup and cleanup.
 setClass("Configs", 
   slots = list(
-    diag = "character",
-    nchains = "numeric",
-
     burnin = "numeric",
     effects_update_beta = "numeric",
     genes_return = "numeric",
@@ -52,10 +45,7 @@ setClass("Configs",
     verbose = "numeric"
   ),
   prototype = list(
-    diag = "gelman",
-    nchains = 3,
-
-    burnin = 2e5,
+    burnin = 1e5,
     genes_return = numeric(0),
     genes_return_epsilon = numeric(0),
     iterations = 5e3,
@@ -64,7 +54,7 @@ setClass("Configs",
     parameter_sets_return = parameters(),
     parameter_sets_update = parameters(),
     priors = "normal",
-    thin = 40,
+    thin = 20,
     verbose = 5
   )
 )
