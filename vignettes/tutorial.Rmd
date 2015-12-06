@@ -141,7 +141,7 @@ With these interpretations, the table of conditions becomes
 | high-parent heterosis, `Mo17xB73`   |	|  $2\beta_{2, g} - \beta_{4, g} > 0$ and $2\beta_{3, g} - \beta_{4, g} > 0$  | 
 | low-parent heterosis, `Mo17xB73`    |	| $-2\beta_{2, g} + \beta_{4, g} > 0$ and $-2\beta_{3, g} + \beta_{4, g} > 0$ | 
 
-Each linear combination of the $\beta_{\ell, g}$'s is a contrast, and each row of the table is a logical proposition. We want a posterior probability for each proposition. Let $\text{I}(\cdot)$ be the indicator function, $m = 1, \ldots, M$ be an MCMC iteration (excluding burn-in and thinning), and $\beta_{\ell, g}^{(m)}$ be the MCMC sample of $\beta_{\ell, g}$ for iteration $m$. Then, the posterior probabilities of interest should be calculated as:
+Each linear combination of the $\beta_{\ell, g}$'s is a contrast, and each row of the table is a logical proposition. We want a posterior probability for each proposition. Let $\text{I}(\cdot)$ be the indicator function, $m = 1, \ldots, M$ be an MCMC iteration (including "thinned" iterations, but not burnin/throwaway iterations), and $\beta_{\ell, g}^{(m)}$ be the MCMC sample of $\beta_{\ell, g}$ for iteration $m$. Then, the posterior probabilities of interest should be calculated as:
 
 $$ \begin{align*}
 P(\text{high-parent heterosis, both hybrids} \ | \ \text{data}) &\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left (\beta_{2, g}^{(m)} > 0 \text{ and } \beta_{3, g}^{(m)} > 0 \right ) \\
@@ -194,11 +194,9 @@ s@propositions
  
 The `Configs` S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so just for the sake of trying out the package, you should be able to get away with calling the `Configs` function with no arguments. For a full list of slots and their explanations, type `help("Configs-class")`.
 
-However, for serious analyses, you may want to adjust the `iterations`, `burnin`, and `thin` slots to control the duration of the MCMC. `burinin` is the number of throwaway iterations at the beginning of the MCMC, `iterations` is the number of iterations for which parameter samples are actually returned to the user, and `thin` specifies the thinning interval.  The total number of MCMC iterations is `burnin + iterations * thin`, and all of the `iterations * thin` portion is used to calculate posterior means, mean squares, potential scale reduction factors (if `diag` is set to "gelman"), and posterior probabilities of interest specified in the `Scenario` object. If `thin` is > 1, not all parameter samples after burnin are returned to the user. For example, `thin` is 10, then after burnin, actual parameter samples are saved every 10th iteration.
+However, for serious analyses, you may want to adjust the `iterations`, `burnin`, and `thin` slots to control the duration of the MCMC. `burinin` is the number of throwaway iterations at the beginning of the MCMC, `iterations` is the number of iterations for which parameter samples are actually returned to the user, and `thin` specifies the thinning interval.  The total number of MCMC iterations is `burnin + iterations * thin`, and all of the `iterations * thin` portion is used to calculate posterior means, mean squares, and posterior probabilities of interest specified in the `Scenario` object. If `thin` is > 1, not all parameter samples after burnin are returned to the user. For example, `thin` is 10, then after burnin, actual parameter samples are saved every 10th iteration.
 
 You may also want to adjust the `Configs` slots that apply constraints on model parameters. The `parameter_sets_update` controls which sets of parameters to update during the MCMC. Parameter sets not specified in `parameter_sets_update` will be held constant, so this slot can be used to run an empirical Bayes analysis, for example. The `parameter_sets_return`, `genes_return`, `libraries_return`, `genes_return_epsilon`, and `libraries_return_epsilon` slots control which Monte Carlo parameter samples to return to the user.
-
-If `diag` is set to `"gelman"` (default), Gelman-Rubin potential scale reduction factors are calculated. These are used to assess convergence [@bda]. For any other value of `diag`, no such convergence diagnostic will be used. A pilot chain is run for the total `burnin + iterations * thin` iterations. Then, using the results, `nchains - 1` additional chains are generated with dispersed starting values relative to the joint posterior distribution estimated by the pilot chain and then run for the same length as the pilot chain. Gelman factors are then calculated and stored in the `psrf` slot of the pilot chain. The pilot chain is returned.
 
 ## (Optional) create a `Starts` object.
 
@@ -243,38 +241,44 @@ Note that the unspecified starting values were automatically generated in the co
 
 ## Call `fbseq` on the `Chain` object.
 
-The `fbseq` function actually runs the MCMC algorithm to fit the model and calculate posterior probabilities of interest. It takes a single `Chain` object as an argument and outputs another `Chain` object with Gelman factors (if applicable), posterior means and means of squares of parameters, estimated posterior probabilities of interest, and updated starting values.
+The `fbseq` function actually runs the MCMC algorithm to fit the model and calculate posterior probabilities of interest. It takes a single `Chain` object as an argument, and if the `additional_chains` argument is 0, outputs another `Chain` object with posterior means and means of squares of parameters, estimated posterior probabilities of interest, and updated starting values.
 
 ```{r, eval = F}
-out = fbseq(chain)
+out = fbseq(chain, additional_chains = 0)
 ```
 
 The starting values of `out` are the final parameter samples of the previous MCMC. The upshot is that calling `fbseq` on `out` will resume the MCMC where it left off.
 
 ```{r, eval = F}
-continuation = fbseq(out)
+continuation = fbseq(out, additional_chains = 0)
 ```
 
 You can even run the MCMC indefinitely and save your work at after every attempt.
 
 ```{r, eval = F}
 repeat{
-  chain = fbseq(chain)
+  chain = fbseq(chain, additional_chains = 0)
   saveRDS(chain, "chain.rds")
 }
+```
+
+If the `additional_chains` argument is greater than 0, an additional `additional_chains` MCMC chains will be run after the first one, and the output object from `fbseq` will a list of the total `1 + additional_chains` run. This is useful for computing Gelman-Rubin potential scale reduction factors with the `psrf` function to assess convergence.
+
+```{r, eval = F}
+out = fbseq(chain, additional_chains = 3)
+psrf(out)
 ```
 
 
 ## Inspect the output.
 
-No actual output is shipped with the package because output  `Chain` objects are is usually large, in the tens of megabytes at least. However, all the functions to extract output are easy one-liners. I list them below in roughly decreasing order of usefulness. Let `chain` be a `Chain` object returned from `fbseq`.
+No sample output is shipped with this package because output  `Chain` objects are is usually large, in the tens of megabytes at least. However, all the functions to extract output are easy one-liners. Let `obj` be a either single `Chain` object or a list of chain objects returned by `fbseq()`.
 
 |------------------------------------|----------|--------------------------------------------------| 
-| `probs(chain)`   |	|  Estimated gene-specific posterior probabilities of each logical proposition specified in `Scenario` | 
-| `volcano(chain)`   |	| `ggplot2` plot of posterior probabilities vs effect sizes for each proposition. | 
-| `estimates(chain, level)`  |	|  Posterior means and credible intervals (of level `level`) for all parameters. Note: to avoid taking up too much memory, the credible intervals are computed using the posterior means and variances of parameters, not quantiles of actual parameter samples. The results are approximate. | 
-| `effect_sizes(chain)`    |	| Estimated gene-specific effect sizes for each logical proposition. For example, if the proposition is "$2\beta_{2, g} - \beta_{4, g} > 1$ and $2\beta_{3, g} - \beta_{4, g} > 0.5$", then the effect size is $\min \left (2\beta_{2, g} - \beta_{4, g} - 1, \ 2\beta_{3, g} - \beta_{4, g} - 0.5 \right )^+$, where $(\cdots)^+$ denote the positive part of an expression. | 
-|`flatten(chain)` |	$\qquad$ | Monte Carlo samples of returned parameters selected in `Configs` | 
-|`flatten_post(chain)` |	$\qquad$ | Posterior means or means of squares of all or most of the parameters (configure with additional arguments) | 
+| `probs(obj)`   |	|  Estimated gene-specific posterior probabilities of each logical proposition specified in `Scenario` | 
+| `effect_sizes(obj)`    |	| Estimated gene-specific effect sizes for each logical proposition. For example, if the proposition is "$2\beta_{2, g} - \beta_{4, g} > 1$ and $2\beta_{3, g} - \beta_{4, g} > 0.5$", then the effect size is $\min \left (2\beta_{2, g} - \beta_{4, g} - 1, \ 2\beta_{3, g} - \beta_{4, g} - 0.5 \right )^+$, where $(\cdots)^+$ denote the positive part of an expression. | 
+| `estimates(obj, level)`  |	|  Posterior means and credible intervals (of level `level`) for all parameters. Note: to avoid taking up too much memory, the credible intervals are computed using the posterior means and variances of parameters, not quantiles of actual parameter samples. The results are approximate. | 
+|`mcmc_samples(obj)` |	$\qquad$ | Monte Carlo samples of returned parameters selected in `Configs` | 
+| `volcano(obj)`   |	| `ggplot2` plot of posterior probabilities vs effect sizes for each proposition. | 
 
 # References

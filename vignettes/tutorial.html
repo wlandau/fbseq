@@ -281,7 +281,7 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 </tr>
 </tbody>
 </table>
-<p>Each linear combination of the <span class="math">\(\beta_{\ell, g}\)</span>’s is a contrast, and each row of the table is a logical proposition. We want a posterior probability for each proposition. Let <span class="math">\(\text{I}(\cdot)\)</span> be the indicator function, <span class="math">\(m = 1, \ldots, M\)</span> be an MCMC iteration (excluding burn-in and thinning), and <span class="math">\(\beta_{\ell, g}^{(m)}\)</span> be the MCMC sample of <span class="math">\(\beta_{\ell, g}\)</span> for iteration <span class="math">\(m\)</span>. Then, the posterior probabilities of interest should be calculated as:</p>
+<p>Each linear combination of the <span class="math">\(\beta_{\ell, g}\)</span>’s is a contrast, and each row of the table is a logical proposition. We want a posterior probability for each proposition. Let <span class="math">\(\text{I}(\cdot)\)</span> be the indicator function, <span class="math">\(m = 1, \ldots, M\)</span> be an MCMC iteration (including “thinned” iterations, but not burnin/throwaway iterations), and <span class="math">\(\beta_{\ell, g}^{(m)}\)</span> be the MCMC sample of <span class="math">\(\beta_{\ell, g}\)</span> for iteration <span class="math">\(m\)</span>. Then, the posterior probabilities of interest should be calculated as:</p>
 <p><span class="math">\[ \begin{align*}
 P(\text{high-parent heterosis, both hybrids} \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left (\beta_{2, g}^{(m)} &gt; 0 \text{ and } \beta_{3, g}^{(m)} &gt; 0 \right ) \\
 P(\text{low-parent heterosis, both hybrids}) \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( -\beta_{2, g}^{(m)} &gt; 0 \text{ and } -\beta_{3, g}^{(m)} &gt; 0 \right ) \\
@@ -387,26 +387,26 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1        51        49        18        21        37        31
-## gene_2        81        85       204       165        98        93
-## gene_3         6        10        23        19         6         7
-## gene_4        15        11        10         4         6         5
-## gene_5        35        32        25        26        29        32
-## gene_6        16        27        25        20        11        24
+## gene_1        37        15        14         8        12        28
+## gene_2         3         2         2         3         3         0
+## gene_3        16        18         9         4        17        18
+## gene_4        85       105        44        49        62        80
+## gene_5        23        21         9         4        11        16
+## gene_6        49        74        81       115        52        39
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1        16        16        33         21          7          9
-## gene_2       179       193       124         99        209        228
-## gene_3        18        18         3          3         17         21
-## gene_4         5         7         5          6          2          5
-## gene_5        25        15        36         28         27         24
-## gene_6        28        26        23         17         39         27
+## gene_1         9        10        15         19         10          6
+## gene_2         3         3         3          2          2          2
+## gene_3        10         5        14         29          6         11
+## gene_4        46        32        60         59         29         17
+## gene_5         0        12        21         12          9          7
+## gene_6        83        89        38         41         60         84
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         13         19         10          6
-## gene_2         87        110        234        161
-## gene_3          7          6         19         22
-## gene_4         11          6          8          8
-## gene_5         31         36         25         28
-## gene_6         29         26         40         19</code></pre>
+## gene_1         28         17         12         10
+## gene_2          1          1          2          1
+## gene_3         22         12         10         18
+## gene_4         63         58         32         36
+## gene_5         23         16          6          5
+## gene_6         46         40         62         38</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -511,9 +511,8 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <div id="optional-create-a-configs-object." class="section level2">
 <h2><span class="header-section-number">4.2</span> (Optional) create a <code>Configs</code> object.</h2>
 <p>The <code>Configs</code> S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so just for the sake of trying out the package, you should be able to get away with calling the <code>Configs</code> function with no arguments. For a full list of slots and their explanations, type <code>help(&quot;Configs-class&quot;)</code>.</p>
-<p>However, for serious analyses, you may want to adjust the <code>iterations</code>, <code>burnin</code>, and <code>thin</code> slots to control the duration of the MCMC. <code>burinin</code> is the number of throwaway iterations at the beginning of the MCMC, <code>iterations</code> is the number of iterations for which parameter samples are actually returned to the user, and <code>thin</code> specifies the thinning interval. The total number of MCMC iterations is <code>burnin + iterations * thin</code>, and all of the <code>iterations * thin</code> portion is used to calculate posterior means, mean squares, potential scale reduction factors (if <code>diag</code> is set to “gelman”), and posterior probabilities of interest specified in the <code>Scenario</code> object. If <code>thin</code> is &gt; 1, not all parameter samples after burnin are returned to the user. For example, <code>thin</code> is 10, then after burnin, actual parameter samples are saved every 10th iteration.</p>
+<p>However, for serious analyses, you may want to adjust the <code>iterations</code>, <code>burnin</code>, and <code>thin</code> slots to control the duration of the MCMC. <code>burinin</code> is the number of throwaway iterations at the beginning of the MCMC, <code>iterations</code> is the number of iterations for which parameter samples are actually returned to the user, and <code>thin</code> specifies the thinning interval. The total number of MCMC iterations is <code>burnin + iterations * thin</code>, and all of the <code>iterations * thin</code> portion is used to calculate posterior means, mean squares, and posterior probabilities of interest specified in the <code>Scenario</code> object. If <code>thin</code> is &gt; 1, not all parameter samples after burnin are returned to the user. For example, <code>thin</code> is 10, then after burnin, actual parameter samples are saved every 10th iteration.</p>
 <p>You may also want to adjust the <code>Configs</code> slots that apply constraints on model parameters. The <code>parameter_sets_update</code> controls which sets of parameters to update during the MCMC. Parameter sets not specified in <code>parameter_sets_update</code> will be held constant, so this slot can be used to run an empirical Bayes analysis, for example. The <code>parameter_sets_return</code>, <code>genes_return</code>, <code>libraries_return</code>, <code>genes_return_epsilon</code>, and <code>libraries_return_epsilon</code> slots control which Monte Carlo parameter samples to return to the user.</p>
-<p>If <code>diag</code> is set to <code>&quot;gelman&quot;</code> (default), Gelman-Rubin potential scale reduction factors are calculated. These are used to assess convergence <span class="citation">(Gelman, Andrew et al. 2013)</span>. For any other value of <code>diag</code>, no such convergence diagnostic will be used. A pilot chain is run for the total <code>burnin + iterations * thin</code> iterations. Then, using the results, <code>nchains - 1</code> additional chains are generated with dispersed starting values relative to the joint posterior distribution estimated by the pilot chain and then run for the same length as the pilot chain. Gelman factors are then calculated and stored in the <code>psrf</code> slot of the pilot chain. The pilot chain is returned.</p>
 </div>
 <div id="optional-create-a-starts-object." class="section level2">
 <h2><span class="header-section-number">4.3</span> (Optional) create a <code>Starts</code> object.</h2>
@@ -529,15 +528,12 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <p>As an example, here is the <code>Chain</code> created from the <code>paschold</code> scenario visited earlier.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(paschold)
 <span class="kw">str</span>(chain)</code></pre>
-<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 91 slots
+<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 80 slots
 ##   ..@ bound_names               : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ contrast_names            : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ gene_names                : chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
 ##   ..@ library_names             : chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
 ##   ..@ proposition_names         : chr [1:6] &quot;high-parent_B73xMo17_Mo17xB73&quot; &quot;low-parent_B73xMo17_Mo17xB73&quot; &quot;high-parent_B73xMo17&quot; &quot;low-parent_B73xMo17&quot; ...
-##   ..@ psrf_all                  : num(0) 
-##   ..@ psrf_important            : num(0) 
-##   ..@ runtime                   : num(0) 
 ##   ..@ bounds                    : Named num [1:12] 0 0 0 0 0 0 0 0 0 0 ...
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ contrasts                 : Named num [1:60] 0 1 0 0 0 0 0 1 0 0 ...
@@ -546,27 +542,19 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##   ..@ design                    : num [1:80] 1 1 1 1 1 1 1 1 1 1 ...
 ##   ..@ propositions              : int [1:72] 1 1 0 0 0 0 0 0 0 0 ...
 ##   ..@ supplement                : list()
-##   ..@ attempts_diag             : int(0) 
-##   ..@ attempts_ess              : int(0) 
-##   ..@ diag                      : chr &quot;gelman&quot;
-##   ..@ ess                       : int 100
-##   ..@ max_attempts_diag         : int 1
-##   ..@ max_attempts_ess          : int 0
-##   ..@ nchains_diag              : int 4
-##   ..@ psrf_tol                  : num 1.1
-##   ..@ burnin                    : int 10000
+##   ..@ burnin                    : int 100000
 ##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
-##   ..@ genes_return              : int [1:3] 18978 21425 21476
-##   ..@ genes_return_epsilon      : int [1:3] 11471 15077 31162
-##   ..@ iterations                : int 1000
-##   ..@ libraries_return          : int [1:3] 1 10 10
-##   ..@ libraries_return_epsilon  : int [1:3] 2 3 4
+##   ..@ genes_return              : int [1:3] 10023 15810 18621
+##   ..@ genes_return_epsilon      : int [1:3] 4181 4727 9831
+##   ..@ iterations                : int 5000
+##   ..@ libraries_return          : int [1:3] 8 14 14
+##   ..@ libraries_return_epsilon  : int [1:3] 1 3 8
 ##   ..@ parameter_sets_return     : Named int [1:8] 1 1 1 1 1 1 1 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update     : Named int [1:8] 1 1 1 1 1 1 1 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                    : int [1:5] 0 0 0 0 0
-##   ..@ thin                      : int 10
+##   ..@ thin                      : int 20
 ##   ..@ verbose                   : int 5
 ##   ..@ C                         : int 12
 ##   ..@ countSums_g               : int [1:39656] 7 169 28253 35 213 11719 8598 16934 7935 3697 ...
@@ -594,13 +582,13 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##   ..@ q                         : num [1:5] 3 3 3 3 3
 ##   ..@ r                         : num [1:5] 2 2 2 2 2
 ##   ..@ s                         : num [1:5] 100 100 100 100 100
-##   ..@ beta                      : num [1:15000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ epsilon                   : num [1:9000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ gamma                     : num [1:3000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ nu                        : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ sigmaSquared              : num [1:5000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ tau                       : num [1:1000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ theta                     : num [1:5000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ beta                      : num [1:75000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ epsilon                   : num [1:45000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ gamma                     : num [1:15000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ nu                        : num [1:5000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ sigmaSquared              : num [1:25000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ tau                       : num [1:5000] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ theta                     : num [1:25000] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ xi                        : num(0) 
 ##   ..@ betaStart                 : num [1:198280] -0.311 1.833 7.593 0.807 2.336 ...
 ##   ..@ epsilonStart              : num [1:634496] 0.0335 0.2412 0.1782 0.2027 0.0229 ...
@@ -683,24 +671,18 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 ##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;low-parent_Mo17xB73_1&quot; &quot;low-parent_Mo17xB73_2&quot;
 ##   ..@ supplement  : list()</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(configs)</code></pre>
-<pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 18 slots
-##   ..@ diag                    : chr &quot;gelman&quot;
-##   ..@ ess                     : int 100
-##   ..@ max_attempts_diag       : int 1
-##   ..@ max_attempts_ess        : int 0
-##   ..@ nchains_diag            : int 4
-##   ..@ psrf_tol                : num 1.1
-##   ..@ burnin                  : int 10000
+<pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 12 slots
+##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 18978 21425 21476
-##   ..@ genes_return_epsilon    : int [1:3] 11471 15077 31162
-##   ..@ iterations              : int 1000
-##   ..@ libraries_return        : int [1:3] 1 10 10
-##   ..@ libraries_return_epsilon: int [1:3] 2 3 4
+##   ..@ genes_return            : int [1:3] 10023 15810 18621
+##   ..@ genes_return_epsilon    : int [1:3] 4181 4727 9831
+##   ..@ iterations              : int 5000
+##   ..@ libraries_return        : int [1:3] 8 14 14
+##   ..@ libraries_return_epsilon: int [1:3] 1 3 8
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
-##   ..@ thin                    : num 10
+##   ..@ thin                    : num 20
 ##   ..@ verbose                 : int 5</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(starts)</code></pre>
 <pre><code>## Formal class 'Starts' [package &quot;fbseq&quot;] with 17 slots
@@ -727,56 +709,53 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 </div>
 <div id="call-fbseq-on-the-chain-object." class="section level2">
 <h2><span class="header-section-number">4.5</span> Call <code>fbseq</code> on the <code>Chain</code> object.</h2>
-<p>The <code>fbseq</code> function actually runs the MCMC algorithm to fit the model and calculate posterior probabilities of interest. It takes a single <code>Chain</code> object as an argument and outputs another <code>Chain</code> object with Gelman factors (if applicable), posterior means and means of squares of parameters, estimated posterior probabilities of interest, and updated starting values.</p>
-<pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain)</code></pre>
+<p>The <code>fbseq</code> function actually runs the MCMC algorithm to fit the model and calculate posterior probabilities of interest. It takes a single <code>Chain</code> object as an argument, and if the <code>additional_chains</code> argument is 0, outputs another <code>Chain</code> object with posterior means and means of squares of parameters, estimated posterior probabilities of interest, and updated starting values.</p>
+<pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">additional_chains =</span> <span class="dv">0</span>)</code></pre>
 <p>The starting values of <code>out</code> are the final parameter samples of the previous MCMC. The upshot is that calling <code>fbseq</code> on <code>out</code> will resume the MCMC where it left off.</p>
-<pre class="sourceCode r"><code class="sourceCode r">continuation =<span class="st"> </span><span class="kw">fbseq</span>(out)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">continuation =<span class="st"> </span><span class="kw">fbseq</span>(out, <span class="dt">additional_chains =</span> <span class="dv">0</span>)</code></pre>
 <p>You can even run the MCMC indefinitely and save your work at after every attempt.</p>
 <pre class="sourceCode r"><code class="sourceCode r">repeat{
-  chain =<span class="st"> </span><span class="kw">fbseq</span>(chain)
+  chain =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">additional_chains =</span> <span class="dv">0</span>)
   <span class="kw">saveRDS</span>(chain, <span class="st">&quot;chain.rds&quot;</span>)
 }</code></pre>
+<p>If the <code>additional_chains</code> argument is greater than 0, an additional <code>additional_chains</code> MCMC chains will be run after the first one, and the output object from <code>fbseq</code> will a list of the total <code>1 + additional_chains</code> run. This is useful for computing Gelman-Rubin potential scale reduction factors with the <code>psrf</code> function to assess convergence.</p>
+<pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">additional_chains =</span> <span class="dv">3</span>)
+<span class="kw">psrf</span>(out)</code></pre>
 </div>
 <div id="inspect-the-output." class="section level2">
 <h2><span class="header-section-number">4.6</span> Inspect the output.</h2>
-<p>No actual output is shipped with the package because output <code>Chain</code> objects are is usually large, in the tens of megabytes at least. However, all the functions to extract output are easy one-liners. I list them below in roughly decreasing order of usefulness. Let <code>chain</code> be a <code>Chain</code> object returned from <code>fbseq</code>.</p>
+<p>No sample output is shipped with this package because output <code>Chain</code> objects are is usually large, in the tens of megabytes at least. However, all the functions to extract output are easy one-liners. Let <code>obj</code> be a either single <code>Chain</code> object or a list of chain objects returned by <code>fbseq()</code>.</p>
 <table>
 <tbody>
 <tr class="odd">
-<td align="left"><code>probs(chain)</code></td>
+<td align="left"><code>probs(obj)</code></td>
 <td align="left"></td>
 <td align="left">Estimated gene-specific posterior probabilities of each logical proposition specified in <code>Scenario</code></td>
 </tr>
 <tr class="even">
-<td align="left"><code>volcano(chain)</code></td>
-<td align="left"></td>
-<td align="left"><code>ggplot2</code> plot of posterior probabilities vs effect sizes for each proposition.</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>estimates(chain, level)</code></td>
-<td align="left"></td>
-<td align="left">Posterior means and credible intervals (of level <code>level</code>) for all parameters. Note: to avoid taking up too much memory, the credible intervals are computed using the posterior means and variances of parameters, not quantiles of actual parameter samples. The results are approximate.</td>
-</tr>
-<tr class="even">
-<td align="left"><code>effect_sizes(chain)</code></td>
+<td align="left"><code>effect_sizes(obj)</code></td>
 <td align="left"></td>
 <td align="left">Estimated gene-specific effect sizes for each logical proposition. For example, if the proposition is “<span class="math">\(2\beta_{2, g} - \beta_{4, g} &gt; 1\)</span> and <span class="math">\(2\beta_{3, g} - \beta_{4, g} &gt; 0.5\)</span>”, then the effect size is <span class="math">\(\min \left (2\beta_{2, g} - \beta_{4, g} - 1, \ 2\beta_{3, g} - \beta_{4, g} - 0.5 \right )^+\)</span>, where <span class="math">\((\cdots)^+\)</span> denote the positive part of an expression.</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>flatten(chain)</code></td>
+<td align="left"><code>estimates(obj, level)</code></td>
+<td align="left"></td>
+<td align="left">Posterior means and credible intervals (of level <code>level</code>) for all parameters. Note: to avoid taking up too much memory, the credible intervals are computed using the posterior means and variances of parameters, not quantiles of actual parameter samples. The results are approximate.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>mcmc_samples(obj)</code></td>
 <td align="left"><span class="math">\(\qquad\)</span></td>
 <td align="left">Monte Carlo samples of returned parameters selected in <code>Configs</code></td>
 </tr>
-<tr class="even">
-<td align="left"><code>flatten_post(chain)</code></td>
-<td align="left"><span class="math">\(\qquad\)</span></td>
-<td align="left">Posterior means or means of squares of all or most of the parameters (configure with additional arguments)</td>
+<tr class="odd">
+<td align="left"><code>volcano(obj)</code></td>
+<td align="left"></td>
+<td align="left"><code>ggplot2</code> plot of posterior probabilities vs effect sizes for each proposition.</td>
 </tr>
 </tbody>
 </table>
 <div class="references">
 <h1 id="references" class="unnumbered">References</h1>
-<p>Gelman, Andrew et al. 2013. “Bayesian Data Analysis.” In, 3rd ed. CRC Press.</p>
 <p>Paschold, Anja, Yi Jia, Caroline Marcon, Steve Lund, Nick B Larson, Cheng-Ting Yeh, Stephan Ossowski, et al. 2012. “Complementation Contributes to Transcriptome Complexity in Maize (<em>Zea Mays L.</em>) Hybrids Relative to Their Inbred Parents.” <em>Genome Research</em> 22 (12). Cold Spring Harbor Lab: 2445–54.</p>
 </div>
 </div>

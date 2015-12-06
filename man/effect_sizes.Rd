@@ -4,10 +4,10 @@
 \alias{effect_sizes}
 \title{Function \code{effect_sizes}}
 \usage{
-effect_sizes(chain)
+effect_sizes(obj)
 }
 \arguments{
-\item{chain}{a \code{Chain} object}
+\item{obj}{a \code{Chain} object or a list of \code{Chain} objects returned by \code{fbseq()}.}
 }
 \value{
 a data frame of estimated effect sizes, with rows corresponding to genes and columns

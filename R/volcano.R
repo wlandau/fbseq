@@ -3,10 +3,10 @@
 #'
 #' @export
 #' @return a volcano plot of probabilities of propositions vs the effect sizes
-#' @param chain a \code{Chain} object
-volcano = function(chain){
-  e = effect_sizes(chain)
-  p = probs(chain)
+#' @param obj a \code{Chain} object or a list of \code{Chain} objects returned by \code{fbseq()}.
+volcano = function(obj){
+  e = effect_sizes(obj)
+  p = probs(obj)
   me = melt(e)
   mp = melt(p)
   d = data.frame(Proposition = me$Var2, Effect = me$value, Probability = mp$value)

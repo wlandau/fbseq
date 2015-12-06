@@ -4,10 +4,10 @@
 \alias{volcano}
 \title{Function \code{volcano}}
 \usage{
-volcano(chain)
+volcano(obj)
 }
 \arguments{
-\item{chain}{a \code{Chain} object}
+\item{obj}{a \code{Chain} object or a list of \code{Chain} objects returned by \code{fbseq()}.}
 }
 \value{
 a volcano plot of probabilities of propositions vs the effect sizes
