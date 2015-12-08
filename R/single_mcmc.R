@@ -14,7 +14,7 @@ NULL
 #' if \code{chain} is the output from a previous call to \code{run_mcmc(...)},
 #' then the function will continue the MCMC from where it left off.
 single_mcmc = function(chain){
-  check_fbseqCUDA()
   chain@seeds = as.integer(sample.int(1e3 * chain@N * chain@G, chain@N * chain@G))
+  check_fbseqCUDA()
   fbseqCUDA::fbseqCUDA(chain)
 }
