@@ -40,7 +40,7 @@ Chain = function(scenario, configs = Configs(), starts = Starts(), slots = NULL)
 plug_in_chain = function(chain, scenario, configs, starts){
   chain@iterations = as.integer(configs@iterations)
   stopifnot(configs@thin > 0)
-  if(configs@priors %in% special_beta_priors()) stopifnot("xi" %in% configs@parameter_sets_update)
+  if(any(configs@priors %in% special_beta_priors())) stopifnot("xi" %in% configs@parameter_sets_update)
 
   subtract = c("parameter_sets_return", "parameter_sets_update", "priors")
   for(n in setdiff(intersect(slotNames(chain), slotNames(configs)), subtract))
