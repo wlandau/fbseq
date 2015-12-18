@@ -85,50 +85,6 @@ generate_starts = function(counts, design, starts = Starts()){
   starts
 }
 
-#' @title Function \code{dispersed_set}
-#' @description Produces a dispersed starting values (relative to the estimated posterior so far)
-#' for a given set of parameters.
-#' 
-#' @export
-#' @rdname dispersed_set
-#' @aliases dispersed_set
-#' @return a vector with a dispersed starting values (relative to the estimated posterior so far)
-#' for a given set of parameters.
-#' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
-#' @param parm character string specifying the parameter set to work on.
-#' @param lower lower bound for nonnegative parameters.
-#' @param upper upper bound for some parameters.
-dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
-  m = chain@iterations * chain@thin
-  Mean = slot(chain, paste0(parm, "PostMean"))
-  MeanSquare = slot(chain, paste0(parm, "PostMeanSquare"))
-  Sd =  sqrt(m*(MeanSquare - Mean^2)/(m - 1))
-  n = length(Mean)
-
-  if(!length(lower)) lower = -Inf
-  if(!length(upper)) upper = Inf
-
-  lower = rep(lower, n/length(lower))
-  upper = rep(upper, n/length(upper))
-
-  lower = pmax(lower, Mean - 4*Sd)
-  upper = pmin(upper, Mean + 4*Sd)
-
-  df = 5
-  out = rep(NA, n)
-  while(any(is.na(out))){
-    i = is.na(out)
-    out[i] = rt(sum(i), df = df)*Sd[i]*sqrt((df-2)/df) + Mean[i]
-    out[out <= lower] = NA
-    out[out >= upper] = NA
-  }
-  out
-
-#  Min = pmax(lower, Mean - 3*Sd, na.rm = T)
-#  Max = pmin(upper, Mean + 3*Sd, na.rm = T) 
-#  runif(n, Min, Max)
-}
-
 #' @title Function \code{disperse_starts}
 #' @description Uses the hyperparameter samples from a previous chain to 
 #' generate another \code{Chain} object with dispersed starting values.
@@ -142,13 +98,45 @@ dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
 #' @return a \code{Chain} object with dispersed MCMC starting values.
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
-  chain@thin = as.integer(max(1, chain@thin))
-  configs = Configs(chain)
-  lower = list(nu = 0, gamma = min(Starts(chain)@gamma), sigmaSquared = 0, tau = 0, xi = min(Starts(chain)@xi))
-  upper = list(nu = chain@d, sigmaSquared = chain@s^2)
+  iter = 100
+  con0 = Configs(chain)
+  con = Configs(
+    iterations = iter,
+    burnin = con0@thin,
+    thin = con0@thin,
+    priors = con0@priors,
+    parameter_sets_return = con0@parameter_sets_update,
+    parameter_sets_update = con0@parameter_sets_update,
+    genes_return = 1:chain@G,
+    genes_return_epsilon = 1,
+    libraries_return = 1:chain@N,
+    libraries_return_epsilon = 1)
 
-  for(v in configs@parameter_sets_update)
-    slot(chain, paste0(v, "Start")) = dispersed_set(chain, v, lower[[v]], upper[[v]])
+    if(chain@verbose) print("Running a mini chain to disperse starting values.")
+    mini = Chain(Scenario(chain), con)
+    mini = single_mcmc(mini)
+    n = mini@iterations * mini@thin
+    Mean = flatten_post(mini, square = F, updated_only = T)
+    MeanSq = flatten_post(mini, square = T, updated_only = T)
+    Sd =  sqrt(n*(MeanSq - Mean^2)/(n - 1))
+    samples = mcmc_samples(mini)
+    ns = intersect(names(Mean), colnames(samples))
+    ns = ns[!grepl("epsilon_", colnames(samples))]
+    samples = samples[,ns]
+    Mean = Mean[ns]
+    Sd = Sd[ns]
+    
+    scaled = sweep(samples, 2, Mean)
+    scaled = sweep(scaled, 2, Sd, "/")
+    norms = rowSums(scaled^2)
+    i = sample((1:iter)[order(norms)][ceiling(0.95*iter):iter], 1)
+    starts = as.numeric(samples[i,])
+    names(starts) = colnames(samples)
 
-  chain
+    out = chain
+    parms = names(starts)
+    for(k in 1:10) parms = gsub("_[0-9]*", "", parms)
+    for(n in intersect(con0@parameter_sets_update, parms))
+      slot(out, paste0(n, "Start")) = starts[n == parms]
+    out
 }
