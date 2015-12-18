@@ -115,7 +115,8 @@ disperse_starts = function(chain){
     genes_return = 1:chain@G,
     genes_return_epsilon = 1,
     libraries_return = 1:chain@N,
-    libraries_return_epsilon = 1)
+    libraries_return_epsilon = 1,
+    verbose = con0@verbose)
 
     if(chain@verbose) print("Running a mini chain to disperse starting values.")
     mini = Chain(Scenario(chain), con)
