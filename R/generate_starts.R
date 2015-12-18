@@ -118,27 +118,27 @@ disperse_starts = function(chain){
     libraries_return_epsilon = 1,
     verbose = con0@verbose)
 
-    if(chain@verbose) print("Running a mini chain to disperse starting values.")
-    mini = Chain(Scenario(chain), con)
-    mini = single_mcmc(mini)
-    samples = mcmc_samples(mini)
-    ns = intersect(names(Mean), colnames(samples))
-    ns = ns[!grepl("epsilon_", ns)]
-    samples = samples[,ns]
-    Mean = Mean[ns]
-    Sd = Sd[ns]
+  if(chain@verbose) print("Running a mini chain to disperse starting values.")
+  mini = Chain(Scenario(chain), con)
+  mini = single_mcmc(mini)
+  samples = mcmc_samples(mini)
+  ns = intersect(names(Mean), colnames(samples))
+  ns = ns[!grepl("epsilon_", ns)]
+  samples = samples[,ns]
+  Mean = Mean[ns]
+  Sd = Sd[ns]
     
-    scaled = sweep(samples, 2, Mean)
-    scaled = sweep(scaled, 2, Sd, "/")
-    norms = rowSums(scaled^2)
-    i = sample((1:iter)[order(norms)][ceiling(0.95*iter):iter], 1)
-    starts = as.numeric(samples[i,])
-    names(starts) = colnames(samples)
+  scaled = sweep(samples, 2, Mean)
+  scaled = sweep(scaled, 2, Sd, "/")
+  norms = rowSums(scaled^2)
+  i = sample((1:iter)[order(norms)][ceiling(0.95*iter):iter], 1)
+  starts = as.numeric(samples[i,])
+  names(starts) = colnames(samples)
 
-    out = chain
-    parms = names(starts)
-    for(k in 1:10) parms = gsub("_[0-9]*", "", parms)
-    for(n in intersect(con0@parameter_sets_update, parms))
-      slot(out, paste0(n, "Start")) = starts[n == parms]
-    out
+  out = chain
+  parms = names(starts)
+  for(k in 1:10) parms = gsub("_[0-9]*", "", parms)
+  for(n in intersect(con0@parameter_sets_update, parms))
+    slot(out, paste0(n, "Start")) = starts[n == parms]
+  out
 }
