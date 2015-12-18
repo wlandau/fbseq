@@ -14,13 +14,17 @@ NULL
 #' the first chain and have starting values overdispersed to the full joint posterior distribution, as estimated
 #' by the results of the first chain.
 fbseq = function(chain, additional_chains = 3){
+  if(chain@verbose & additional_chains > 0) print("Running pilot chain.")
   pilot = single_mcmc(chain)
   if(additional_chains < 1){
     return(pilot)
   } else {
     out = list(pilot)
-    for(i in 1:additional_chains + 1)
-      out[[i]] = single_mcmc(disperse_starts(pilot))
+    for(i in 1:additional_chains + 1){
+      dis = disperse_starts(pilot)
+      if(chain@verbose) print(paste0("Running additional chain ", i - 1, " of ", additional_chains, "."))
+      out[[i]] = single_mcmc(dis)
+    }
     return(out)
   }
 }
