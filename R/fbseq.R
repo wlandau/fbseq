@@ -22,7 +22,7 @@ fbseq = function(chain, additional_chains = 3){
     out = list(pilot)
     for(i in 1:additional_chains + 1){
       dis = disperse_starts(pilot)
-      print(paste0("Running additional chain ", i - 1, " of ", additional_chains, "."))
+      if(chain@verbose) print(paste0("Running additional chain ", i - 1, " of ", additional_chains, "."))
       out[[i]] = single_mcmc(dis)
     }
     return(out)
