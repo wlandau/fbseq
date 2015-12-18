@@ -98,6 +98,11 @@ generate_starts = function(counts, design, starts = Starts()){
 #' @return a \code{Chain} object with dispersed MCMC starting values.
 #' @param chain \code{Chain} object that has already been run with \code{run_mcmc()}.
 disperse_starts = function(chain){
+  n = chain@iterations * chain@thin
+  Mean = flatten_post(chain, square = F, updated_only = T)
+  MeanSq = flatten_post(chain, square = T, updated_only = T)
+  Sd =  sqrt(n*(MeanSq - Mean^2)/(n - 1))
+
   iter = 100
   con0 = Configs(chain)
   con = Configs(
@@ -115,10 +120,6 @@ disperse_starts = function(chain){
     if(chain@verbose) print("Running a mini chain to disperse starting values.")
     mini = Chain(Scenario(chain), con)
     mini = single_mcmc(mini)
-    n = mini@iterations * mini@thin
-    Mean = flatten_post(mini, square = F, updated_only = T)
-    MeanSq = flatten_post(mini, square = T, updated_only = T)
-    Sd =  sqrt(n*(MeanSq - Mean^2)/(n - 1))
     samples = mcmc_samples(mini)
     ns = intersect(names(Mean), colnames(samples))
     ns = ns[!grepl("epsilon_", colnames(samples))]
