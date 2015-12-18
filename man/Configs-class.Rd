@@ -25,7 +25,9 @@ Applies to all gene-specific parameters except for the epsilons.}
 Total MCMC iterations = burnin + thin * "iterations", and the whole "thin * iterations" portion
 is used to calculate posterior means, mean squares, and probabilities.}
 
-\item{\code{libraries_return}}{Indices of RNA-seq libraries whose parameter samples you want to return.}
+\item{\code{libraries_return}}{Indices of RNA-seq libraries whose parameter samples you want to return.
+Currently moot because there are no library-specific parameters other than the epsilons, but that
+could change in future versions of the package.}
 
 \item{\code{libraries_return_epsilon}}{Indices of RNA-seq libraries n for which epsilon_{n, g} is updated/returned.
 Applies to all library-specific parameters except for the epsilons.}
