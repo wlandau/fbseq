@@ -119,8 +119,8 @@ dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
   while(any(is.na(out))){
     i = is.na(out)
     out[i] = rt(sum(i), df = df)*Sd[i]*sqrt((df-2)/df) + Mean[i]
-    out[out <= lower] = NA
-    out[out >= upper] = NA
+    out[out <= lower & Sd > 0] = NA
+    out[out >= upper & Sd > 0] = NA
   }
   out
 
