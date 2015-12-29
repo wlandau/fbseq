@@ -21,6 +21,8 @@ Collate:
     'starts.R'
     'chain.R'
     'special_beta_priors.R'
+    'sampler_options.R'
+    'samplers.R'
     'generate_starts.R'
     'chain_constructor.R'
     'parameters.R'

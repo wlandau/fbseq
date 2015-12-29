@@ -189,20 +189,36 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{xiPostMeanSquare}}{posterior means of the squares of parameters}
 
-\item{\code{betaWidth}}{slice sampling tuning parameter}
+\item{\code{betaSampler}}{sampler option}
 
-\item{\code{epsilonWidth}}{slice sampling tuning parameter}
+\item{\code{epsilonSampler}}{sampler option}
 
-\item{\code{gammaWidth}}{slice sampling tuning parameter}
+\item{\code{gammaSampler}}{sampler option}
 
-\item{\code{nuWidth}}{slice sampling tuning parameter}
+\item{\code{nuSampler}}{sampler option}
 
-\item{\code{sigmaSquaredWidth}}{slice sampling tuning parameter}
+\item{\code{sigmaSquaredSampler}}{sampler option}
 
-\item{\code{tauWidth}}{slice sampling tuning parameter}
+\item{\code{tauSampler}}{sampler option}
 
-\item{\code{thetaWidth}}{slice sampling tuning parameter}
+\item{\code{thetaSampler}}{sampler option}
 
-\item{\code{xiWidth}}{slice sampling tuning parameter}
+\item{\code{xiSampler}}{sampler option}
+
+\item{\code{betaTune}}{tuning parameter}
+
+\item{\code{epsilonTune}}{tuning parameter}
+
+\item{\code{gammaTune}}{tuning parameter}
+
+\item{\code{nuTune}}{tuning parameter}
+
+\item{\code{sigmaSquaredTune}}{tuning parameter}
+
+\item{\code{tauTune}}{tuning parameter}
+
+\item{\code{thetaTune}}{tuning parameter}
+
+\item{\code{xiTune}}{tuning parameter}
 }}
 

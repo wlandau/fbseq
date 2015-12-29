@@ -19,8 +19,6 @@ Applies to all gene-specific parameters except for the epsilons.}
 
 \item{\code{genes_return_epsilon}}{Indices of genes g for which epsilon_{n, g} is updated/returned.}
 
-\item{\code{iterations}}{Total MCMC iterations after burnin.}
-
 \item{\code{iterations}}{Number of MCMC iterations after burnin for which selected parameter samples are kept.
 Total MCMC iterations = burnin + thin * "iterations", and the whole "thin * iterations" portion
 is used to calculate posterior means, mean squares, and probabilities.}
@@ -40,6 +38,8 @@ during the MCMC.}
 
 \item{\code{priors}}{Names of the family of priors on the betas after integrating out the xi's.
 Can be any value returned by \code{special_beta_priors()}. All other values will default to the normal prior.}
+
+\item{\code{samplers}}{\code{Samplers} object giving black box samplers for each parameter.}
 
 \item{\code{thin}}{MCMC thinning interval. \code{thin = 1} means parameter samples will be saved for every iterations
 after burnin. \code{thin = 10} means parameter samples will be saved every 10th iteration after burnin.

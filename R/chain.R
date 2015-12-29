@@ -113,14 +113,23 @@ NULL
 #' @slot thetaPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot xiPostMeanSquare posterior means of the squares of parameters
 #'
-#' @slot betaWidth slice sampling tuning parameter
-#' @slot epsilonWidth slice sampling tuning parameter
-#' @slot gammaWidth slice sampling tuning parameter
-#' @slot nuWidth slice sampling tuning parameter
-#' @slot sigmaSquaredWidth slice sampling tuning parameter
-#' @slot tauWidth slice sampling tuning parameter
-#' @slot thetaWidth slice sampling tuning parameter
-#' @slot xiWidth slice sampling tuning parameter
+#' @slot betaSampler sampler option
+#' @slot epsilonSampler sampler option
+#' @slot gammaSampler sampler option
+#' @slot nuSampler sampler option
+#' @slot sigmaSquaredSampler sampler option
+#' @slot tauSampler sampler option
+#' @slot thetaSampler sampler option
+#' @slot xiSampler sampler option
+#' 
+#' @slot betaTune tuning parameter
+#' @slot epsilonTune tuning parameter
+#' @slot gammaTune tuning parameter
+#' @slot nuTune tuning parameter
+#' @slot sigmaSquaredTune tuning parameter
+#' @slot tauTune tuning parameter
+#' @slot thetaTune tuning parameter
+#' @slot xiTune tuning parameter
 setClass("Chain",
   slots = list(
     bound_names = "character",
@@ -212,13 +221,22 @@ setClass("Chain",
     thetaPostMeanSquare = "numeric",
     xiPostMeanSquare = "numeric",
 
-    betaWidth = "numeric",
-    epsilonWidth = "numeric",
-    gammaWidth = "numeric",
-    nuWidth = "numeric",
-    sigmaSquaredWidth = "numeric",
-    tauWidth = "numeric",
-    thetaWidth = "numeric",
-    xiWidth = "numeric"
+    betaSampler = "integer",
+    epsilonSampler = "integer",
+    gammaSampler = "integer",
+    nuSampler = "integer",
+    sigmaSquaredSampler = "integer",
+    tauSampler = "integer",
+    thetaSampler = "integer",
+    xiSampler = "integer",
+
+    betaTune = "numeric",
+    epsilonTune = "numeric",
+    gammaTune = "numeric",
+    nuTune = "numeric",
+    sigmaSquaredTune = "numeric",
+    tauTune = "numeric",
+    thetaTune = "numeric",
+    xiTune = "numeric"
   )
 )

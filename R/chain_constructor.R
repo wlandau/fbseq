@@ -1,4 +1,4 @@
-#' @include special_beta_priors.R generate_starts.R
+#' @include samplers.R special_beta_priors.R generate_starts.R
 NULL
 
 #' @title Function \code{Chain}
@@ -42,7 +42,7 @@ plug_in_chain = function(chain, scenario, configs, starts){
   stopifnot(configs@thin > 0)
   if(any(configs@priors %in% special_beta_priors())) stopifnot("xi" %in% configs@parameter_sets_update)
 
-  subtract = c("parameter_sets_return", "parameter_sets_update", "priors")
+  subtract = c("parameter_sets_return", "parameter_sets_update", "priors", "samplers")
   for(n in setdiff(intersect(slotNames(chain), slotNames(configs)), subtract))
     slot(chain, n) = as(slot(configs, n), class(slot(chain, n)))
 
@@ -56,6 +56,11 @@ plug_in_chain = function(chain, scenario, configs, starts){
   chain@priors = pvec[configs@priors]
   if(length(chain@priors) == 1) chain@priors = rep(chain@priors, ncol(scenario@design))
   stopifnot(length(chain@priors) == ncol(scenario@design))
+
+  for(n in slotNames(configs@samplers)){
+    stopifnot(slot(configs@samplers, n) %in% sampler_options() && length(slot(configs@samplers, n)) == 1)
+    slot(chain, paste0(n, "Sampler")) = which(sampler_options() == slot(configs@samplers, n))
+  }
 
   for(n in slotNames(chain)){
     if(grepl("Start", n))
@@ -147,7 +152,7 @@ fill_easy_gaps = function(chain, scenario){
     theta = L,
     xi = L*G)
 
-  for(suffix in c("PostMean", "PostMeanSquare", "Width"))
+  for(suffix in c("PostMean", "PostMeanSquare", "Tune"))
     for(s in names(lengths)){
       n = paste0(s, suffix)
       slot(chain, n) = rep(0, lengths[s])
