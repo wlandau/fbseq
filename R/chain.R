@@ -112,6 +112,15 @@ NULL
 #' @slot tauPostMeanSquare estimated posterior mean of the square of the parameter
 #' @slot thetaPostMeanSquare estimated posterior means of the squares of parameters
 #' @slot xiPostMeanSquare posterior means of the squares of parameters
+#'
+#' @slot betaWidth slice sampling tuning parameter
+#' @slot epsilonWidth slice sampling tuning parameter
+#' @slot gammaWidth slice sampling tuning parameter
+#' @slot nuWidth slice sampling tuning parameter
+#' @slot sigmaSquaredWidth slice sampling tuning parameter
+#' @slot tauWidth slice sampling tuning parameter
+#' @slot thetaWidth slice sampling tuning parameter
+#' @slot xiWidth slice sampling tuning parameter
 setClass("Chain",
   slots = list(
     bound_names = "character",
@@ -201,6 +210,15 @@ setClass("Chain",
     sigmaSquaredPostMeanSquare = "numeric",
     tauPostMeanSquare = "numeric",
     thetaPostMeanSquare = "numeric",
-    xiPostMeanSquare = "numeric"
+    xiPostMeanSquare = "numeric",
+
+    betaWidth = "numeric",
+    epsilonWidth = "numeric",
+    gammaWidth = "numeric",
+    nuWidth = "numeric",
+    sigmaSquaredWidth = "numeric",
+    tauWidth = "numeric",
+    thetaWidth = "numeric",
+    xiWidth = "numeric"
   )
 )

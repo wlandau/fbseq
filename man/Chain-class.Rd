@@ -188,5 +188,21 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 \item{\code{thetaPostMeanSquare}}{estimated posterior means of the squares of parameters}
 
 \item{\code{xiPostMeanSquare}}{posterior means of the squares of parameters}
+
+\item{\code{betaWidth}}{slice sampling tuning parameter}
+
+\item{\code{epsilonWidth}}{slice sampling tuning parameter}
+
+\item{\code{gammaWidth}}{slice sampling tuning parameter}
+
+\item{\code{nuWidth}}{slice sampling tuning parameter}
+
+\item{\code{sigmaSquaredWidth}}{slice sampling tuning parameter}
+
+\item{\code{tauWidth}}{slice sampling tuning parameter}
+
+\item{\code{thetaWidth}}{slice sampling tuning parameter}
+
+\item{\code{xiWidth}}{slice sampling tuning parameter}
 }}
 

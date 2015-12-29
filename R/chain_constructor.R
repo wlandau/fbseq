@@ -147,9 +147,9 @@ fill_easy_gaps = function(chain, scenario){
     theta = L,
     xi = L*G)
 
-  for(post in c("PostMean", "PostMeanSquare"))
+  for(suffix in c("PostMean", "PostMeanSquare", "Width"))
     for(s in names(lengths)){
-      n = paste0(s, post)
+      n = paste0(s, suffix)
       slot(chain, n) = rep(0, lengths[s])
     }
 
