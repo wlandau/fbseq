@@ -11,8 +11,8 @@ assign_samplers = function(chain, configs){
   if(s == "slice_step") {
     for(n in ns) slot(chain, n) = which(samplers() == "slice_step")
     chain@thetaSampler = which(samplers() == "default")
-  } else if(s == "random_walk_metropolis"){
-    for(n in ns) slot(chain, n) = which(samplers() == "random_walk_metropolis")
+  } else if(s == "metropolis"){
+    for(n in ns) slot(chain, n) = which(samplers() == "metropolis")
     chain@thetaSampler = which(samplers() == "default")    
   } else {
     for(n in ns) slot(chain, n) = which(samplers() == "default")

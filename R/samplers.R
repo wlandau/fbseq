@@ -3,5 +3,5 @@
 #' @export
 #' @return vector of options for slot of the \code{Samplers} object
 samplers = function(){
-  c("default", "slice_step", "random_walk_metropolis")
+  c("default", "slice_step", "metropolis")
 }
