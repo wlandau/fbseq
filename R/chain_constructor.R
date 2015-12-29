@@ -57,10 +57,7 @@ plug_in_chain = function(chain, scenario, configs, starts){
   if(length(chain@priors) == 1) chain@priors = rep(chain@priors, ncol(scenario@design))
   stopifnot(length(chain@priors) == ncol(scenario@design))
 
-  for(n in slotNames(configs@samplers)){
-    stopifnot(slot(configs@samplers, n) %in% sampler_options() && length(slot(configs@samplers, n)) == 1)
-    slot(chain, paste0(n, "Sampler")) = which(sampler_options() == slot(configs@samplers, n))
-  }
+  chain = assign_samplers(chain, configs)
 
   for(n in slotNames(chain)){
     if(grepl("Start", n))
@@ -152,7 +149,7 @@ fill_easy_gaps = function(chain, scenario){
     theta = L,
     xi = L*G)
 
-  for(suffix in c("PostMean", "PostMeanSquare", "Tune"))
+  for(suffix in c("PostMean", "PostMeanSquare", "Tune", "TuneAux"))
     for(s in names(lengths)){
       n = paste0(s, suffix)
       slot(chain, n) = rep(0, lengths[s])

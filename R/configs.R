@@ -1,4 +1,4 @@
-#' @include parameters.R samplers.R special_beta_priors.R
+#' @include parameters.R special_beta_priors.R
 NULL
 
 #' @title Class \code{Configs}
@@ -24,7 +24,7 @@ NULL
 #' during the MCMC.
 #' @slot priors Names of the family of priors on the betas after integrating out the xi's. 
 #' Can be any value returned by \code{special_beta_priors()}. All other values will default to the normal prior.
-#' @slot samplers \code{Samplers} object giving black box samplers for each parameter.
+#' @slot samplers character string indicating the sampling algorithm
 #' @slot thin MCMC thinning interval. \code{thin = 1} means parameter samples will be saved for every iterations
 #' after burnin. \code{thin = 10} means parameter samples will be saved every 10th iteration after burnin.
 #' Total MCMC iterations = burnin + thin * "iterations", and the whole "thin * iterations" portion
@@ -43,7 +43,7 @@ setClass("Configs",
     parameter_sets_return = "character",
     parameter_sets_update = "character",
     priors = "character",
-    samplers = "Samplers",
+    samplers = "character",
     thin = "numeric",
     verbose = "numeric"
   ),
@@ -57,7 +57,7 @@ setClass("Configs",
     parameter_sets_return = parameters(),
     parameter_sets_update = parameters(),
     priors = "normal",
-    samplers = Samplers(),
+    samplers = "default",
     thin = 20,
     verbose = 5
   )
@@ -94,7 +94,6 @@ Configs = function(obj = NULL, ...){
       slot(configs, n) = as(names(slot(obj, n))[as.logical(slot(obj, n))], class(slot(configs, n)))
 
     configs@priors = as(ifelse(obj@priors > 0, special_beta_priors()[obj@priors], "normal"), class(configs@priors))
-    configs@samplers = Samplers(obj)
   }
 
   configs@thin = max(1, configs@thin)

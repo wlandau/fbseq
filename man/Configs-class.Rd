@@ -39,7 +39,7 @@ during the MCMC.}
 \item{\code{priors}}{Names of the family of priors on the betas after integrating out the xi's.
 Can be any value returned by \code{special_beta_priors()}. All other values will default to the normal prior.}
 
-\item{\code{samplers}}{\code{Samplers} object giving black box samplers for each parameter.}
+\item{\code{samplers}}{character string indicating the sampling algorithm}
 
 \item{\code{thin}}{MCMC thinning interval. \code{thin = 1} means parameter samples will be saved for every iterations
 after burnin. \code{thin = 10} means parameter samples will be saved every 10th iteration after burnin.

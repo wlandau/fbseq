@@ -130,6 +130,15 @@ NULL
 #' @slot tauTune tuning parameter
 #' @slot thetaTune tuning parameter
 #' @slot xiTune tuning parameter
+#'
+#' @slot betaTuneAux aux variable. For metropolis steps, number of acceptances after burnin for each parameter
+#' @slot epsilonTuneAux aux variable. For metropolis steps, number of acceptances after burnin for each parameter
+#' @slot gammaTuneAux aux variable. For metropolis steps, number of acceptances after burnin for each parameter
+#' @slot nuTuneAux aux variable. For metropolis steps, number of acceptances after burnin for each parameter
+#' @slot sigmaSquaredTuneAux aux variable. For metropolis steps, number of acceptances after burnin for each parameter
+#' @slot tauTuneAux aux variable. For metropolis steps, number of acceptances after burnin for each parameter
+#' @slot thetaTuneAux aux variable. For metropolis steps, number of acceptances after burnin for each parameter
+#' @slot xiTuneAux aux variable. For metropolis steps, number of acceptances after burnin for each parameter
 setClass("Chain",
   slots = list(
     bound_names = "character",
@@ -237,6 +246,15 @@ setClass("Chain",
     sigmaSquaredTune = "numeric",
     tauTune = "numeric",
     thetaTune = "numeric",
-    xiTune = "numeric"
+    xiTune = "numeric",
+
+    betaTuneAux = "numeric",
+    epsilonTuneAux = "numeric",
+    gammaTuneAux = "numeric",
+    nuTuneAux = "numeric",
+    sigmaSquaredTuneAux = "numeric",
+    tauTuneAux = "numeric",
+    thetaTuneAux = "numeric",
+    xiTuneAux = "numeric"
   )
 )
