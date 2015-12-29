@@ -43,6 +43,7 @@ NULL
 #' during the MCMC.
 #' @slot priors Names of the family of priors on the betas after integrating out the xi's. 
 #' Can be any value returned by \code{special_beta_priors()}. All other bounds will default to the normal prior.
+#' @slot samplers character string specifying algorithm
 #' @slot thin MCMC thinning interval. \code{thin = 1} means parameter samples will be saved for every iterations
 #' after burnin. \code{thin = 10} means parameter samples will be saved every 10th iteration after burnin.
 #' Total MCMC iterations = burnin + thin * "iterations", and the whole "thin * iterations" portion
@@ -164,6 +165,7 @@ setClass("Chain",
     parameter_sets_return = "integer",
     parameter_sets_update = "integer",
     priors = "integer",
+    samplers = "character",
     thin = "integer",
     verbose = "integer",
 

@@ -42,7 +42,7 @@ plug_in_chain = function(chain, scenario, configs, starts){
   stopifnot(configs@thin > 0)
   if(any(configs@priors %in% special_beta_priors())) stopifnot("xi" %in% configs@parameter_sets_update)
 
-  subtract = c("parameter_sets_return", "parameter_sets_update", "priors", "samplers")
+  subtract = c("parameter_sets_return", "parameter_sets_update", "priors")
   for(n in setdiff(intersect(slotNames(chain), slotNames(configs)), subtract))
     slot(chain, n) = as(slot(configs, n), class(slot(chain, n)))
 
