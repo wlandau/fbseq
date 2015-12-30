@@ -149,7 +149,7 @@ fill_easy_gaps = function(chain, scenario){
     theta = L,
     xi = L*G)
 
-  for(suffix in c("PostMean", "PostMeanSquare", "Tune")) #, "TuneAux")) # UNCOMMENT IF STORING METROPOLIS ACCEPTANCE RATES
+  for(suffix in c("PostMean", "PostMeanSquare", "Tune"))
     for(s in names(lengths)){
       n = paste0(s, suffix)
       slot(chain, n) = rep(0, lengths[s])
