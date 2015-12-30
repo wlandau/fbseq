@@ -387,26 +387,26 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1         9         7         7         7         8         9
-## gene_2        79        76        73        70        73        80
-## gene_3        26        13         8         2        43        43
-## gene_4        52        53        75       104        44        41
-## gene_5        19        19         8         4        12         9
-## gene_6         5         6         8        15         4         5
+## gene_1        39        63        43        68        49        45
+## gene_2         5         4         3         5        11         7
+## gene_3         8         4         1         2         9        15
+## gene_4       128       109        77        85        87        51
+## gene_5         3         4         4         1        33        19
+## gene_6        26        33        20        10        14        12
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1         6         4         6          7         12          5
-## gene_2        68        77        23         45         51         43
-## gene_3        12        15        32         31         10          8
-## gene_4        84        93        37         44         73         69
-## gene_5         3         3        12         14          5          1
-## gene_6         7        11         1          2          7          8
+## gene_1        27        37        58        103         28         62
+## gene_2        10         7         5          4          4          4
+## gene_3         5         4        10         11          3          2
+## gene_4        75        92       109        141         79        105
+## gene_5        18        13        11         14          6          9
+## gene_6        10        14        31         46         36         29
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         12          8          5          8
-## gene_2         41         40         46         34
-## gene_3         35         28         11          5
-## gene_4         31         43         59         71
-## gene_5         12         17          6          4
-## gene_6          7          4          5         10</code></pre>
+## gene_1         33        104         40         87
+## gene_2          4          8          1          4
+## gene_3          7         10          3          5
+## gene_4        130         61         80        116
+## gene_5          7         14          6          7
+## gene_6         35         28         20         13</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -513,6 +513,7 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <p>The <code>Configs</code> S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so just for the sake of trying out the package, you should be able to get away with calling the <code>Configs</code> function with no arguments. For a full list of slots and their explanations, type <code>help(&quot;Configs-class&quot;)</code>.</p>
 <p>However, for serious analyses, you may want to adjust the <code>iterations</code>, <code>burnin</code>, and <code>thin</code> slots to control the duration of the MCMC. <code>burinin</code> is the number of throwaway iterations at the beginning of the MCMC, <code>iterations</code> is the number of iterations for which parameter samples are actually returned to the user, and <code>thin</code> specifies the thinning interval. The total number of MCMC iterations is <code>burnin + iterations * thin</code>, and all of the <code>iterations * thin</code> portion is used to calculate posterior means, mean squares, and posterior probabilities of interest specified in the <code>Scenario</code> object. If <code>thin</code> is &gt; 1, not all parameter samples after burnin are returned to the user. For example, <code>thin</code> is 10, then after burnin, actual parameter samples are saved every 10th iteration.</p>
 <p>You may also want to adjust the <code>Configs</code> slots that apply constraints on model parameters. The <code>parameter_sets_update</code> controls which sets of parameters to update during the MCMC. Parameter sets not specified in <code>parameter_sets_update</code> will be held constant, so this slot can be used to run an empirical Bayes analysis, for example. The <code>parameter_sets_return</code>, <code>genes_return</code>, <code>libraries_return</code> (currently moot because there are no library-specific parameters other than the epsilons), <code>genes_return_epsilon</code>, and <code>libraries_return_epsilon</code> slots control which Monte Carlo parameter samples to return to the user.</p>
+<p>The <code>samplers</code> slot, in principle, allows the user to choose the MCMC algorithm to use: slice sampling, Metropolis-Hastings, etc. Currently, only the default stepping-out slice sampler is fully implemented and tested.</p>
 </div>
 <div id="optional-create-a-starts-object." class="section level2">
 <h2><span class="header-section-number">4.3</span> (Optional) create a <code>Starts</code> object.</h2>
@@ -528,7 +529,7 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <p>As an example, here is the <code>Chain</code> created from the <code>paschold</code> scenario visited earlier.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(paschold)
 <span class="kw">str</span>(chain)</code></pre>
-<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 88 slots
+<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 105 slots
 ##   ..@ bound_names               : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ contrast_names            : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ gene_names                : chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
@@ -544,17 +545,18 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##   ..@ supplement                : list()
 ##   ..@ burnin                    : int 100000
 ##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
-##   ..@ genes_return              : int [1:3] 15704 37238 38950
-##   ..@ genes_return_epsilon      : int [1:3] 14187 21857 31764
+##   ..@ genes_return              : int [1:3] 7107 9506 23076
+##   ..@ genes_return_epsilon      : int [1:3] 23533 23889 38811
 ##   ..@ iterations                : int 5000
-##   ..@ libraries_return          : int [1:3] 4 6 11
-##   ..@ libraries_return_epsilon  : int [1:3] 5 9 11
+##   ..@ libraries_return          : int [1:3] 8 10 11
+##   ..@ libraries_return_epsilon  : int [1:3] 6 7 16
 ##   ..@ parameter_sets_return     : Named int [1:8] 1 1 1 1 1 1 1 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update     : Named int [1:8] 1 1 1 1 1 1 1 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                    : Named int [1:5] 0 0 0 0 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
+##   ..@ samplers                  : chr &quot;default&quot;
 ##   ..@ thin                      : int 20
 ##   ..@ verbose                   : int 5
 ##   ..@ C                         : int 12
@@ -616,14 +618,25 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##   ..@ tauPostMeanSquare         : num 0
 ##   ..@ thetaPostMeanSquare       : num [1:5] 0 0 0 0 0
 ##   ..@ xiPostMeanSquare          : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ betaWidth                 : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ epsilonWidth              : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ gammaWidth                : num [1:39656] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ nuWidth                   : num 0
-##   ..@ sigmaSquaredWidth         : num [1:5] 0 0 0 0 0
-##   ..@ tauWidth                  : num 0
-##   ..@ thetaWidth                : num [1:5] 0 0 0 0 0
-##   ..@ xiWidth                   : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+##   ..@ betaSampler               : int 1
+##   ..@ epsilonSampler            : int 1
+##   ..@ gammaSampler              : int 1
+##   ..@ nuSampler                 : int 1
+##   ..@ sigmaSquaredSampler       : int 1
+##   ..@ tauSampler                : int 1
+##   ..@ thetaSampler              : int 1
+##   ..@ xiSampler                 : int 1
+##   ..@ betaTune                  : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ epsilonTune               : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ gammaTune                 : num [1:39656] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ nuTune                    : num 0
+##   ..@ sigmaSquaredTune          : num [1:5] 0 0 0 0 0
+##   ..@ tauTune                   : num 0
+##   ..@ thetaTune                 : num [1:5] 0 0 0 0 0
+##   ..@ xiTune                    : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ betaTuneAux               : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ epsilonTuneAux            : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
+##   .. [list output truncated]</code></pre>
 <p>You can recover the scenario, configuration, or starting values of a <code>Chain</code> object with the <code>Scenario</code>, <code>Configs</code>, and <code>Starts</code> objects. For example,</p>
 <pre class="sourceCode r"><code class="sourceCode r">scenario =<span class="st"> </span><span class="kw">Scenario</span>(chain)
 configs =<span class="st"> </span><span class="kw">Configs</span>(chain)
@@ -680,18 +693,19 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 ##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;low-parent_Mo17xB73_1&quot; &quot;low-parent_Mo17xB73_2&quot;
 ##   ..@ supplement  : list()</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(configs)</code></pre>
-<pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 12 slots
+<pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 15704 37238 38950
-##   ..@ genes_return_epsilon    : int [1:3] 14187 21857 31764
+##   ..@ genes_return            : int [1:3] 7107 9506 23076
+##   ..@ genes_return_epsilon    : int [1:3] 23533 23889 38811
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 4 6 11
-##   ..@ libraries_return_epsilon: int [1:3] 5 9 11
+##   ..@ libraries_return        : int [1:3] 8 10 11
+##   ..@ libraries_return_epsilon: int [1:3] 6 7 16
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
+##   ..@ samplers                : chr &quot;default&quot;
 ##   ..@ thin                    : num 20
 ##   ..@ verbose                 : int 5</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(starts)</code></pre>
