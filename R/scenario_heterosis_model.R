@@ -9,7 +9,7 @@
 scenario_heterosis_model = function(genes = 3e4, libraries = 16,
   truth = Starts(nu = 3, tau = 0.01, sigmaSquared = c(1, 
         0.04, 0.03, 0.0005, 0.1), theta = c(3, 
-        0.00, -0.007, -0.005, 0.008))){
+        0, -0.007, -0.005, 0.008))){
 
   data(paschold)
   paschold = get("paschold")
