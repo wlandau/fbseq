@@ -222,21 +222,5 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 \item{\code{thetaTune}}{tuning parameter}
 
 \item{\code{xiTune}}{tuning parameter}
-
-\item{\code{betaTuneAux}}{aux variable. For metropolis steps, number of acceptances after burnin for each parameter}
-
-\item{\code{epsilonTuneAux}}{aux variable. For metropolis steps, number of acceptances after burnin for each parameter}
-
-\item{\code{gammaTuneAux}}{aux variable. For metropolis steps, number of acceptances after burnin for each parameter}
-
-\item{\code{nuTuneAux}}{aux variable. For metropolis steps, number of acceptances after burnin for each parameter}
-
-\item{\code{sigmaSquaredTuneAux}}{aux variable. For metropolis steps, number of acceptances after burnin for each parameter}
-
-\item{\code{tauTuneAux}}{aux variable. For metropolis steps, number of acceptances after burnin for each parameter}
-
-\item{\code{thetaTuneAux}}{aux variable. For metropolis steps, number of acceptances after burnin for each parameter}
-
-\item{\code{xiTuneAux}}{aux variable. For metropolis steps, number of acceptances after burnin for each parameter}
 }}
 
