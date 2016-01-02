@@ -119,7 +119,7 @@ dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
   ct = 0
   while(any(is.na(out))){
     ct = ct + 1
-    if(ct > 1e3) stop("cannot disperse starting values. Try using more MCMC iterations.")
+    if(ct > 1e3) stop("cannot disperse starting values. Try increasing iterations or thinning.")
     i = is.na(out)
     out[i] = rt(sum(i), df = df)*Sd[i]*sqrt((df-2)/df) + Mean[i]
     out[out <= lower & Sd > 0] = NA
