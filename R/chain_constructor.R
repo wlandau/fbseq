@@ -125,6 +125,11 @@ fill_easy_gaps = function(chain, scenario){
   chain@P = length(scenario@propositions)
   chain@probs = rep(0, chain@P * chain@G)
 
+  stopifnot(chain@genes_return %in% 1:chain@G)
+  stopifnot(chain@genes_return_epsilon %in% 1:chain@G)
+  stopifnot(chain@libraries_return %in% 1:chain@N)
+  stopifnot(chain@libraries_return_epsilon %in% 1:chain@N)
+
   lengths = c(
     beta = L*Greturn,
     epsilon = NreturnEpsilon*GreturnEpsilon,
