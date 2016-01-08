@@ -140,6 +140,7 @@ fill_easy_gaps = function(chain, scenario){
     theta = L,
     xi = L*Greturn)
 
+  chain@loglik = rep(0, chain@iterations)
   for(s in names(lengths))
     if(as.logical(chain@parameter_sets_return[s]))
       slot(chain, s) = rep(0, chain@iterations*lengths[s])

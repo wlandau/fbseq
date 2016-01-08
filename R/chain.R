@@ -68,6 +68,8 @@ NULL
 #' @slot probs estimated posterior probabilities of propositions in the \code{Scenario} object.
 #' @slot seeds vector of N*G random number generator seeds
 #' 
+#' @slot loglik log likelihood
+#' 
 #' @slot a initialization constant  
 #' @slot b initialization constant 
 #' @slot c initialization constants 
@@ -176,6 +178,8 @@ setClass("Chain",
     P = "integer",
     probs = "numeric",
     seeds = "integer",
+
+    loglik = "numeric",
 
     a = "numeric",
     b = "numeric",
