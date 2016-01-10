@@ -2,6 +2,7 @@
 
 export(Chain)
 export(Configs)
+export(DIC)
 export(Scenario)
 export(Starts)
 export(assign_samplers)
