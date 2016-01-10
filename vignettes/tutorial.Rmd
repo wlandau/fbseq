@@ -282,5 +282,6 @@ No sample output is shipped with this package because output  `Chain` objects ar
 | `estimates(obj, level)`  |	|  Posterior means and credible intervals (of level `level`) for all parameters. Note: to avoid taking up too much memory, the credible intervals are computed using the posterior means and variances of parameters, not quantiles of actual parameter samples. The results are approximate. | 
 |`mcmc_samples(obj)` |	$\qquad$ | Monte Carlo samples of returned parameters selected in `Configs` | 
 | `volcano(obj)`   |	| `ggplot2` plot of posterior probabilities vs effect sizes for each proposition. | 
+| `DIC(obj)`   |	| Returns the deviance information criterion (DIC) and effective number of model parameters [@bda], along with the actual number of model parameters. | 
 
 # References
