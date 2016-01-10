@@ -178,8 +178,6 @@ setClass("Chain",
     probs = "numeric",
     seeds = "integer",
 
-    loglik = "numeric",
-
     a = "numeric",
     b = "numeric",
     c = "numeric",
@@ -208,6 +206,7 @@ setClass("Chain",
     thetaStart = "numeric",
     xiStart = "numeric",
 
+    loglikPostMean = "numeric",
     betaPostMean = "numeric",
     epsilonPostMean = "numeric",
     gammaPostMean = "numeric",
