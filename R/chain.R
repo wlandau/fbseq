@@ -96,7 +96,6 @@ NULL
 #' @slot thetaStart MCMC starting bounds
 #' @slot xiStart MCMC starting bounds
 #' 
-#' @slot loglikPostMean posterior mean of the log likelihood
 #' @slot betaPostMean estimated posterior means
 #' @slot epsilonPostMean estimated posterior means
 #' @slot gammaPostMean estimated posterior means
@@ -206,7 +205,6 @@ setClass("Chain",
     thetaStart = "numeric",
     xiStart = "numeric",
 
-    loglikPostMean = "numeric",
     betaPostMean = "numeric",
     epsilonPostMean = "numeric",
     gammaPostMean = "numeric",

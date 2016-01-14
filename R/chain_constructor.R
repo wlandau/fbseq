@@ -154,7 +154,6 @@ fill_easy_gaps = function(chain, scenario){
     theta = L,
     xi = L*G)
 
-  chain@loglikPostMean = 0
   for(suffix in c("PostMean", "PostMeanSquare", "Tune"))
     for(s in names(lengths)){
       n = paste0(s, suffix)

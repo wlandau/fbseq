@@ -387,26 +387,26 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1        75       104       116       112        54        29
-## gene_2        40        36        21        19        12        21
-## gene_3       145       144        75        69       157       132
-## gene_4         3         8         5         5         8         6
-## gene_5         3         6         5         3         3         1
-## gene_6       125       100       115       108       149       173
+## gene_1         6         4         3         5        22        17
+## gene_2        13        12        26        21        20        30
+## gene_3        10        13        19        26        31        13
+## gene_4        30        44        27        36        31        31
+## gene_5         6        14         7        13         9         7
+## gene_6        52        72        15        45       107       106
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1        80        77        24         35         55         65
-## gene_2        13        19        28         15          9          9
-## gene_3        54        57       109        104         56         76
-## gene_4         1         1         6          8          2          3
-## gene_5         2         0         4          2          1          1
-## gene_6       167       184       135        134        127        135
+## gene_1        14        20        10         12         13         19
+## gene_2        25        38         8          7         13         12
+## gene_3        21        34        20         24         41         37
+## gene_4        23        14        28         39         20         40
+## gene_5         5         7         7         12          8          2
+## gene_6        61        68        48         56         36         26
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         23         42         49         52
-## gene_2         12         23         13          8
-## gene_3        125        115         64         52
-## gene_4          1         11          3          8
-## gene_5          5          3          0          1
-## gene_6        162        163        178        126</code></pre>
+## gene_1         20         11         18         20
+## gene_2          9          9         14         18
+## gene_3         19         31         31         14
+## gene_4         40         38         25         31
+## gene_5          6          9         12          9
+## gene_6         52         39         32         30</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -545,11 +545,11 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##   ..@ supplement                : list()
 ##   ..@ burnin                    : int 100000
 ##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
-##   ..@ genes_return              : int [1:3] 18153 26715 32320
-##   ..@ genes_return_epsilon      : int [1:3] 2705 17137 29597
+##   ..@ genes_return              : int [1:3] 17219 19487 27758
+##   ..@ genes_return_epsilon      : int [1:3] 16018 20274 34094
 ##   ..@ iterations                : int 5000
-##   ..@ libraries_return          : int [1:3] 8 9 15
-##   ..@ libraries_return_epsilon  : int [1:3] 7 11 15
+##   ..@ libraries_return          : int [1:3] 8 10 16
+##   ..@ libraries_return_epsilon  : int [1:3] 5 5 9
 ##   ..@ parameter_sets_return     : Named int [1:8] 1 1 1 1 1 1 1 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update     : Named int [1:8] 1 1 1 1 1 1 1 0
@@ -694,11 +694,11 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 18153 26715 32320
-##   ..@ genes_return_epsilon    : int [1:3] 2705 17137 29597
+##   ..@ genes_return            : int [1:3] 17219 19487 27758
+##   ..@ genes_return_epsilon    : int [1:3] 16018 20274 34094
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 8 9 15
-##   ..@ libraries_return_epsilon: int [1:3] 7 11 15
+##   ..@ libraries_return        : int [1:3] 8 10 16
+##   ..@ libraries_return_epsilon: int [1:3] 5 5 9
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
@@ -774,16 +774,10 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <td align="left"></td>
 <td align="left"><code>ggplot2</code> plot of posterior probabilities vs effect sizes for each proposition.</td>
 </tr>
-<tr class="even">
-<td align="left"><code>DIC(obj)</code></td>
-<td align="left"></td>
-<td align="left">Returns the deviance information criterion (DIC) and effective number of model parameters <span class="citation">(Gelman, Andrew et al. 2013)</span>, along with the actual number of model parameters.</td>
-</tr>
 </tbody>
 </table>
 <div class="references">
 <h1 id="references" class="unnumbered">References</h1>
-<p>Gelman, Andrew et al. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. CRC Press.</p>
 <p>Paschold, Anja, Yi Jia, Caroline Marcon, Steve Lund, Nick B Larson, Cheng-Ting Yeh, Stephan Ossowski, et al. 2012. “Complementation Contributes to Transcriptome Complexity in Maize (<em>Zea Mays L.</em>) Hybrids Relative to Their Inbred Parents.” <em>Genome Research</em> 22 (12). Cold Spring Harbor Lab: 2445–54.</p>
 </div>
 </div>

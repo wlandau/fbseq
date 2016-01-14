@@ -18,7 +18,6 @@ Suggests:
 VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
-    'DIC.R'
     'assign_samplers.R'
     'starts.R'
     'chain.R'

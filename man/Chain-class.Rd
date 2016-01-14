@@ -159,8 +159,6 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{xiStart}}{MCMC starting bounds}
 
-\item{\code{loglikPostMean}}{posterior mean of the log likelihood}
-
 \item{\code{betaPostMean}}{estimated posterior means}
 
 \item{\code{epsilonPostMean}}{estimated posterior means}
