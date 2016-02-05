@@ -29,7 +29,7 @@ setClass("Scenario",
 )
 
 #' @title Function \code{check_scenario}
-#' @details checks an \code{Scenario} object for inconsistencies.
+#' @description checks an \code{Scenario} object for inconsistencies.
 #' @export
 #' @return a \code{Scenario} object
 #' @param scenario a \code{Scenario} object
@@ -60,7 +60,7 @@ check_scenario = function(scenario){
 }
 
 #' @title Constructor for class \code{Scenario}
-#' @details Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
+#' @description Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
 #' Elements passed with \code{...} must be named. For example, \code{Scenario(design = my_matrix)}.
 #' @export
 #' @return a \code{Scenario} object

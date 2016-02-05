@@ -20,7 +20,7 @@ estimates = function(obj, level = 0.95){
   p = 1 - (1 - level)/2
 
   normals = c("beta", "epsilon", "theta")
-  gammas = c("gamma", "nu", "sigmaSquared", "tau", "xi")
+  igammas = c("gamma", "nu", "sigmaSquared", "tau", "xi")
 
   for(v in normals){
     n = grep(v, rownames(d))
@@ -30,13 +30,13 @@ estimates = function(obj, level = 0.95){
     d[n,] = s
   }
 
-  for(v in gammas){
+  for(v in igammas){
     n = grep(v, rownames(d))
     s = d[n,]
-    shape = s$mean^2/s$sd^2
-    rate = s$mean/s$sd^2
-    s$lower = qgamma(1 - p, shape = shape, rate = rate)
-    s$upper = qgamma(p, shape = shape, rate = rate)
+    shape = s$mean^2/s$sd^2 + 2
+    scale = s$mean*(shape - 1)
+    s$lower = qinvgamma(1 - p, shape = shape, scale = scale)
+    s$upper = qinvgamma(p, shape = shape, scale = scale)
     d[n,] = s
   }
 

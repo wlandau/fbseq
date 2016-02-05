@@ -64,7 +64,7 @@ setClass("Configs",
 )
 
 #' @title Constructor for class \code{Configs}
-#' @details Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
+#' @description Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
 #' Elements passed with \code{...} must be named. For example, \code{Configs(diag = "gelman")}.
 #' @export
 #' @return a \code{Configs} object

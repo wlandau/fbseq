@@ -57,7 +57,7 @@ setClass("Starts",
 )
 
 #' @title Constructor for class \code{Starts}
-#' @details Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
+#' @description Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
 #' @export
 #' @param obj a \code{Chain} or \code{list} object to get slots from.
 #' @param ... additional slots.

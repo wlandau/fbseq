@@ -8,6 +8,7 @@ Maintainer: Will Landau <will.landau@gmail.com>
 Depends:
     R (>= 3.0.0)
 Imports:
+    actuar,
     coda,
     ggplot2,
     methods,
@@ -21,9 +22,9 @@ Collate:
     'assign_samplers.R'
     'starts.R'
     'chain.R'
+    'generate_starts.R'
     'special_beta_priors.R'
     'samplers.R'
-    'generate_starts.R'
     'chain_constructor.R'
     'parameters.R'
     'configs.R'
@@ -44,3 +45,4 @@ Collate:
     's4list.R'
     'scenario_heterosis_model.R'
     'volcano.R'
+RoxygenNote: 5.0.1
