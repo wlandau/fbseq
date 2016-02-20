@@ -90,11 +90,11 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </div>
 <div id="read-the-model-vignette-first." class="section level1">
 <h1><span class="header-section-number">2</span> Read the <a href="https://github.com/wlandau/fbseq/blob/master/vignettes/model.html">model vignette</a> first.</h1>
-<p>An understanding of the underlying hierarchical model is important for understanding how to use this package.</p>
+<p>An understanding of the underlying hierarchical model is important for understanding how to use this package. For best viewing, download the html file to your desktop and then open it with a browser.</p>
 </div>
 <div id="check-your-system." class="section level1">
 <h1><span class="header-section-number">3</span> Check your system.</h1>
-<p>You need to have at least R <span class="math">\(\ge\)</span> 3.2.0, along with the R packages <code>coda</code>, <code>ggplot2</code>, <code>methods</code>, <code>reshape2</code>, and <code>knitr</code>. All are available through the <a href="https://cran.r-project.org/">Comprehensive R Archive Network (CRAN</a>. With those requirements met, you can install <code>fbseq</code>, load it in an R session, create input, and analyze output. To actually run the underlying Markov chain Monte Carlo (MCMC) procedure, however, you need access to a machine with a <a href="http://www.nvidia.com/object/cuda_home_new.html">CUDA-enabled GPU</a>, along with the <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code> package</a>. <code>fbseqCUDA</code> is the internal engine of <code>fbseq</code>, and it is implemented in CUDA to provide necessary acceleration for the MCMC. <code>fbseq</code> and <code>fbseqCUDA</code> are kept separate for convenience. For example, you can set up input with <code>fbseq</code> and without <code>fbseqCUDA</code> on a low-end laptop, run the main algorithm remotely with both <code>fbseq</code> and <code>fbseqCUDA</code> on a CUDA-enabled <a href="http://www.nvidia.com/object/gpu-cloud-computing-services.html">cloud computing enterprise</a> such as <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Web Services</a>, and analyze the output locally with <code>fbseq</code> and without <code>fbseqCUDA</code>. See the <a href="https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html"><code>fbseqCUDA</code> installation vignette</a> for more details.</p>
+<p>You need to have at least R <span class="math">\(\ge\)</span> 3.2.0, along with the R packages <code>coda</code>, <code>ggplot2</code>, <code>methods</code>, <code>reshape2</code>, and <code>knitr</code>. All are available through the <a href="https://cran.r-project.org/">Comprehensive R Archive Network (CRAN</a>. With those requirements met, you can install <code>fbseq</code>, load it in an R session, create input, and analyze output. To actually run the underlying Markov chain Monte Carlo (MCMC) procedure, however, you need access to a machine with a <a href="http://www.nvidia.com/object/cuda_home_new.html">CUDA-enabled GPU</a>, along with the <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code> package</a>. <code>fbseqCUDA</code> is the internal engine of <code>fbseq</code>, and it is implemented in CUDA to provide necessary acceleration for the MCMC. <code>fbseq</code> and <code>fbseqCUDA</code> are kept separate for convenience. For example, you can set up input with <code>fbseq</code> and without <code>fbseqCUDA</code> on a low-end laptop, run the main algorithm remotely with both <code>fbseq</code> and <code>fbseqCUDA</code> on a CUDA-enabled <a href="http://www.nvidia.com/object/gpu-cloud-computing-services.html">cloud computing enterprise</a> such as <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Web Services</a>, and analyze the output locally with <code>fbseq</code> and without <code>fbseqCUDA</code>. See the <a href="https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html"><code>fbseqCUDA</code> installation vignette</a> for more details. For best viewing, download the html vignette to your desktop and then open it with a browser.</p>
 </div>
 <div id="install-fbseq" class="section level1">
 <h1><span class="header-section-number">4</span> Install <code>fbseq</code></h1>
@@ -398,26 +398,26 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1         4         6         4        16         2         5
-## gene_2        58        65        14        19        60        48
-## gene_3        11        10         7         3         3         5
-## gene_4        64        63        52        45        98       104
-## gene_5       195        86       194       386        60        31
-## gene_6         1         5         2         1         1         4
+## gene_1        17        21        41        46        16        13
+## gene_2        14        17         8        14        40        37
+## gene_3       187       146       178       170       189       166
+## gene_4        87        71        25        27        33        30
+## gene_5        88        90        81        65        71        73
+## gene_6        15        17        20        22         7        13
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1         8         6         5          2          2          3
-## gene_2        11        13        47         73         18         19
-## gene_3         2         2         2          8          5          7
-## gene_4        75        98       101        104        100         61
-## gene_5        55        58       114         43        121        127
-## gene_6         5         0         5          4          1          5
+## gene_1        30        38        15         10         55         51
+## gene_2        65        42        21         17         23         22
+## gene_3       150       134       168        215        184        140
+## gene_4        14        12        33         33         11         13
+## gene_5        63        97        95        110         99         86
+## gene_6        13        10        16         16         15         19
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1          3          4          3          5
-## gene_2         43         67         15         25
-## gene_3          3          8          5         11
-## gene_4        169        133        104         80
-## gene_5         64         60        174        114
-## gene_6         10          5          3          1</code></pre>
+## gene_1         24         36         57         41
+## gene_2         29         22         22         12
+## gene_3        182        168        160        200
+## gene_4         15         34         11         15
+## gene_5         94         96         91         77
+## gene_6         11          9         15         10</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -556,11 +556,11 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##   ..@ supplement                : list()
 ##   ..@ burnin                    : int 100000
 ##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
-##   ..@ genes_return              : int [1:3] 8611 18429 27774
-##   ..@ genes_return_epsilon      : int [1:3] 10939 33883 38420
+##   ..@ genes_return              : int [1:3] 6074 6433 30890
+##   ..@ genes_return_epsilon      : int [1:3] 6394 10923 13255
 ##   ..@ iterations                : int 5000
-##   ..@ libraries_return          : int [1:3] 1 6 16
-##   ..@ libraries_return_epsilon  : int [1:3] 2 8 8
+##   ..@ libraries_return          : int [1:3] 4 10 11
+##   ..@ libraries_return_epsilon  : int [1:3] 3 10 12
 ##   ..@ parameter_sets_return     : Named int [1:8] 1 1 1 1 1 1 1 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update     : Named int [1:8] 1 1 1 1 1 1 1 0
@@ -704,11 +704,11 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 8611 18429 27774
-##   ..@ genes_return_epsilon    : int [1:3] 10939 33883 38420
+##   ..@ genes_return            : int [1:3] 6074 6433 30890
+##   ..@ genes_return_epsilon    : int [1:3] 6394 10923 13255
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 1 6 16
-##   ..@ libraries_return_epsilon: int [1:3] 2 8 8
+##   ..@ libraries_return        : int [1:3] 4 10 11
+##   ..@ libraries_return_epsilon: int [1:3] 3 10 12
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
