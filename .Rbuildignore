@@ -6,7 +6,7 @@
 .Rhistory
 Rbuildignore
 README.md
-vignettes/methodology.html
-vignettes/methodology.log
+vignettes/model.html
+vignettes/model.log
 vignettes/tutorial.html
 vignettes/tutorial.log
