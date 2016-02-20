@@ -60,21 +60,24 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="TOC">
 <ul>
 <li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
-<li><a href="#check-your-system."><span class="toc-section-number">2</span> Check your system.</a></li>
-<li><a href="#install-fbseq-and-then-fbseqcuda."><span class="toc-section-number">3</span> Install <code>fbseq</code> and then <code>fbseqCUDA</code>.</a><ul>
-<li><a href="#option-1-install-directly-from-github."><span class="toc-section-number">3.1</span> Option 1: install directly from GitHub.</a></li>
-<li><a href="#option-2-install-from-the-source."><span class="toc-section-number">3.2</span> Option 2: install from the source.</a></li>
+<li><a href="#read-the-model-vignette-first."><span class="toc-section-number">2</span> Read the <a href="https://github.com/wlandau/fbseq/blob/master/vignettes/model.Rmd">model vignette</a> first.</a></li>
+<li><a href="#check-your-system."><span class="toc-section-number">3</span> Check your system.</a></li>
+<li><a href="#install-fbseq"><span class="toc-section-number">4</span> Install <code>fbseq</code></a><ul>
+<li><a href="#option-1-install-a-stable-release-recommended."><span class="toc-section-number">4.1</span> Option 1: install a stable release (recommended).</a></li>
+<li><a href="#option-2-use-install_github-to-install-the-development-version."><span class="toc-section-number">4.2</span> Option 2: use <code>install_github</code> to install the development version.</a></li>
+<li><a href="#option-3-build-the-development-version-from-the-source."><span class="toc-section-number">4.3</span> Option 3: build the development version from the source.</a></li>
 </ul></li>
-<li><a href="#workflow-overview"><span class="toc-section-number">4</span> Workflow overview</a><ul>
-<li><a href="#create-a-scenario-object."><span class="toc-section-number">4.1</span> Create a <code>Scenario</code> object.</a><ul>
-<li><a href="#example-scenario-from-paschold"><span class="toc-section-number">4.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></a></li>
-<li><a href="#example-simulated-scenario-with-scenario_heterosis_model"><span class="toc-section-number">4.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></a></li>
+<li><a href="#install-fbseqcuda"><span class="toc-section-number">5</span> Install <code>fbseqCUDA</code></a></li>
+<li><a href="#workflow-overview"><span class="toc-section-number">6</span> Workflow overview</a><ul>
+<li><a href="#create-a-scenario-object."><span class="toc-section-number">6.1</span> Create a <code>Scenario</code> object.</a><ul>
+<li><a href="#example-scenario-from-paschold"><span class="toc-section-number">6.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></a></li>
+<li><a href="#example-simulated-scenario-with-scenario_heterosis_model"><span class="toc-section-number">6.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></a></li>
 </ul></li>
-<li><a href="#optional-create-a-configs-object."><span class="toc-section-number">4.2</span> (Optional) create a <code>Configs</code> object.</a></li>
-<li><a href="#optional-create-a-starts-object."><span class="toc-section-number">4.3</span> (Optional) create a <code>Starts</code> object.</a></li>
-<li><a href="#create-a-chain-object."><span class="toc-section-number">4.4</span> Create a <code>Chain</code> object.</a></li>
-<li><a href="#call-fbseq-on-the-chain-object."><span class="toc-section-number">4.5</span> Call <code>fbseq</code> on the <code>Chain</code> object.</a></li>
-<li><a href="#inspect-the-output."><span class="toc-section-number">4.6</span> Inspect the output.</a></li>
+<li><a href="#optional-create-a-configs-object."><span class="toc-section-number">6.2</span> (Optional) create a <code>Configs</code> object.</a></li>
+<li><a href="#optional-create-a-starts-object."><span class="toc-section-number">6.3</span> (Optional) create a <code>Starts</code> object.</a></li>
+<li><a href="#create-a-chain-object."><span class="toc-section-number">6.4</span> Create a <code>Chain</code> object.</a></li>
+<li><a href="#call-fbseq-on-the-chain-object."><span class="toc-section-number">6.5</span> Call <code>fbseq</code> on the <code>Chain</code> object.</a></li>
+<li><a href="#inspect-the-output."><span class="toc-section-number">6.6</span> Inspect the output.</a></li>
 </ul></li>
 </ul>
 </div>
@@ -84,37 +87,45 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <p>The <code>fbseq</code> package fits a hierarchical model to RNA-seq data in (nearly) fully Bayesian fashion. Although it was originally designed to fit RNA-seq data, it can also be used to analyze count data with tens of thousands of response variables and only a handful of observations each.</p>
-<p>Please read the model vignette first. An understanding of the underlying hierarchical model is important for understanding how to use this package</p>
+</div>
+<div id="read-the-model-vignette-first." class="section level1">
+<h1><span class="header-section-number">2</span> Read the <a href="https://github.com/wlandau/fbseq/blob/master/vignettes/model.Rmd">model vignette</a> first.</h1>
+<p>An understanding of the underlying hierarchical model is important for understanding how to use this package.</p>
 </div>
 <div id="check-your-system." class="section level1">
-<h1><span class="header-section-number">2</span> Check your system.</h1>
-<p>You need to have at least R <span class="math">\(\ge\)</span> 3.2.0, along with the R packages <code>coda</code>, <code>ggplot2</code>, <code>methods</code>, <code>reshape2</code>, and <code>knitr</code>. All are available through the <a href="https://cran.r-project.org/">Comprehensive R Archive Network (CRAN</a>. With those requirements met, you can install <code>fbseq</code>, load it in an R session, create input, and analyze output. To actually run the underlying Markov chain Monte Carlo (MCMC) procedure, however, you need access to a machine with a <a href="http://www.nvidia.com/object/cuda_home_new.html">CUDA-enabled GPU</a>, along with the <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code> package</a>. <code>fbseqCUDA</code> is the internal engine of <code>fbseq</code>, and it is implemented in CUDA to provide necessary acceleration for the MCMC. <code>fbseq</code> and <code>fbseqCUDA</code> are kept separate for convenience. For example, you can set up input with <code>fbseq</code> and without <code>fbseqCUDA</code> on a low-end laptop, run the main algorithm remotely with both <code>fbseq</code> and <code>fbseqCUDA</code> on a CUDA-enabled <a href="http://www.nvidia.com/object/gpu-cloud-computing-services.html">cloud computing enterprise</a> such as <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Web Services</a>, and analyze the output locally with <code>fbseq</code> and without <code>fbseqCUDA</code>. See the <code>fbseqCUDA</code> installation vignette for more details.</p>
+<h1><span class="header-section-number">3</span> Check your system.</h1>
+<p>You need to have at least R <span class="math">\(\ge\)</span> 3.2.0, along with the R packages <code>coda</code>, <code>ggplot2</code>, <code>methods</code>, <code>reshape2</code>, and <code>knitr</code>. All are available through the <a href="https://cran.r-project.org/">Comprehensive R Archive Network (CRAN</a>. With those requirements met, you can install <code>fbseq</code>, load it in an R session, create input, and analyze output. To actually run the underlying Markov chain Monte Carlo (MCMC) procedure, however, you need access to a machine with a <a href="http://www.nvidia.com/object/cuda_home_new.html">CUDA-enabled GPU</a>, along with the <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code> package</a>. <code>fbseqCUDA</code> is the internal engine of <code>fbseq</code>, and it is implemented in CUDA to provide necessary acceleration for the MCMC. <code>fbseq</code> and <code>fbseqCUDA</code> are kept separate for convenience. For example, you can set up input with <code>fbseq</code> and without <code>fbseqCUDA</code> on a low-end laptop, run the main algorithm remotely with both <code>fbseq</code> and <code>fbseqCUDA</code> on a CUDA-enabled <a href="http://www.nvidia.com/object/gpu-cloud-computing-services.html">cloud computing enterprise</a> such as <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Web Services</a>, and analyze the output locally with <code>fbseq</code> and without <code>fbseqCUDA</code>. See the <a href="https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.Rmd"><code>fbseqCUDA</code> installation vignette</a> for more details.</p>
 </div>
-<div id="install-fbseq-and-then-fbseqcuda." class="section level1">
-<h1><span class="header-section-number">3</span> Install <code>fbseq</code> and then <code>fbseqCUDA</code>.</h1>
-<div id="option-1-install-directly-from-github." class="section level2">
-<h2><span class="header-section-number">3.1</span> Option 1: install directly from GitHub.</h2>
-<p>For this option, you need the <code>devtools</code> package, available from CRAN or GitHub. Just open R and run</p>
+<div id="install-fbseq" class="section level1">
+<h1><span class="header-section-number">4</span> Install <code>fbseq</code></h1>
+<div id="option-1-install-a-stable-release-recommended." class="section level2">
+<h2><span class="header-section-number">4.1</span> Option 1: install a stable release (recommended).</h2>
+<p>For <code>fbseq</code>, you can navigate to a <a href="https://github.com/wlandau/fbseq/releases">list of stable releases</a> on the project’s <a href="https://github.com/wlandau/fbseq">GitHub page</a>. Download the desired <code>tar.gz</code> bundle, then install it either with <code>install.packages(..., repos = NULL, type=&quot;source&quot;)</code> from within R <code>R CMD INSTALL</code> from the Unix/Linux command line.</p>
+</div>
+<div id="option-2-use-install_github-to-install-the-development-version." class="section level2">
+<h2><span class="header-section-number">4.2</span> Option 2: use <code>install_github</code> to install the development version.</h2>
+<p>For this option, you need the <code>devtools</code> package, available from CRAN or GitHub. Open R and run</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
 <span class="kw">install_github</span>(<span class="st">&quot;wlandau/fbseq&quot;</span>)</code></pre>
-<p>and then if you have CUDA,</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install_github</span>(<span class="st">&quot;wlandau/fbseqCUDA&quot;</span>)</code></pre>
 </div>
-<div id="option-2-install-from-the-source." class="section level2">
-<h2><span class="header-section-number">3.2</span> Option 2: install from the source.</h2>
+<div id="option-3-build-the-development-version-from-the-source." class="section level2">
+<h2><span class="header-section-number">4.3</span> Option 3: build the development version from the source.</h2>
 <p>Open a command line program such as Terminal in Mac/Linux and enter the following commands.</p>
 <pre><code>git clone git@github.com:wlandau/fbseq.git
 R CMD build fbseq
-R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
-<p>Note: you may have to replace <code>fbseq_0.0.tar.gz</code> by the name of whatever tarball comes out of <code>R CMD build</code>.</p>
-<p>You can install <code>fbseqCUDA</code> next, and the steps are analogous. However, you may have to modify the top of the <code>src/Makevars</code> file before running <code>R CMD build</code>. See the <code>fbseqCUDA</code> package vignette for more detailed installation instructions.</p>
+R CMD INSTALL ...</code></pre>
+<p>where <code>...</code> is replaced by the name of the tarball produced by <code>R CMD build</code>.</p>
 </div>
+</div>
+<div id="install-fbseqcuda" class="section level1">
+<h1><span class="header-section-number">5</span> Install <code>fbseqCUDA</code></h1>
+<p>You can only install <code>fbseqCUDA</code> on a machine with CUDA and a CUDA-capable graphics processing unit (GPU). The <code>fbseqCUDA</code> package is necessary for running the MCMC, but not for preparing input or analyzing output. For installation instructions, see the <a href="https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.Rmd"><code>fbseqCUDA</code> installation vignette</a>.</p>
 </div>
 <div id="workflow-overview" class="section level1">
-<h1><span class="header-section-number">4</span> Workflow overview</h1>
+<h1><span class="header-section-number">6</span> Workflow overview</h1>
 <p>A typical workflow only requires a few lines of code. However, it requires an understanding of the S4 classes of this package. The steps are as follows.</p>
 <div id="create-a-scenario-object." class="section level2">
-<h2><span class="header-section-number">4.1</span> Create a <code>Scenario</code> object.</h2>
+<h2><span class="header-section-number">6.1</span> Create a <code>Scenario</code> object.</h2>
 <p><code>Scenario</code> is an S4 class for storing the count data, design matrix, and instructions for calculating posterior probabilities of quantities of interest.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">new</span>(<span class="st">&quot;Scenario&quot;</span>))</code></pre>
 <pre><code>## Formal class 'Scenario' [package &quot;fbseq&quot;] with 6 slots
@@ -130,7 +141,7 @@ R CMD INSTALL fbseq_0.0.tar.gz</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">scenario =<span class="st"> </span><span class="kw">Scenario</span>(counts, design, contrasts, bounds, propositions, supplement)</code></pre>
 <p>would throw an error.</p>
 <div id="example-scenario-from-paschold" class="section level3">
-<h3><span class="header-section-number">4.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></h3>
+<h3><span class="header-section-number">6.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></h3>
 <p>The package comes with a <code>Scenario</code> with data taken from <span class="citation">Paschold et al. (2012)</span>. The data is from an RNA-sequencing (RNA-seq) data experiment on maize described in the paper.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(paschold)
 <span class="kw">head</span>(paschold@counts)</code></pre>
@@ -382,31 +393,31 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <p>Note: every <code>Scenario</code> object has an optional <code>suppelement</code> slot with additional information about the scenario. In this case, <code>paschold@supplement</code> is an empty list.</p>
 </div>
 <div id="example-simulated-scenario-with-scenario_heterosis_model" class="section level3">
-<h3><span class="header-section-number">4.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></h3>
+<h3><span class="header-section-number">6.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></h3>
 <p>To simulate a heterosis scenario similar to that of <span class="citation">Paschold et al. (2012)</span>, use the <code>scenario_heterosis_model</code> function. Count data are simulated from the model given fixed values for the hyperparameters.</p>
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1         6         4         3         5        22        17
-## gene_2        13        12        26        21        20        30
-## gene_3        10        13        19        26        31        13
-## gene_4        30        44        27        36        31        31
-## gene_5         6        14         7        13         9         7
-## gene_6        52        72        15        45       107       106
+## gene_1        11         3         5         8        29        29
+## gene_2        21        19        16        16        10        16
+## gene_3         4         8        17        19        11        10
+## gene_4       129       122       168       161       181       193
+## gene_5        13        18         6         6         7        14
+## gene_6        16        16        25        16         3         5
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1        14        20        10         12         13         19
-## gene_2        25        38         8          7         13         12
-## gene_3        21        34        20         24         41         37
-## gene_4        23        14        28         39         20         40
-## gene_5         5         7         7         12          8          2
-## gene_6        61        68        48         56         36         26
+## gene_1        24        28        20         14         16         20
+## gene_2        13         9        18         18          2          6
+## gene_3        27        23         5          9         22         24
+## gene_4       207       200       216        223        290        270
+## gene_5         3         9        10         13          5          5
+## gene_6         8         9         9          5         16          6
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         20         11         18         20
-## gene_2          9          9         14         18
-## gene_3         19         31         31         14
-## gene_4         40         38         25         31
-## gene_5          6          9         12          9
-## gene_6         52         39         32         30</code></pre>
+## gene_1         23         16         19         28
+## gene_2          7         15          6          4
+## gene_3         13         12         33         20
+## gene_4        216        229        283        232
+## gene_5         11         22         14          7
+## gene_6         20          8          9         17</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -509,18 +520,18 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 </div>
 </div>
 <div id="optional-create-a-configs-object." class="section level2">
-<h2><span class="header-section-number">4.2</span> (Optional) create a <code>Configs</code> object.</h2>
+<h2><span class="header-section-number">6.2</span> (Optional) create a <code>Configs</code> object.</h2>
 <p>The <code>Configs</code> S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so just for the sake of trying out the package, you should be able to get away with calling the <code>Configs</code> function with no arguments. For a full list of slots and their explanations, type <code>help(&quot;Configs-class&quot;)</code>.</p>
 <p>However, for serious analyses, you may want to adjust the <code>iterations</code>, <code>burnin</code>, and <code>thin</code> slots to control the duration of the MCMC. <code>burinin</code> is the number of throwaway iterations at the beginning of the MCMC, <code>iterations</code> is the number of iterations for which parameter samples are actually returned to the user, and <code>thin</code> specifies the thinning interval. The total number of MCMC iterations is <code>burnin + iterations * thin</code>, and all of the <code>iterations * thin</code> portion is used to calculate posterior means, mean squares, and posterior probabilities of interest specified in the <code>Scenario</code> object. If <code>thin</code> is &gt; 1, not all parameter samples after burnin are returned to the user. For example, <code>thin</code> is 10, then after burnin, actual parameter samples are saved every 10th iteration.</p>
 <p>You may also want to adjust the <code>Configs</code> slots that apply constraints on model parameters. The <code>parameter_sets_update</code> controls which sets of parameters to update during the MCMC. Parameter sets not specified in <code>parameter_sets_update</code> will be held constant, so this slot can be used to run an empirical Bayes analysis, for example. The <code>parameter_sets_return</code>, <code>genes_return</code>, <code>libraries_return</code> (currently moot because there are no library-specific parameters other than the epsilons), <code>genes_return_epsilon</code>, and <code>libraries_return_epsilon</code> slots control which Monte Carlo parameter samples to return to the user.</p>
 <p>The <code>samplers</code> slot, in principle, allows the user to choose the MCMC algorithm to use: slice sampling, Metropolis-Hastings, etc. Currently, only the default stepping-out slice sampler is fully implemented and tested.</p>
 </div>
 <div id="optional-create-a-starts-object." class="section level2">
-<h2><span class="header-section-number">4.3</span> (Optional) create a <code>Starts</code> object.</h2>
+<h2><span class="header-section-number">6.3</span> (Optional) create a <code>Starts</code> object.</h2>
 <p>The <code>Starts</code> S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as the unspecified starting values are automatically generated for a given dataset and design with <code>generate_starts</code> inside the constructor of <code>Chain</code> class. However, the user may wish to modify individual slots. For more information, type <code>help(&quot;Starts-class&quot;)</code> and be sure to read the vignette on the hierarchical model.</p>
 </div>
 <div id="create-a-chain-object." class="section level2">
-<h2><span class="header-section-number">4.4</span> Create a <code>Chain</code> object.</h2>
+<h2><span class="header-section-number">6.4</span> Create a <code>Chain</code> object.</h2>
 <p>The <code>Chain</code> class plays the role of an environment or workspace. It stores all the information in your <code>Scenario</code>, <code>Configs</code>, and <code>Starts</code> objects, in addition to Monte Carlo output and results. There are many, many S4 slots. For details on the slots, type <code>help(&quot;Chain-class&quot;)</code> and be sure to read the hierarchical model vignette. For help on how to create <code>Chain</code> objects, type <code>help(&quot;Chain&quot;)</code>.</p>
 <p>With only a <code>Scenario</code> object, you can create a <code>Chain</code> object with</p>
 <pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(scenario)</code></pre>
@@ -529,7 +540,7 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <p>As an example, here is the <code>Chain</code> created from the <code>paschold</code> scenario visited earlier.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(paschold)
 <span class="kw">str</span>(chain)</code></pre>
-<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 98 slots
+<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 97 slots
 ##   ..@ bound_names               : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ contrast_names            : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
 ##   ..@ gene_names                : chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
@@ -545,11 +556,11 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##   ..@ supplement                : list()
 ##   ..@ burnin                    : int 100000
 ##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
-##   ..@ genes_return              : int [1:3] 17219 19487 27758
-##   ..@ genes_return_epsilon      : int [1:3] 16018 20274 34094
+##   ..@ genes_return              : int [1:3] 8778 10863 26933
+##   ..@ genes_return_epsilon      : int [1:3] 8794 33805 35393
 ##   ..@ iterations                : int 5000
-##   ..@ libraries_return          : int [1:3] 8 10 16
-##   ..@ libraries_return_epsilon  : int [1:3] 5 5 9
+##   ..@ libraries_return          : int [1:3] 8 8 12
+##   ..@ libraries_return_epsilon  : int [1:3] 5 5 15
 ##   ..@ parameter_sets_return     : Named int [1:8] 1 1 1 1 1 1 1 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update     : Named int [1:8] 1 1 1 1 1 1 1 0
@@ -602,7 +613,6 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##   ..@ tauStart                  : num 0.222
 ##   ..@ thetaStart                : num [1:5] 3.17 5.07e-17 -1.90e-17 1.14e-17 3.36e-17
 ##   ..@ xiStart                   : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...
-##   ..@ loglikPostMean            : num 0
 ##   ..@ betaPostMean              : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ epsilonPostMean           : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..@ gammaPostMean             : num [1:39656] 0 0 0 0 0 0 0 0 0 0 ...
@@ -694,11 +704,11 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 17219 19487 27758
-##   ..@ genes_return_epsilon    : int [1:3] 16018 20274 34094
+##   ..@ genes_return            : int [1:3] 8778 10863 26933
+##   ..@ genes_return_epsilon    : int [1:3] 8794 33805 35393
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 8 10 16
-##   ..@ libraries_return_epsilon: int [1:3] 5 5 9
+##   ..@ libraries_return        : int [1:3] 8 8 12
+##   ..@ libraries_return_epsilon: int [1:3] 5 5 15
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
@@ -730,7 +740,7 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <p>Note that the unspecified starting values were automatically generated in the construction of the <code>Chain</code> object.</p>
 </div>
 <div id="call-fbseq-on-the-chain-object." class="section level2">
-<h2><span class="header-section-number">4.5</span> Call <code>fbseq</code> on the <code>Chain</code> object.</h2>
+<h2><span class="header-section-number">6.5</span> Call <code>fbseq</code> on the <code>Chain</code> object.</h2>
 <p>The <code>fbseq</code> function actually runs the MCMC algorithm to fit the model and calculate posterior probabilities of interest. It takes a single <code>Chain</code> object as an argument, and if the <code>additional_chains</code> argument is 0, outputs another <code>Chain</code> object with posterior means and means of squares of parameters, estimated posterior probabilities of interest, and updated starting values.</p>
 <pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">additional_chains =</span> <span class="dv">0</span>)</code></pre>
 <p>The starting values of <code>out</code> are the final parameter samples of the previous MCMC. The upshot is that calling <code>fbseq</code> on <code>out</code> will resume the MCMC where it left off.</p>
@@ -745,7 +755,7 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <span class="kw">psrf</span>(out)</code></pre>
 </div>
 <div id="inspect-the-output." class="section level2">
-<h2><span class="header-section-number">4.6</span> Inspect the output.</h2>
+<h2><span class="header-section-number">6.6</span> Inspect the output.</h2>
 <p>No sample output is shipped with this package because output <code>Chain</code> objects are is usually large, in the tens of megabytes at least. However, all the functions to extract output are easy one-liners. Let <code>obj</code> be a either single <code>Chain</code> object or a list of chain objects returned by <code>fbseq()</code>.</p>
 <table>
 <tbody>

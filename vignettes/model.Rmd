@@ -8,7 +8,7 @@ output:
     toc: true
 vignette: >
   \VignetteEngine{knitr::rmarkdown}
-  \VignetteIndexEntry{`heterosis` package methodology}
+  \VignetteIndexEntry{`fbseq` package methodology}
   \usepackage[utf8]{inputenc}
 ---
 
