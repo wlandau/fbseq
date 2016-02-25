@@ -1,5 +1,5 @@
-fbseq
-==========
+# fbseq
+
 `fbseq` is an R package for analyzing bowtie-preprocessed RNA-sequencing datasets with arbitrary experimental designs and computing arbitrary posterior probabilities of interest. The computation is accelerated with CUDA. For an overview of the intended applications, the model, and the methodology, see the [model vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/model.html). For installation and usage instructions, see the [tutorial vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/tutorial.html).For best viewing of either html vignette, download it to your desktop and open it with a browser.
 
 # Read the [model vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/model.html) first. 
