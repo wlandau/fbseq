@@ -238,12 +238,12 @@ R CMD INSTALL ...</code></pre>
 <tr class="even">
 <td align="left"><span class="math">\(\beta_{2, g}\)</span></td>
 <td align="left"></td>
-<td align="left">half the difference between <code>Mo17</code> and the hybrids</td>
+<td align="left">half the difference between <code>Mo17</code> and the hybrid mean</td>
 </tr>
 <tr class="odd">
 <td align="left"><span class="math">\(\beta_{3, g}\)</span></td>
 <td align="left"></td>
-<td align="left">half the difference between <code>B73</code> and the hybrids</td>
+<td align="left">half the difference between <code>B73</code> and the hybrid mean</td>
 </tr>
 <tr class="even">
 <td align="left"><span class="math">\(\beta_{4, g}\)</span></td>
@@ -398,26 +398,26 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1        12         9         6         7         5         5
-## gene_2         8         9        10         7        10         8
-## gene_3        18        16        49        39        43        52
-## gene_4        25        24        14        16        25        33
-## gene_5        35        33        39        21        25        14
-## gene_6        38        46        17        29        31        37
+## gene_1        67        40        70        48        23        32
+## gene_2         4         4        19        14         4         4
+## gene_3        13        14        36        84        12         7
+## gene_4        11         5         0         5         5         7
+## gene_5       391       360       297       342       335       342
+## gene_6         9        19         6         7         8        13
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1         5         8         6          5         10          7
-## gene_2        19        19         5          7          3          3
-## gene_3       174       254        18         23        151         76
-## gene_4        15         9        16         12         15         11
-## gene_5        19        18        23         25         36         13
-## gene_6        23        17        51         50         39         44
+## gene_1        25        34        55         33         76         54
+## gene_2        10         8         7          5          9         11
+## gene_3        36        27        11         13         44         33
+## gene_4         0         3        14          5          2          5
+## gene_5       304       260       512        534        349        455
+## gene_6         5         4        10          8         13         12
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1          7          5          9          9
-## gene_2          6          5          9         12
-## gene_3         28         42         97        150
-## gene_4         13         18         10          7
-## gene_5         19         21         37         21
-## gene_6         62         70         24         32</code></pre>
+## gene_1         64         42         29         44
+## gene_2          4          1         14         13
+## gene_3         11         12         36         44
+## gene_4          7          9          4          3
+## gene_5        474        591        416        395
+## gene_6          7         12         15         19</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -556,11 +556,11 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##   ..@ supplement                : list()
 ##   ..@ burnin                    : int 100000
 ##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
-##   ..@ genes_return              : int [1:3] 4614 27102 31835
-##   ..@ genes_return_epsilon      : int [1:3] 19706 32325 36030
+##   ..@ genes_return              : int [1:3] 15255 20503 27929
+##   ..@ genes_return_epsilon      : int [1:3] 7138 19143 32236
 ##   ..@ iterations                : int 5000
-##   ..@ libraries_return          : int [1:3] 11 14 14
-##   ..@ libraries_return_epsilon  : int [1:3] 7 11 15
+##   ..@ libraries_return          : int [1:3] 1 6 15
+##   ..@ libraries_return_epsilon  : int [1:3] 12 12 13
 ##   ..@ parameter_sets_return     : Named int [1:8] 1 1 1 1 1 1 1 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update     : Named int [1:8] 1 1 1 1 1 1 1 0
@@ -704,11 +704,11 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 4614 27102 31835
-##   ..@ genes_return_epsilon    : int [1:3] 19706 32325 36030
+##   ..@ genes_return            : int [1:3] 15255 20503 27929
+##   ..@ genes_return_epsilon    : int [1:3] 7138 19143 32236
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 11 14 14
-##   ..@ libraries_return_epsilon: int [1:3] 7 11 15
+##   ..@ libraries_return        : int [1:3] 1 6 15
+##   ..@ libraries_return_epsilon: int [1:3] 12 12 13
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...

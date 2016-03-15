@@ -129,8 +129,8 @@ In words, the main effect parameters are $\beta_{\ell, g}$ for effect $\ell = 1,
 
 |------------------------------------|----------|--------------------------------------------------| 
 | $\beta_{1, g}$  |	$\qquad$ | mean of `B73` and `Mo17`  | 
-| $\beta_{2, g}$ |	|  half the difference between `Mo17` and the hybrids  | 
-| $\beta_{3, g}$   |	| half the difference between `B73` and the hybrids  | 
+| $\beta_{2, g}$ |	|  half the difference between `Mo17` and the hybrid mean  | 
+| $\beta_{3, g}$   |	| half the difference between `B73` and the hybrid mean  | 
 |$\beta_{4, g}$   |	| difference between `B73xMo17` and `Mo17xB73` | 
 |$\beta_{5, g}$   |	|  experimental block effect  | 
 
