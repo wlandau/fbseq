@@ -40,7 +40,6 @@ Collate:
     'mcmc_samples.R'
     'namespace.R'
     'probs.R'
-    'psrf_all.R'
     'psrf.R'
     's4list.R'
     'scenario_heterosis_model.R'
