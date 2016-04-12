@@ -398,26 +398,26 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1        67        40        70        48        23        32
-## gene_2         4         4        19        14         4         4
-## gene_3        13        14        36        84        12         7
-## gene_4        11         5         0         5         5         7
-## gene_5       391       360       297       342       335       342
-## gene_6         9        19         6         7         8        13
+## gene_1         6         7         6         3         7         3
+## gene_2         3         3         0         0         4         3
+## gene_3         5         2        22        13         3         5
+## gene_4         9         6        18        33        12        18
+## gene_5        20        24        32        28        10        10
+## gene_6         7        14        23        11        27        19
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1        25        34        55         33         76         54
-## gene_2        10         8         7          5          9         11
-## gene_3        36        27        11         13         44         33
-## gene_4         0         3        14          5          2          5
-## gene_5       304       260       512        534        349        455
-## gene_6         5         4        10          8         13         12
+## gene_1         9         6         6          2          5          6
+## gene_2         1         3         1          1          1          1
+## gene_3        31        27         5          6         18         25
+## gene_4        33        43        18         21         49         39
+## gene_5        12        16        18         16         46         37
+## gene_6        21        36        16         26         21         19
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         64         42         29         44
-## gene_2          4          1         14         13
-## gene_3         11         12         36         44
-## gene_4          7          9          4          3
-## gene_5        474        591        416        395
-## gene_6          7         12         15         19</code></pre>
+## gene_1          1          6          4          2
+## gene_2          1          1          3          0
+## gene_3          5          3         29         24
+## gene_4         15         11         42         45
+## gene_5         18         14         28         36
+## gene_6         26         19         29         33</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -556,11 +556,11 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##   ..@ supplement                : list()
 ##   ..@ burnin                    : int 100000
 ##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
-##   ..@ genes_return              : int [1:3] 15255 20503 27929
-##   ..@ genes_return_epsilon      : int [1:3] 7138 19143 32236
+##   ..@ genes_return              : int [1:3] 10067 11711 33981
+##   ..@ genes_return_epsilon      : int [1:3] 3602 24545 30605
 ##   ..@ iterations                : int 5000
-##   ..@ libraries_return          : int [1:3] 1 6 15
-##   ..@ libraries_return_epsilon  : int [1:3] 12 12 13
+##   ..@ libraries_return          : int [1:3] 2 12 14
+##   ..@ libraries_return_epsilon  : int [1:3] 6 8 13
 ##   ..@ parameter_sets_return     : Named int [1:8] 1 1 1 1 1 1 1 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update     : Named int [1:8] 1 1 1 1 1 1 1 0
@@ -704,11 +704,11 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 15255 20503 27929
-##   ..@ genes_return_epsilon    : int [1:3] 7138 19143 32236
+##   ..@ genes_return            : int [1:3] 10067 11711 33981
+##   ..@ genes_return_epsilon    : int [1:3] 3602 24545 30605
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 1 6 15
-##   ..@ libraries_return_epsilon: int [1:3] 12 12 13
+##   ..@ libraries_return        : int [1:3] 2 12 14
+##   ..@ libraries_return_epsilon: int [1:3] 6 8 13
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
@@ -778,11 +778,6 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <td align="left"><code>mcmc_samples(obj)</code></td>
 <td align="left"><span class="math">\(\qquad\)</span></td>
 <td align="left">Monte Carlo samples of returned parameters selected in <code>Configs</code></td>
-</tr>
-<tr class="odd">
-<td align="left"><code>volcano(obj)</code></td>
-<td align="left"></td>
-<td align="left"><code>ggplot2</code> plot of posterior probabilities vs effect sizes for each proposition.</td>
 </tr>
 </tbody>
 </table>

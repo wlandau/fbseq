@@ -10,7 +10,6 @@ Depends:
 Imports:
     actuar,
     coda,
-    ggplot2,
     methods,
     reshape2
 Suggests:
@@ -43,5 +42,4 @@ Collate:
     'psrf.R'
     's4list.R'
     'scenario_heterosis_model.R'
-    'volcano.R'
 RoxygenNote: 5.0.1

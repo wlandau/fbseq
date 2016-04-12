@@ -284,6 +284,5 @@ No sample output is shipped with this package because output  `Chain` objects ar
 | `effect_sizes(obj)`    |	| Estimated gene-specific effect sizes for each logical proposition. For example, if the proposition is "$2\beta_{2, g} - \beta_{4, g} > 1$ and $2\beta_{3, g} - \beta_{4, g} > 0.5$", then the effect size is $\min \left (2\beta_{2, g} - \beta_{4, g} - 1, \ 2\beta_{3, g} - \beta_{4, g} - 0.5 \right )^+$, where $(\cdots)^+$ denote the positive part of an expression. | 
 | `estimates(obj, level)`  |	|  Posterior means and credible intervals (of level `level`) for all parameters. Note: to avoid taking up too much memory, the credible intervals are computed using the posterior means and variances of parameters, not quantiles of actual parameter samples. The results are approximate. | 
 |`mcmc_samples(obj)` |	$\qquad$ | Monte Carlo samples of returned parameters selected in `Configs` | 
-| `volcano(obj)`   |	| `ggplot2` plot of posterior probabilities vs effect sizes for each proposition. | 
 
 # References
