@@ -16,18 +16,22 @@ NULL
 #' @param backend defaults to "CUDA" (from package \code{fbseqCUDA}). 
 #' Other options include "serial" (from package \code{fbseqSerial}), which
 #' does not use any parallel computing.
-fbseq = function(chain, additional_chains = 3, backend = "CUDA"){
+#' @param processes number of CPU processes to fork for 
+#' the additional chains. This argument is reset to 1 for the CUDA backend. 
+#' because parallel processes can interfere with CUDA contexts.
+#' For some other backends, chains will be distributed accross processes.
+fbseq = function(chain, additional_chains = 3, backend = "CUDA", processes = 1){
   if(chain@verbose & additional_chains > 0) print(paste0("Running pilot chain with ", backend, " backend."))
+  if(backend == "CUDA") processes = 1
   pilot = single_mcmc(chain, backend = backend)
   if(additional_chains < 1){
     return(pilot)
   } else {
-    out = list(pilot)
-    for(i in 1:additional_chains + 1){
+    out = c(pilot, mclapply(1:additional_chains + 1, function(i){
       dis = disperse_starts(pilot)
       if(chain@verbose) print(paste0(paste0("Running additional chain ", i - 1, " of ", additional_chains, " with ", backend, " backend.")))
-      out[[i]] = single_mcmc(dis, backend = backend)
-    }
+      single_mcmc(dis, backend = backend)
+    }, mc.cores = processes))
     return(out)
   }
 }

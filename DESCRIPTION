@@ -11,6 +11,7 @@ Imports:
     actuar,
     coda,
     methods,
+    parallel,
     reshape2
 Suggests:
     fbseqCUDA,

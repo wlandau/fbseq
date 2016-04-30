@@ -4,7 +4,7 @@
 \alias{fbseq}
 \title{Function \code{fbseq}}
 \usage{
-fbseq(chain, additional_chains = 3, backend = "CUDA")
+fbseq(chain, additional_chains = 3, backend = "CUDA", processes = 1)
 }
 \arguments{
 \item{chain}{object of type \code{Chain}. See the package vignette for details.}
@@ -18,6 +18,11 @@ by the results of the first chain.}
 \item{backend}{defaults to "CUDA" (from package \code{fbseqCUDA}). 
 Other options include "serial" (from package \code{fbseqSerial}), which
 does not use any parallel computing.}
+
+\item{processes}{number of CPU processes to fork for 
+the additional chains. This argument is reset to 1 for the CUDA backend. 
+because parallel processes can interfere with CUDA contexts.
+For some other backends, chains will be distributed accross processes.}
 }
 \value{
 a \code{Chain} object or a list of \code{Chain} objects, depending on 
