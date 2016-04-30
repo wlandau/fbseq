@@ -15,7 +15,8 @@ such as Gelman-Rubin potential scale reduction factors. The additional chains wi
 the first chain and have starting values overdispersed to the full joint posterior distribution, as estimated
 by the results of the first chain.}
 
-\item{backend}{defaults to "CUDA". Other options include "serial", which
+\item{backend}{defaults to "CUDA" (from package \code{fbseqCUDA}). 
+Other options include "serial" (from package \code{fbseqSerial}), which
 does not use any parallel computing.}
 }
 \value{

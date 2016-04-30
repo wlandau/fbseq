@@ -13,10 +13,11 @@ NULL
 #' such as Gelman-Rubin potential scale reduction factors. The additional chains will be run after
 #' the first chain and have starting values overdispersed to the full joint posterior distribution, as estimated
 #' by the results of the first chain.
-#' @param backend defaults to "CUDA". Other options include "serial", which
+#' @param backend defaults to "CUDA" (from package \code{fbseqCUDA}). 
+#' Other options include "serial" (from package \code{fbseqSerial}), which
 #' does not use any parallel computing.
 fbseq = function(chain, additional_chains = 3, backend = "CUDA"){
-  if(chain@verbose & additional_chains > 0) print("Running pilot chain.")
+  if(chain@verbose & additional_chains > 0) print(paste0("Running pilot chain with ", backend, " backend."))
   pilot = single_mcmc(chain, backend = backend)
   if(additional_chains < 1){
     return(pilot)
@@ -24,8 +25,8 @@ fbseq = function(chain, additional_chains = 3, backend = "CUDA"){
     out = list(pilot)
     for(i in 1:additional_chains + 1){
       dis = disperse_starts(pilot)
-      if(chain@verbose) print(paste0("Running additional chain ", i - 1, " of ", additional_chains, "."))
-      out[[i]] = single_mcmc(dis)
+      if(chain@verbose) print(paste0(paste0("Running additional chain ", i - 1, " of ", additional_chains, " with ", backend, " backend.")))
+      out[[i]] = single_mcmc(dis, backend = backend)
     }
     return(out)
   }

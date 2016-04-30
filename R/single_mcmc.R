@@ -20,8 +20,10 @@ single_mcmc = function(chain, backend = "CUDA"){
   if(backend == "CUDA"){
     check_backend("fbseqCUDA")
     fbseqCUDA::fbseqCUDA(chain)
-  } else {
+  } else if(backend == "serial"){
     check_backend("fbseqSerial")
     fbseqSerial::fbseqSerial(chain)
+  } else {
+    stop("illegal backend.")
   }
 }
