@@ -1,19 +1,10 @@
-#' @title Function \code{check_fbseqCUDA}
-#' @description Checks that package \code{fbseqCUDA} is installed. 
-#' If the package is not installed, the function quits in error.
-#' @export
-check_fbseqCUDA = function(){
-  if(!requireNamespace("fbseqCUDA", quietly = T))
-    stop("function fbseq requires a CUDA-capable NVIDIA GPU, a working installation of CUDA with the correct drivers, and the fbseqCUDA package.")
-}
-
 #' @title Function \code{getDevice}
 #' @description Get the index of the current CUDA-capable GPU.
 #' @export
 #' @return Integer index of the current CUDA-capable GPU, which is >= 0 and 
 #' < number of devices.
 getDevice = function(){
-  check_fbseqCUDA()
+  check_backend("fbseqCUDA")
   fbseqCUDA::RgetDevice()
 }
 
@@ -22,7 +13,7 @@ getDevice = function(){
 #' @export
 #' @return Number of CUDA-capable GPUs.
 getDeviceCount = function(){
-  check_fbseqCUDA()
+  check_backend("fbseqCUDA")
   fbseqCUDA::RgetDeviceCount()
 }
 
@@ -33,6 +24,6 @@ getDeviceCount = function(){
 #' < number of devices.
 #' @param device Integer index of a CUDA-capable GPU. Must be >= 0 < number of GPUs.
 setDevice = function(device){
-  check_fbseqCUDA()
+  check_backend("fbseqCUDA")
   fbseqCUDA::RsetDevice(as.integer(device))
 }

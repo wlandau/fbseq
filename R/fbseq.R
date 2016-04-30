@@ -13,9 +13,11 @@ NULL
 #' such as Gelman-Rubin potential scale reduction factors. The additional chains will be run after
 #' the first chain and have starting values overdispersed to the full joint posterior distribution, as estimated
 #' by the results of the first chain.
-fbseq = function(chain, additional_chains = 3){
+#' @param backend defaults to "CUDA". Other options include "serial", which
+#' does not use any parallel computing.
+fbseq = function(chain, additional_chains = 3, backend = "CUDA"){
   if(chain@verbose & additional_chains > 0) print("Running pilot chain.")
-  pilot = single_mcmc(chain)
+  pilot = single_mcmc(chain, backend = backend)
   if(additional_chains < 1){
     return(pilot)
   } else {

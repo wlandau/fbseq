@@ -4,13 +4,16 @@
 \alias{single_mcmc}
 \title{Function \code{single_mcmc}}
 \usage{
-single_mcmc(chain)
+single_mcmc(chain, backend = "CUDA")
 }
 \arguments{
 \item{chain}{object of type \code{Chain}. This \code{chain} argument could be
 a newly created \code{Chain} object from \code{Chain(...)}. Alternatively,
 if \code{chain} is the output from a previous call to \code{run_mcmc(...)},
 then the function will continue the MCMC from where it left off.}
+
+\item{backend}{defaults to "CUDA". Other options include "serial", which
+does not use any parallel computing.}
 }
 \value{
 a \code{Chain} object with updated parameter values. You can feed

@@ -4,7 +4,7 @@
 \alias{fbseq}
 \title{Function \code{fbseq}}
 \usage{
-fbseq(chain, additional_chains = 3)
+fbseq(chain, additional_chains = 3, backend = "CUDA")
 }
 \arguments{
 \item{chain}{object of type \code{Chain}. See the package vignette for details.}
@@ -14,6 +14,9 @@ original \code{chain} argument and run. This is useful for calculating convergen
 such as Gelman-Rubin potential scale reduction factors. The additional chains will be run after
 the first chain and have starting values overdispersed to the full joint posterior distribution, as estimated
 by the results of the first chain.}
+
+\item{backend}{defaults to "CUDA". Other options include "serial", which
+does not use any parallel computing.}
 }
 \value{
 a \code{Chain} object or a list of \code{Chain} objects, depending on 

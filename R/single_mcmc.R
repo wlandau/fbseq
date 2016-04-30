@@ -1,4 +1,4 @@
-#' @include cuda_usage.R
+#' @include check_backend.R cuda_usage.R
 NULL
 
 #' @title Function \code{single_mcmc}
@@ -13,8 +13,15 @@ NULL
 #' a newly created \code{Chain} object from \code{Chain(...)}. Alternatively,
 #' if \code{chain} is the output from a previous call to \code{run_mcmc(...)},
 #' then the function will continue the MCMC from where it left off.
-single_mcmc = function(chain){
+#' @param backend defaults to "CUDA". Other options include "serial", which
+#' does not use any parallel computing.
+single_mcmc = function(chain, backend = "CUDA"){
   chain@seeds = as.integer(sample.int(1e3 * chain@N * chain@G, chain@N * chain@G))
-  check_fbseqCUDA()
-  fbseqCUDA::fbseqCUDA(chain)
+  if(backend == "CUDA"){
+    check_backend("fbseqCUDA")
+    fbseqCUDA::fbseqCUDA(chain)
+  } else {
+    check_backend("fbseqSerial")
+    fbseqSerial::fbseqSerial(chain)
+  }
 }

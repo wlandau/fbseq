@@ -14,6 +14,7 @@ Imports:
     reshape2
 Suggests:
     fbseqCUDA,
+    fbseqSerial,
     knitr
 VignetteBuilder: knitr
 License: GPL (>= 3)
@@ -25,6 +26,7 @@ Collate:
     'special_beta_priors.R'
     'samplers.R'
     'chain_constructor.R'
+    'check_backend.R'
     'parameters.R'
     'configs.R'
     'cuda_usage.R'
