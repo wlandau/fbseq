@@ -23,7 +23,7 @@ library(methods)
 
 # Introduction
 
-The `fbseq` package fits a hierarchical model to RNA-seq data in (nearly) fully Bayesian fashion. Although it was originally designed to fit RNA-seq data, it can also be used to analyze count data with tens of thousands of response variables and only a handful of observations each.
+The `fbseq` package fits a hierarchical model to RNA-seq data in fully Bayesian fashion. Although it was originally designed to fit RNA-seq data, it can also be used to analyze count data with tens of thousands of response variables and only a handful of observations each.
 
 # Read the [model vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/model.html) first. 
 
@@ -31,7 +31,7 @@ An understanding of the underlying hierarchical model is important for understan
 
 # Check your system.
 
-You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install `fbseq`, load it in an R session, create input, and analyze output. To actually run the underlying Markov chain Monte Carlo (MCMC) procedure, however, you need access to a machine with a [CUDA-enabled GPU](http://www.nvidia.com/object/cuda_home_new.html), along with the [`fbseqCUDA` package](https://github.com/wlandau/fbseqCUDA). `fbseqCUDA` is the internal engine of `fbseq`, and it is implemented in CUDA to provide necessary acceleration for the MCMC. `fbseq` and `fbseqCUDA` are kept separate for convenience. For example, you can set up input with `fbseq` and without `fbseqCUDA` on a low-end laptop, run the main algorithm remotely with both `fbseq` and `fbseqCUDA` on a CUDA-enabled [cloud computing enterprise](http://www.nvidia.com/object/gpu-cloud-computing-services.html) such as [Amazon Web Services](http://aws.amazon.com/ec2/instance-types/), and analyze the output locally with `fbseq` and without `fbseqCUDA`. See the [`fbseqCUDA` installation vignette](https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html) for more details. For best viewing, download the html vignette to your desktop and then open it with a browser.
+You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install `fbseq`, load it in an R session, create input, and analyze output. You can also use install the [`fbseqSerial` package](https://github.com/wlandau/fbseqSerial) package and call `fbseq(..., backend = "serial")` to run an MCMC to fit the model to a small dataset. To run the MCMC on a large dataset, however, you should use a machine with a [CUDA-enabled GPU](http://www.nvidia.com/object/cuda_home_new.html), and make sure to have the [`fbseqCUDA` package](https://github.com/wlandau/fbseqCUDA) installed. `fbseqCUDA` is the internal engine of `fbseq`, and it is implemented in CUDA to provide necessary acceleration for the MCMC. `fbseq` and `fbseqCUDA` are kept separate for convenience. For example, you can set up input with `fbseq` and without `fbseqCUDA` on a low-end laptop, run the main algorithm remotely with both `fbseq` and `fbseqCUDA` on a CUDA-enabled [cloud computing enterprise](http://www.nvidia.com/object/gpu-cloud-computing-services.html) such as [Amazon Web Services](http://aws.amazon.com/ec2/instance-types/), and analyze the output locally with `fbseq` and without `fbseqCUDA`. See the [`fbseqCUDA` installation vignette](https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html) for more details. For best viewing, download the html vignette to your desktop and then open it with a browser. `fbseqSerial` is just a portable version of `fbseqCUDA` that does not use GPU computing. `fbseqSerial` should allow you to run the MCMC routine (i.e., `fbseq(..., backend = "serial")`) on most machines, but it is slow for large enough datasets.
 
 # Install `fbseq`
 
@@ -60,9 +60,9 @@ R CMD INSTALL ...
 
 where `...` is replaced by the name of the tarball produced by `R CMD build`. 
 
-# Install `fbseqCUDA` 
+# Install `fbseqSerial` and possibly `fbseqCUDA` 
 
-You can only install `fbseqCUDA` on a machine with CUDA and a CUDA-capable graphics processing unit (GPU). The `fbseqCUDA` package is necessary for running the MCMC, but not for preparing input or analyzing output. For installation instructions, see the [`fbseqCUDA` installation vignette](https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html).
+`fbseqSerial` is portable, but you can only install `fbseqCUDA` on a machine with CUDA and a CUDA-capable graphics processing unit (GPU). The `fbseqCUDA` package is necessary for running the parallelized MCMC. `fbseqSerial` is a version of `fbseqCUDA` that uses no parallel computing at all. `fbseqSerial` can run on most machines, but it is slow for large datasets. For installation instructions, see the [`fbseqCUDA` installation vignette](https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html).
 
 
 # Workflow overview
@@ -273,6 +273,22 @@ If the `additional_chains` argument is greater than 0, an additional `additional
 out = fbseq(chain, additional_chains = 3)
 psrf(out)
 ```
+
+## What if `fbseq` tells me I need the `fbseqCUDA` package?
+
+`fbseqSerial` is a version of `fbseqCUDA` that should work on most machines. It does not use GPU computing, though, and it is slow for large datasets. If you don't have `fbseqCUDA`, install `fbseqSerial` and then run
+
+```{r, eval = F}
+out = fbseq(chain, backend = "serial")
+```
+
+You can also distribute any additional MCMC chains (after the first one) over forked processes. 
+
+```{r, eval = F}
+out = fbseq(chain, backend = "serial", processes = 3)
+```
+
+The first chain will still run in its own process before the rest. The reason is that the later chains use the first chain to get starting values, which should be overdispersed relative to the full joint posterior distribution.
 
 
 ## Inspect the output.
