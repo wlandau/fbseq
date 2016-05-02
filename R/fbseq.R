@@ -17,8 +17,8 @@ NULL
 #' Other options include "serial" (from package \code{fbseqSerial}), which
 #' does not use any parallel computing.
 #' @param processes number of CPU processes to fork for 
-#' the additional chains. This argument is reset to 1 for the CUDA backend. 
-#' because parallel processes can interfere with CUDA contexts.
+#' the additional chains. This argument is automatically reset to 1 for the CUDA 
+#' backend because parallel processes can interfere with CUDA contexts.
 #' For some other backends, chains will be distributed accross processes.
 fbseq = function(chain, additional_chains = 3, backend = "CUDA", processes = 1){
   if(chain@verbose & additional_chains > 0) print(paste0("Running pilot chain with ", backend, " backend."))
