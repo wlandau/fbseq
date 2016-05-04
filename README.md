@@ -8,7 +8,7 @@ An understanding of the underlying hierarchical model is important for understan
 
 # Check your system.
 
-You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install [`fbseq`](https://github.com/wlandau/fbseq) , load it in an R session, create input, and analyze output. 
+You need to have at least R 3.2.0 or higher, along with the R packages `coda`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install [`fbseq`](https://github.com/wlandau/fbseq) , load it in an R session, create input, and analyze output. 
 
 # Install [`fbseq`](https://github.com/wlandau/fbseq) 
 
