@@ -1,5 +1,5 @@
 ---
-title: "`fbseq` package tutorial"
+title: "[`fbseq`](https://github.com/wlandau/fbseq)  package tutorial"
 author: Will Landau
 bibliography: bibliography.bib
 date: 2015
@@ -12,7 +12,7 @@ output:
     toc: true
 vignette: >
   \VignetteEngine{knitr::rmarkdown}
-  \VignetteIndexEntry{`fbseq` package tutorial}
+  \VignetteIndexEntry{[`fbseq`](https://github.com/wlandau/fbseq)  package tutorial}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -23,7 +23,7 @@ library(methods)
 
 # Introduction
 
-The `fbseq` package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing (RNA-seq) count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). `fbseq` is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, `fbseqSerial` and `fbseqCUDA`, are backend packages that run the MCMC behind the scenes. Only one is required.  `fbseqSerial` can run on most machines, but it is slow for large datasets. `fbseqCUDA` requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. 
+The [`fbseq`](https://github.com/wlandau/fbseq)  package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing (RNA-seq) count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). [`fbseq`](https://github.com/wlandau/fbseq)  is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) , are backend packages that run the MCMC behind the scenes. Only one is required.  [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  can run on most machines, but it is slow for large datasets. [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA)  requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. 
 
 # Read the [model vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/model.html) first. 
 
@@ -31,13 +31,13 @@ An understanding of the underlying hierarchical model is important for understan
 
 # Check your system.
 
-You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install `fbseq`, load it in an R session, create input, and analyze output. 
+You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install [`fbseq`](https://github.com/wlandau/fbseq) , load it in an R session, create input, and analyze output. 
 
-# Install `fbseq`
+# Install [`fbseq`](https://github.com/wlandau/fbseq) 
 
 ## Option 1: install a stable release (recommended).
 
-For `fbseq`, you can navigate to a [list of stable releases](https://github.com/wlandau/fbseq/releases) on the project's [GitHub page](https://github.com/wlandau/fbseq). Download the desired `tar.gz` bundle, then install it either with `install.packages(..., repos = NULL, type="source")` from within R  `R CMD INSTALL` from the Unix/Linux command line.
+For [`fbseq`](https://github.com/wlandau/fbseq) , you can navigate to a [list of stable releases](https://github.com/wlandau/fbseq/releases) on the project's [GitHub page](https://github.com/wlandau/fbseq). Download the desired `tar.gz` bundle, then install it either with `install.packages(..., repos = NULL, type="source")` from within R  `R CMD INSTALL` from the Unix/Linux command line.
 
 ## Option 2: use `install_github` to install the development version.
 
@@ -60,13 +60,13 @@ R CMD INSTALL ...
 
 where `...` is replaced by the name of the tarball produced by `R CMD build`. 
 
-# Install an MCMC backend package, either `fbseqSerial`, `fbseqCUDA`, or both
+# Install an MCMC backend package
 
-`fbseqSerial` and `fbseqCUDA` are alternative backends used to run the MCMC. To test the MCMC functionality on a small dataset, you can install the [`fbseqSerial` package](https://github.com/wlandau/fbseqSerial) package and call `fbseq(..., backend = "serial")`. For a dataset with a large number of genes (rows), `fbseqSerial` is slow. If you have a machine with a CUDA-capable general general purpose graphics processing unit (GPU), you can install the `fbseqCUDA` backend and call `fbseq(..., backend = "CUDA")` or simply `fbseq(...)` to run a serious analysis. MCMCs that take days with `fbseqSerial` take only a few hours with `fbseqCUDA`.
+[`fbseqSerial`](https://github.com/wlandau/fbseqSerial)   and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) , are backend packages that run the MCMC behind the scenes. Only one is required.  [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)   can run on most machines, but it is slow for large datasets. [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA)  requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. Installation is similar to that of [`fbseq`](https://github.com/wlandau/fbseq)  and is detailed in their respective `README.md` files and package vignettes.
 
 # Quick start
 
-After installing `fbseq` and `fbseqSerial`, the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package.
+After installing [`fbseq`](https://github.com/wlandau/fbseq)  and [`fbseqSerial`](https://github.com/wlandau/fbseqSerial) , the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package.
 
 ```{r, eval = F}
 library(fbseq)
@@ -303,15 +303,15 @@ str(configs)
 
 Note that the unspecified starting values were automatically generated in the construction of the `Chain` object.
 
-## Call `fbseq` on the `Chain` object.
+## Call [`fbseq`](https://github.com/wlandau/fbseq)  on the `Chain` object.
 
-The `fbseq` function runs the MCMC algorithm to estimate parameters and calculate posterior probabilities. It takes a single `Chain` object as an argument, and outputs either another `Chain` object or a list of `Chain` objects, depending on the value of `additional_chains`. To run a single chain, use:
+The [`fbseq`](https://github.com/wlandau/fbseq)  function runs the MCMC algorithm to estimate parameters and calculate posterior probabilities. It takes a single `Chain` object as an argument, and outputs either another `Chain` object or a list of `Chain` objects, depending on the value of `additional_chains`. To run a single chain, use:
 
 ```{r, eval = F}
 out = fbseq(chain, additional_chains = 0)
 ```
 
-Here, `out` is another `Chain` object with the results. The starting values of `out` are the final parameter samples of the previous MCMC. That way, you can call `fbseq` on `out` and the MCMC will resume where it last left off.
+Here, `out` is another `Chain` object with the results. The starting values of `out` are the final parameter samples of the previous MCMC. That way, you can call [`fbseq`](https://github.com/wlandau/fbseq)  on `out` and the MCMC will resume where it last left off.
 
 ```{r, eval = F}
 continuation = fbseq(out, additional_chains = 0)
@@ -327,16 +327,16 @@ repeat{
 }
 ```
 
-If the `additional_chains` argument is greater than 0, an additional `additional_chains` MCMC chains will be run after the first one, and the output object from `fbseq` will a list of the total `1 + additional_chains` run. This is useful for computing Gelman-Rubin potential scale reduction factors with the `psrf` function to assess convergence.
+If the `additional_chains` argument is greater than 0, an additional `additional_chains` MCMC chains will be run after the first one, and the output object from [`fbseq`](https://github.com/wlandau/fbseq)  will a list of the total `1 + additional_chains` run. This is useful for computing Gelman-Rubin potential scale reduction factors with the `psrf` function to assess convergence.
 
 ```{r, eval = F}
 out = fbseq(chain, additional_chains = 3)
 psrf(out)
 ```
 
-## Choosing a backend: `fbseqSerial` or `fbseqCUDA`
+## Choosing a backend: [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  or [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) 
 
-`fbseqSerial` can run on most machines, but it is slow for datasets with lots of genes. Select the `fbseqSerial` backend by specifying `backend = "serial"` in `fbseq`:
+[`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  can run on most machines, but it is slow for datasets with lots of genes. Select the [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  backend by specifying `backend = "serial"` in [`fbseq`](https://github.com/wlandau/fbseq) :
 
 ```{r, eval = F}
 out = fbseq(chain, backend = "serial")
@@ -348,7 +348,7 @@ For the serial backend, you can distribute the MCMC chains after the first chain
 out = fbseq(chain, backend = "serial", processes = 3)
 ```
 
-`fbseqCUDA` requires a CUDA-capable graphics processing unit (GPU), but it is much faster. Elapsed runtimes are in hours rather than days for typical-sized RNA-seq datasets. Select this backend with either 
+[`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA)  requires a CUDA-capable graphics processing unit (GPU), but it is much faster. Elapsed runtimes are in hours rather than days for typical-sized RNA-seq datasets. Select this backend with either 
 
 ```{r, eval = F}
 out = fbseq(chain, backend = "CUDA")
@@ -362,7 +362,7 @@ out = fbseq(chain)
 
 ## Inspect the output.
 
-The `fbseq` package has several functions for analyzing MCMC output. Below `obj`, can either be a `Chain` object or a list of `Chain` objects.
+The [`fbseq`](https://github.com/wlandau/fbseq)  package has several functions for analyzing MCMC output. Below `obj`, can either be a `Chain` object or a list of `Chain` objects.
 
 |------------------------------------|----------|--------------------------------------------------| 
 | `psrf(obj)`   |	|  Gelman-Rubin potential scale reduction factors on all parameters, used to monitor convergence [@bda]. Here, `obj` must be a list of at least 2 `Chain` objects. | 

@@ -1,6 +1,6 @@
 # Introduction
 
-The `fbseq` package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). `fbseq` is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, `fbseqSerial` and `fbseqCUDA`, are backend packages that run the MCMC behind the scenes. Only one is required.  `fbseqSerial` can run on most machines, but it is slow for large datasets. `fbseqCUDA` requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. 
+The [`fbseq`](https://github.com/wlandau/fbseq)  package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). [`fbseq`](https://github.com/wlandau/fbseq)  is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) , are backend packages that run the MCMC behind the scenes. Only one is required.  [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  can run on most machines, but it is slow for large datasets. [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA)  requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. 
 
 # Read the [model vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/model.html) first. 
 
@@ -8,13 +8,13 @@ An understanding of the underlying hierarchical model is important for understan
 
 # Check your system.
 
-You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install `fbseq`, load it in an R session, create input, and analyze output. 
+You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install [`fbseq`](https://github.com/wlandau/fbseq) , load it in an R session, create input, and analyze output. 
 
-# Install `fbseq`
+# Install [`fbseq`](https://github.com/wlandau/fbseq) 
 
 ## Option 1: install a stable release (recommended).
 
-For `fbseq`, you can navigate to a [list of stable releases](https://github.com/wlandau/fbseq/releases) on the project's [GitHub page](https://github.com/wlandau/fbseq). Download the desired `tar.gz` bundle, then install it either with `install.packages(..., repos = NULL, type="source")` from within R  `R CMD INSTALL` from the Unix/Linux command line.
+For [`fbseq`](https://github.com/wlandau/fbseq) , you can navigate to a [list of stable releases](https://github.com/wlandau/fbseq/releases) on the project's [GitHub page](https://github.com/wlandau/fbseq). Download the desired `tar.gz` bundle, then install it either with `install.packages(..., repos = NULL, type="source")` from within R  `R CMD INSTALL` from the Unix/Linux command line.
 
 ## Option 2: use `install_github` to install the development version.
 
@@ -37,13 +37,13 @@ R CMD INSTALL ...
 
 where `...` is replaced by the name of the tarball produced by `R CMD build`. 
 
-# Install an MCMC backend package, either `fbseqSerial`, `fbseqCUDA`, or both
+# Install an MCMC backend package
 
-`fbseqSerial` and `fbseqCUDA` are alternative backends used to run the MCMC. To test the MCMC functionality on a small dataset, you can install the [`fbseqSerial` package](https://github.com/wlandau/fbseqSerial) package and call `fbseq(..., backend = "serial")`. For a dataset with a large number of genes (rows), `fbseqSerial` is slow. If you have a machine with a CUDA-capable general general purpose graphics processing unit (GPU), you can install the `fbseqCUDA` backend and call `fbseq(..., backend = "CUDA")` or simply `fbseq(...)` to run a serious analysis. MCMCs that take days with `fbseqSerial` take only a few hours with `fbseqCUDA`.
+[`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) , are backend packages that run the MCMC behind the scenes. Only one is required.  [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  can run on most machines, but it is slow for large datasets. [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA)  requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. Installation is similar to that of [`fbseq`](https://github.com/wlandau/fbseq)  and is detailed in their respective `README.md` files and package vignettes.
 
 # Quick start
 
-After installing `fbseq` and `fbseqSerial`, the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package. For more specific operational details, see the [tutorial vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/tutorial.html).
+After installing [`fbseq`](https://github.com/wlandau/fbseq)  and [`fbseqSerial`](https://github.com/wlandau/fbseqSerial) , the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package. For more specific operational details, see the [tutorial vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/tutorial.html).
 
 ```
 library(fbseq)

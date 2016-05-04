@@ -1,5 +1,5 @@
 ---
-title: "`fbseq` package hierarchical model"
+title: "[`fbseq`](https://github.com/wlandau/fbseq)  package hierarchical model"
 author: Will Landau
 date: 2015
 output: 
@@ -8,7 +8,7 @@ output:
     toc: true
 vignette: >
   \VignetteEngine{knitr::rmarkdown}
-  \VignetteIndexEntry{`fbseq` package methodology}
+  \VignetteIndexEntry{[`fbseq`](https://github.com/wlandau/fbseq)  package methodology}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -22,7 +22,7 @@ vignette: >
 
 # Introduction
 
-The `fbseq` package fits a hierarchical model to RNA-sequencing (RNA-seq) count data in fully Bayesian fashion. Publication of the method is pending. For now, here is the model. 
+The [`fbseq`](https://github.com/wlandau/fbseq)  package fits a hierarchical model to RNA-sequencing (RNA-seq) count data in fully Bayesian fashion. Publication of the method is pending. For now, here is the model. 
 
 
 # The hierarchical model
@@ -67,7 +67,7 @@ $$ \begin{align*}
 \xi_{\ell, g} \stackrel{\text{ind}}{\sim} p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ \ r_\ell)
 \end{align*} $$
 
-If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = I(\xi_{\ell, g} = 1)$, then $\beta_{\ell, g}$ have conditionally independent normal distributions (default setting of `fbseq`). If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = Exp(\text{rate} = k_\ell)$, then the $\beta_{\ell, g}$'s are independent with Laplace distributions given $\theta_\ell$ and $\sigma_\ell^2$ (default: mean $\theta_\ell$ and variance $\sigma_\ell^2$). If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = \text{Inverse-Gamma}(q_\ell, \ r_\ell)$, then the $\beta_{\ell, g}$'s are independent with Student-$t$ distributions given $\theta_\ell$ and $\sigma_\ell^2$ (default: mean $\theta_\ell$ and variance $\sigma_\ell^2$). If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = \text{Half-Cauchy}(0, 1)$, then the $\beta_{\ell, g}$'s are independent with horseshoe distributions given $\theta_\ell$ and $\sigma_\ell^2$. For each $\ell$ separately, the user can choose among normal, Laplace, Student-$t$, and horseshoe priors on the $\beta_{\ell, g}$'s.
+If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = I(\xi_{\ell, g} = 1)$, then $\beta_{\ell, g}$ have conditionally independent normal distributions (default setting of [`fbseq`](https://github.com/wlandau/fbseq) ). If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = Exp(\text{rate} = k_\ell)$, then the $\beta_{\ell, g}$'s are independent with Laplace distributions given $\theta_\ell$ and $\sigma_\ell^2$ (default: mean $\theta_\ell$ and variance $\sigma_\ell^2$). If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = \text{Inverse-Gamma}(q_\ell, \ r_\ell)$, then the $\beta_{\ell, g}$'s are independent with Student-$t$ distributions given $\theta_\ell$ and $\sigma_\ell^2$ (default: mean $\theta_\ell$ and variance $\sigma_\ell^2$). If $p(\xi_{\ell, g} \ | \ k_\ell, \ q_\ell, \ r_\ell) = \text{Half-Cauchy}(0, 1)$, then the $\beta_{\ell, g}$'s are independent with horseshoe distributions given $\theta_\ell$ and $\sigma_\ell^2$. For each $\ell$ separately, the user can choose among normal, Laplace, Student-$t$, and horseshoe priors on the $\beta_{\ell, g}$'s.
 
 
 ## Noise
@@ -117,7 +117,7 @@ $$ \begin{align*}
 
 # Inference
 
-The `fbseq` package estimates posterior probabilities that depend on logical conjunctions of linear combinations of the $\beta_{\ell,g}$ parameters. Possible examples are below.
+The [`fbseq`](https://github.com/wlandau/fbseq)  package estimates posterior probabilities that depend on logical conjunctions of linear combinations of the $\beta_{\ell,g}$ parameters. Possible examples are below.
 
 $$ \begin{align*}
 &P\left( \left . \beta_{1, g} > 0 \  \right | \ \text{data} \right) \\
