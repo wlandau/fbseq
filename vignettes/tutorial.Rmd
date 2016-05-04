@@ -16,14 +16,14 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r}
+```{r, echo = F}
 library(fbseq)
 library(methods)
 ```
 
 # Introduction
 
-The `fbseq` package fits a hierarchical model to RNA-seq data in fully Bayesian fashion. Although it was originally designed to fit RNA-seq data, it can also be used to analyze count data with tens of thousands of response variables and only a handful of observations each.
+The `fbseq` package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing (RNA-seq) count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). `fbseq` is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, `fbseqSerial` and `fbseqCUDA`, are backend packages that run the MCMC behind the scenes. Only one is required.  `fbseqSerial` can run on most machines, but it is slow for large datasets. `fbseqCUDA` requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. 
 
 # Read the [model vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/model.html) first. 
 
@@ -31,7 +31,7 @@ An understanding of the underlying hierarchical model is important for understan
 
 # Check your system.
 
-You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install `fbseq`, load it in an R session, create input, and analyze output. You can also use install the [`fbseqSerial` package](https://github.com/wlandau/fbseqSerial) package and call `fbseq(..., backend = "serial")` to run an MCMC to fit the model to a small dataset. To run the MCMC on a large dataset, however, you should use a machine with a [CUDA-enabled GPU](http://www.nvidia.com/object/cuda_home_new.html), and make sure to have the [`fbseqCUDA` package](https://github.com/wlandau/fbseqCUDA) installed. `fbseqCUDA` is the internal engine of `fbseq`, and it is implemented in CUDA to provide necessary acceleration for the MCMC. `fbseq` and `fbseqCUDA` are kept separate for convenience. For example, you can set up input with `fbseq` and without `fbseqCUDA` on a low-end laptop, run the main algorithm remotely with both `fbseq` and `fbseqCUDA` on a CUDA-enabled [cloud computing enterprise](http://www.nvidia.com/object/gpu-cloud-computing-services.html) such as [Amazon Web Services](http://aws.amazon.com/ec2/instance-types/), and analyze the output locally with `fbseq` and without `fbseqCUDA`. See the [`fbseqCUDA` installation vignette](https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html) for more details. For best viewing, download the html vignette to your desktop and then open it with a browser. `fbseqSerial` is just a portable version of `fbseqCUDA` that does not use GPU computing. `fbseqSerial` should allow you to run the MCMC routine (i.e., `fbseq(..., backend = "serial")`) on most machines, but it is slow for large enough datasets.
+You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install `fbseq`, load it in an R session, create input, and analyze output. 
 
 # Install `fbseq`
 
@@ -60,14 +60,68 @@ R CMD INSTALL ...
 
 where `...` is replaced by the name of the tarball produced by `R CMD build`. 
 
-# Install `fbseqSerial` and possibly `fbseqCUDA` 
+# Install an MCMC backend package, either `fbseqSerial`, `fbseqCUDA`, or both
 
-`fbseqSerial` is portable, but you can only install `fbseqCUDA` on a machine with CUDA and a CUDA-capable graphics processing unit (GPU). The `fbseqCUDA` package is necessary for running the parallelized MCMC. `fbseqSerial` is a version of `fbseqCUDA` that uses no parallel computing at all. `fbseqSerial` can run on most machines, but it is slow for large datasets. For installation instructions, see the [`fbseqCUDA` installation vignette](https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html).
+`fbseqSerial` and `fbseqCUDA` are alternative backends used to run the MCMC. To test the MCMC functionality on a small dataset, you can install the [`fbseqSerial` package](https://github.com/wlandau/fbseqSerial) package and call `fbseq(..., backend = "serial")`. For a dataset with a large number of genes (rows), `fbseqSerial` is slow. If you have a machine with a CUDA-capable general general purpose graphics processing unit (GPU), you can install the `fbseqCUDA` backend and call `fbseq(..., backend = "CUDA")` or simply `fbseq(...)` to run a serious analysis. MCMCs that take days with `fbseqSerial` take only a few hours with `fbseqCUDA`.
+
+# Quick start
+
+After installing `fbseq` and `fbseqSerial`, the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package.
+
+```{r, eval = F}
+library(fbseq)
+
+# Example RNA-seq dataset wrapped in an S4 class.
+data(paschold) 
+
+# Use a small subset of the data (few genes).
+paschold@counts = head(paschold@counts, 20) 
+
+# Run the MCMC for only a few iterations.
+configs = Configs(burnin = 10, iterations = 10, thin = 1) 
+
+# Set up the MCMC.
+chain = Chain(paschold, configs) 
+
+# Run 4 dispersed independent Markov chains.
+chain_list = fbseq(chain, backend = "serial")
+
+# Monitor convergence with in all parameters with 
+# Gelman-Rubin potential scale reduction factors
+head(psrf(chain_list)) 
+
+# Means, standard deviations, and credible intervals of all parameters 
+head(estimates(chain_list))
+
+# Gene-specific (row-specific) posterior probabilities
+head(probs(chain_list))
+
+# Monte Carlo samples on a small subset of parameters
+m = mcmc_samples(chain_list) 
+dim(m)
+m[1:5, 1:5]
+
+# Set max_iter=Inf below to automatically run until convergence.
+max_iter = 3
+iter = 1
+chain@verbose = as.integer(0) # turn off console messages
+chain_list = list(chain)
+while(iter < max_iter){
+  chain_list = fbseq(chain_list[[1]], backend = "serial")
+  gelman = psrf(chain_list)
+  # saveRDS(chain_list, "chain_list_so_far.rds") # option to save progress
+  if(all(gelman < 1.1)) break
+  iter = iter + 1
+}
+```
+ 
 
 
-# Workflow overview
 
-A typical workflow only requires a few lines of code. However, it requires an understanding of the S4 classes of this package. The steps are as follows.
+
+# Operational details
+
+Here is the breakdown for finer control of the package.
 
 ## Create a `Scenario` object.
 
@@ -80,10 +134,12 @@ str(new("Scenario"))
 Type `help("Scenario-class")` for details about the slots. When you have these slots ready, use the ``Scenario`` function to create a ``Scenario`` object.
 
 ```{r, eval = F}
-scenario = Scenario(counts = counts, design = design, contrasts = contrasts, bounds = bounds, propositions = propositions, supplement = supplement)
+scenario = Scenario(counts = counts, design = design, 
+  contrasts = contrasts, bounds = bounds, propositions = propositions, 
+  supplement = supplement)
 ```
 
-With the exception of `Chain` objects, arguments passed to `Scenario` need to be explicitly passed to their slots. For example,
+For this constructor, arguments should be explicitly named. For example,
 
 ```{r, eval = F}
 scenario = Scenario(counts, design, contrasts, bounds, propositions, supplement)
@@ -95,37 +151,46 @@ would throw an error.
 
 ### Example scenario from @paschold
 
-The package comes with a `Scenario` with data taken from @paschold. The data is from an RNA-sequencing (RNA-seq) data experiment on maize described in the paper.
+The package comes with a `Scenario` with data taken from @paschold. The data is from an RNA-sequencing (RNA-seq) data experiment on maize.
 
 ```{r}
 data(paschold)
 head(paschold@counts)
 ```
 
-Here, the genes are rows (response variables) and the columns are RNA-seq libraries (observations, samples of genetic material). Each count is the relative measure of the expression of a gene in a laboratory sample of genetic material. The observations are divided into 4 groups:
+The dataset is large, so if you're just trying out the package on your home computer, it would be best to simply use a subset of the data
 
-- `B73`: maize seedlings from an inbred corn population in Iowa.
-- `Mo17`: seedlings from a different inbred corn population in Missouri. 
-- `B73xMo17`: hybrid seedlings produced from pollenating `B73` corn plants with `Mo17` pollen. 
-- `Mo17xB73`: hybrid seedlings produced from pollenating `Mo17` corn plants with `B73` pollen.
+```{r}
+dim(paschold@counts)
+paschold@counts = head(paschold@counts, 20)
+dim(paschold@counts)
+```
 
-The goal of this scenario is to detect which genes satisfy which of following conditions.
+
+In the data, the genes are rows and the columns are RNA-seq replicates. Each count is the relative measure of the expression of a gene in a replicate. The observations are divided into 4 genetic varieties:
+
+- `B73`: an inbred Iowa maize variety
+- `Mo17`: an inbred Missouri maize variety
+- `B73xMo17`: a first-generation (F1) hybrid produced from pollenating `B73` with `Mo17`
+- `Mo17xB73`: an F1 hybrid from pollenating `Mo17` with `B73`
+
+The goal of this scenario is to detect genes that display heterosis, or hybrid vigor, with respect to expression level (RNA-seq count). Heterosis is the phenomenon in which a hybrid surpasses both parents with respect to a given trait. The different types of heterosis are defined as follows in terms of the log RNA-seq counts.
 
 |------------------------------------|----------|--------------------------------------------------| 
-| high-parent heterosis, both hybrids |	$\qquad$ | all hybrid counts > `B73` and `Mo17` counts  | 
-| low-parent heterosis, both hybrids  |	|  all hybrid counts < `B73` and `Mo17` counts  | 
-| high-parent heterosis, `B73xMo17`   |	|  `B73xMo17` counts > `B73` and `Mo17` counts  | 
-| low-parent heterosis, `B73xMo17`    |	|  `B73xMo17` counts < `B73` and `Mo17` counts  | 
-| high-parent heterosis, `Mo17xB73`   |	|  `Mo17xB73` counts > `B73` and `Mo17` counts  | 
-| low-parent heterosis, `Mo17xB73`    |	|  `Mo17xB73` counts < `B73` and `Mo17` counts  | 
+| high-parent heterosis of the hybrid mean |	$\qquad$ | hybrid mean > max(`B73` and `Mo17`)  | 
+| low-parent heterosis of the hybrid mean  |	|  hybrid mean < min(`B73` and `Mo17`) |
+| high-parent heterosis of `B73xMo17`   |	|  `B73xMo17` > max(`B73` and `Mo17`)  | 
+| low-parent heterosis of `B73xMo17`    |	|  `B73xMo17`  < min(`B73` and `Mo17`) |
+| high-parent heterosis of `Mo17xB73`   |	|  `Mo17xB73` > max(`B73` and `Mo17`)  | 
+| low-parent heterosis of `Mo17xB73`    |	|  `Mo17xB73` < min(`B73` and `Mo17`)  | 
 
-To translate this problem into a `Scenario`, we use the design matrix,
+To define the parameterization of the model coefficients $\beta_{\ell, g}$, we use the design matrix slot in our `Scenario` object.
 
 ```{r}
 paschold@design
 ```
 
-In words, the main effect parameters are $\beta_{\ell, g}$ for effect $\ell = 1, \ldots, L = 5$ and $g = 1, \ldots, G = 39656$, and they describe linear combinations of the libraries within a gene. In the following table, a logarithmic scale is used for the interpretations.
+We can interpret each parameters as follows.
 
 |------------------------------------|----------|--------------------------------------------------| 
 | $\beta_{1, g}$  |	$\qquad$ | mean of `B73` and `Mo17`  | 
@@ -134,17 +199,17 @@ In words, the main effect parameters are $\beta_{\ell, g}$ for effect $\ell = 1,
 |$\beta_{4, g}$   |	| difference between `B73xMo17` and `Mo17xB73` | 
 |$\beta_{5, g}$   |	|  experimental block effect  | 
 
-With these interpretations, the table of conditions becomes
+In terms of the $\beta_{\ell, g}$'s, the conditions for heterosis become the following.
 
 |------------------------------------|----------|--------------------------------------------------| 
-| high-parent heterosis, mean of hybrids |	$\qquad$ |  $\beta_{2, g} > 0$ and $\beta_{3, g} > 0$ | 
-| low-parent heterosis, mean of hybrids  |	|   $-\beta_{2, g} > 0$ and $-\beta_{3, g} > 0$ | 
-| high-parent heterosis, `B73xMo17`   |	|  $2\beta_{2, g} + \beta_{4, g} > 0$ and $2\beta_{3, g} + \beta_{4, g} > 0$  | 
-| low-parent heterosis, `B73xMo17`    |	| $-2\beta_{2, g} - \beta_{4, g} > 0$ and $-2\beta_{3, g} - \beta_{4, g} > 0$ | 
-| high-parent heterosis, `Mo17xB73`   |	|  $2\beta_{2, g} - \beta_{4, g} > 0$ and $2\beta_{3, g} - \beta_{4, g} > 0$  | 
-| low-parent heterosis, `Mo17xB73`    |	| $-2\beta_{2, g} + \beta_{4, g} > 0$ and $-2\beta_{3, g} + \beta_{4, g} > 0$ | 
+| high-parent heterosis of the hybrid mean |	$\qquad$ |  $\beta_{2, g} > 0$ and $\beta_{3, g} > 0$ | 
+| low-parent heterosis of the hybrid mean |	|   $-\beta_{2, g} > 0$ and $-\beta_{3, g} > 0$ | 
+| high-parent heterosis of `B73xMo17`   |	|  $2\beta_{2, g} + \beta_{4, g} > 0$ and $2\beta_{3, g} + \beta_{4, g} > 0$  | 
+| low-parent heterosis of `B73xMo17`    |	| $-2\beta_{2, g} - \beta_{4, g} > 0$ and $-2\beta_{3, g} - \beta_{4, g} > 0$ | 
+| high-parent heterosis of `Mo17xB73`   |	|  $2\beta_{2, g} - \beta_{4, g} > 0$ and $2\beta_{3, g} - \beta_{4, g} > 0$  | 
+| low-parent heterosis of `Mo17xB73`    |	| $-2\beta_{2, g} + \beta_{4, g} > 0$ and $-2\beta_{3, g} + \beta_{4, g} > 0$ | 
 
-Each linear combination of the $\beta_{\ell, g}$'s is a contrast, and each row of the table is a logical proposition. We want a posterior probability for each proposition. Let $\text{I}(\cdot)$ be the indicator function, $m = 1, \ldots, M$ be an MCMC iteration (including "thinned" iterations, but not burnin/throwaway iterations), and $\beta_{\ell, g}^{(m)}$ be the MCMC sample of $\beta_{\ell, g}$ for iteration $m$. Then, the posterior probabilities of interest should be calculated as:
+Gene-specific (i.e., row-specific) posterior probabilities are calculated using Monte Carlo samples $\beta_{\ell, g}^{(m)}$ of the $\beta_{\ell, g}$'s for MCMC iteration $m = 1, \ldots, M$. Below, $\text{I}(\cdot)$ is the indicator function (which returns 1 when its argument is true and 0 otherwise). 
 
 $$ \begin{align*}
 P(\text{high-parent heterosis, mean of hybrids} \ | \ \text{data}) &\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left (\beta_{2, g}^{(m)} > 0 \text{ and } \beta_{3, g}^{(m)} > 0 \right ) \\
@@ -155,27 +220,27 @@ P(\text{high-parent heterosis, Mo17xB73}) \ | \ \text{data}) &\approx \frac{1}{M
 P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( -2\beta_{2, g}^{(m)} + \beta_{4, g}^{(m)} > 0 \text{ and }-2\beta_{3, g}^{(m)} + \beta_{4, g}^{(m)} > 0 \right )
 \end{align*} $$
 
-To tell the package to calculate these posterior probabilities, be sure to make use of the `contrasts`, `bounds`, and `propositions` slots. The Paschold scenario has the 12 contrasts,
+To tell the software to calculate these posterior probabilities, use of the `contrasts`, `bounds`, and `propositions` slots of the `Scenario` object. In general, the package can calculate probabilities of that depend on linear combinations of the $\beta_{\ell, g}$'s, and the `contrasts` slot specifies these linear combinations.
 
 ```{r}
 paschold@contrasts
 ```
 
-the lower bounds in the inequalities (all zero),
+As in the heterosis example, the probabilities are calculated by comparing the linear combinations to lower bounds. In the heterosis example, linear combinations are being compared to zero, so all the slots in the `bounds` slot should be zero. 
 
 ```{r}
 paschold@bounds
 ```
 
-and the 6 logical propositions we care about, expressed in terms of the indices of the contrasts above.
+The conditions for heterosis are formulated as logical propositions, and these propositions are logical conjunctions that depend on the linear combinations and lower bounds from before. To write these heterosis propositions in terms of `contrasts` and `bounds`, use the `propositions` slot.
 
 ```{r}
 paschold@propositions
 ```
 
-When the MCMC is run with the `fbseq` function, the package will estimate, for each gene, the probability that each of the 6 propositions is true.
+With the `contrasts`, `bounds`, and `propositions` defined, the-specific posterior probabilities are fully-specified.
 
-Note: every `Scenario` object has an optional `suppelement` slot with additional information about the scenario. In this case, `paschold@supplement` is an empty list.
+Lastly, every `Scenario` object has an optional `suppelement` slot with additional information about the scenario. In this case, `paschold@supplement` is an empty list.
 
 
 
@@ -197,19 +262,15 @@ s@propositions
  
 The `Configs` S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so just for the sake of trying out the package, you should be able to get away with calling the `Configs` function with no arguments. For a full list of slots and their explanations, type `help("Configs-class")`.
 
-However, for serious analyses, you may want to adjust the `iterations`, `burnin`, and `thin` slots to control the duration of the MCMC. `burinin` is the number of throwaway iterations at the beginning of the MCMC, `iterations` is the number of iterations for which parameter samples are actually returned to the user, and `thin` specifies the thinning interval.  The total number of MCMC iterations is `burnin + iterations * thin`, and all of the `iterations * thin` portion is used to calculate posterior means, mean squares, and posterior probabilities of interest specified in the `Scenario` object. If `thin` is > 1, not all parameter samples after burnin are returned to the user. For example, `thin` is 10, then after burnin, actual parameter samples are saved every 10th iteration.
-
-You may also want to adjust the `Configs` slots that apply constraints on model parameters. The `parameter_sets_update` controls which sets of parameters to update during the MCMC. Parameter sets not specified in `parameter_sets_update` will be held constant, so this slot can be used to run an empirical Bayes analysis, for example. The `parameter_sets_return`, `genes_return`, `libraries_return` (currently moot because there are no library-specific parameters other than the epsilons), `genes_return_epsilon`, and `libraries_return_epsilon` slots control which Monte Carlo parameter samples to return to the user.
-
-The `samplers` slot, in principle, allows the user to choose the MCMC algorithm to use: slice sampling, Metropolis-Hastings, etc. Currently, only the default stepping-out slice sampler is fully implemented and tested.
+The main slots to consider are the `iterations`, `burnin`, and `thin` slots, which control the duration of the MCMC. The total number of MCMC iterations is `burnin + iterations * thin`. `burinin` is the number of throwaway iterations at the beginning of the MCMC. Afterwards the next `iterations * thin` iterations are used to compute posterior probabilities and estimated means and mean squares for every parameter. Only `iterations` Monte Carlo parameter samples are returned to the user, and then, only for parameters specified in the `parameter_sets_return` slot. The `parameter_sets_update` slot specifies which parameters to update during the MCMC, giving the user the option to run empirical Bayes, for example. For gene-specific parameters in `parameter_sets_update`, not all parameters are returned for all the genes. (Downloading data from the GPU is expensive). Select the genes for parameter samples you want with the `genes_return` slot. For the $\epsilon_{n, g}$ parameters, use `genes_return_epsilon` to specify the values of $g$ and `libraries_return_epsilon` to specify the values of $n$.
 
 ## (Optional) create a `Starts` object.
 
-The `Starts` S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as the unspecified starting values are automatically generated for a given dataset and design with `generate_starts` inside the constructor of `Chain` class. However, the user may wish to modify individual slots. For more information, type `help("Starts-class")` and be sure to read the vignette on the hierarchical model.
+The `Starts` S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as the unspecified starting values are automatically generated. However, the user may wish to specify starting values by setting the slots manually. For more information, type `help("Starts-class")` and be sure to read the vignette on the hierarchical model.
 
 ## Create a `Chain` object.
 
-The `Chain` class plays the role of an environment or workspace. It stores all the information in your `Scenario`, `Configs`, and `Starts` objects, in addition to Monte Carlo output and results. There are many, many S4 slots. For details on the slots, type `help("Chain-class")` and be sure to read the hierarchical model vignette. For help on how to create `Chain` objects, type `help("Chain")`.
+The `Chain` class is the container for a whole Markov chain. It stores all the information in your `Scenario`, `Configs`, and `Starts` objects, in addition to Monte Carlo output and results. There are many, many S4 slots. For details on the slots, type `help("Chain-class")` and be sure to read the hierarchical model vignette. For help on how to create `Chain` objects, type `help("Chain")`.
 
 With only a `Scenario` object, you can create a `Chain` object with 
 
@@ -228,7 +289,7 @@ As an example, here is the `Chain` created from the `paschold` scenario visited 
 
 ```{r}
 chain = Chain(paschold)
-str(chain)
+# Call str(chain) to inspect the slots.
 ```
 
 You can recover the scenario, configuration, or starting values of a `Chain` object with the `Scenario`, `Configs`, and `Starts` objects. For example,
@@ -237,33 +298,32 @@ You can recover the scenario, configuration, or starting values of a `Chain` obj
 scenario = Scenario(chain)
 configs = Configs(chain)
 starts = Starts(chain)
-str(scenario)
 str(configs)
-str(starts)
 ```
 
 Note that the unspecified starting values were automatically generated in the construction of the `Chain` object.
 
 ## Call `fbseq` on the `Chain` object.
 
-The `fbseq` function actually runs the MCMC algorithm to fit the model and calculate posterior probabilities of interest. It takes a single `Chain` object as an argument, and if the `additional_chains` argument is 0, outputs another `Chain` object with posterior means and means of squares of parameters, estimated posterior probabilities of interest, and updated starting values.
+The `fbseq` function runs the MCMC algorithm to estimate parameters and calculate posterior probabilities. It takes a single `Chain` object as an argument, and outputs either another `Chain` object or a list of `Chain` objects, depending on the value of `additional_chains`. To run a single chain, use:
 
 ```{r, eval = F}
 out = fbseq(chain, additional_chains = 0)
 ```
 
-The starting values of `out` are the final parameter samples of the previous MCMC. The upshot is that calling `fbseq` on `out` will resume the MCMC where it left off.
+Here, `out` is another `Chain` object with the results. The starting values of `out` are the final parameter samples of the previous MCMC. That way, you can call `fbseq` on `out` and the MCMC will resume where it last left off.
 
 ```{r, eval = F}
 continuation = fbseq(out, additional_chains = 0)
 ```
 
-You can even run the MCMC indefinitely and save your work at after every attempt.
+To monitor convergence, you can run multiple chains and use the `psrf` function to compute Gelman-Rubin potential scale reduction factors on a list of chains [@bda]. For example, to automatically run the MCMC until convergence, you could do the following.
 
 ```{r, eval = F}
 repeat{
-  chain = fbseq(chain, additional_chains = 0)
-  saveRDS(chain, "chain.rds")
+  chain_list = fbseq(chain) # equivalent to fbseq(chain, additional_chains = 3)
+  saveRDS(chain, "chain_list_so_far.rds")
+  if(all(psrf(chain_list)) < 1.1) break
 }
 ```
 
@@ -274,31 +334,41 @@ out = fbseq(chain, additional_chains = 3)
 psrf(out)
 ```
 
-## What if `fbseq` tells me I need the `fbseqCUDA` package?
+## Choosing a backend: `fbseqSerial` or `fbseqCUDA`
 
-`fbseqSerial` is a version of `fbseqCUDA` that should work on most machines. It does not use GPU computing, though, and it is slow for large datasets. If you don't have `fbseqCUDA`, install `fbseqSerial` and then run
+`fbseqSerial` can run on most machines, but it is slow for datasets with lots of genes. Select the `fbseqSerial` backend by specifying `backend = "serial"` in `fbseq`:
 
 ```{r, eval = F}
 out = fbseq(chain, backend = "serial")
 ```
 
-You can also distribute any additional MCMC chains (after the first one) over forked processes. 
+For the serial backend, you can distribute the MCMC chains after the first chain over multiple parallel processes.
 
 ```{r, eval = F}
 out = fbseq(chain, backend = "serial", processes = 3)
 ```
 
-The first chain will still run in its own process before the rest. The reason is that the later chains use the first chain to get starting values, which should be overdispersed relative to the full joint posterior distribution.
+`fbseqCUDA` requires a CUDA-capable graphics processing unit (GPU), but it is much faster. Elapsed runtimes are in hours rather than days for typical-sized RNA-seq datasets. Select this backend with either 
 
+```{r, eval = F}
+out = fbseq(chain, backend = "CUDA")
+```
+
+or simply 
+
+```{r, eval = F}
+out = fbseq(chain)
+```
 
 ## Inspect the output.
 
-No sample output is shipped with this package because output  `Chain` objects are is usually large, in the tens of megabytes at least. However, all the functions to extract output are easy one-liners. Let `obj` be a either single `Chain` object or a list of chain objects returned by `fbseq()`.
+The `fbseq` package has several functions for analyzing MCMC output. Below `obj`, can either be a `Chain` object or a list of `Chain` objects.
 
 |------------------------------------|----------|--------------------------------------------------| 
-| `probs(obj)`   |	|  Estimated gene-specific posterior probabilities of each logical proposition specified in `Scenario` | 
-| `effect_sizes(obj)`    |	| Estimated gene-specific effect sizes for each logical proposition. For example, if the proposition is "$2\beta_{2, g} - \beta_{4, g} > 1$ and $2\beta_{3, g} - \beta_{4, g} > 0.5$", then the effect size is $\min \left (2\beta_{2, g} - \beta_{4, g} - 1, \ 2\beta_{3, g} - \beta_{4, g} - 0.5 \right )^+$, where $(\cdots)^+$ denote the positive part of an expression. | 
-| `estimates(obj, level)`  |	|  Posterior means and credible intervals (of level `level`) for all parameters. Note: to avoid taking up too much memory, the credible intervals are computed using the posterior means and variances of parameters, not quantiles of actual parameter samples. The results are approximate. | 
+| `psrf(obj)`   |	|  Gelman-Rubin potential scale reduction factors on all parameters, used to monitor convergence [@bda]. Here, `obj` must be a list of at least 2 `Chain` objects. | 
+| `probs(obj)`   |	|  Estimated gene-specific posterior probabilities specified in `Scenario` | 
+| `effect_sizes(obj)`    |	| Effect sizes that correspond to the posterior probabilities. For example, for  "$P (2\beta_{2, g} - \beta_{4, g} > 1$ and $2\beta_{3, g} - \beta_{4, g} > 0.5 | \text{data})$", the effect size is the positive part of $\min \left (2\beta_{2, g} - \beta_{4, g} - 1, \ 2\beta_{3, g} - \beta_{4, g} - 0.5 \right )$. | 
+| `estimates(obj, level)`  |	|  Posterior means, standard deviations, and credible intervals (of level `level`) for all parameters. The credible intervals are computed using the normal distributions given by the posterior means and standard deviations. | 
 |`mcmc_samples(obj)` |	$\qquad$ | Monte Carlo samples of returned parameters selected in `Configs` | 
 
 # References

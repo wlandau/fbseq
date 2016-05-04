@@ -1,6 +1,6 @@
-# fbseq
+# Introduction
 
-`fbseq` is an R package for analyzing bowtie-preprocessed RNA-sequencing datasets with arbitrary experimental designs and computing arbitrary posterior probabilities of interest. The computation is accelerated with CUDA. For an overview of the intended applications, the model, and the methodology, see the [model vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/model.html). For installation and usage instructions, see the [tutorial vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/tutorial.html).For best viewing of either html vignette, download it to your desktop and open it with a browser.
+The `fbseq` package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). `fbseq` is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, `fbseqSerial` and `fbseqCUDA`, are backend packages that run the MCMC behind the scenes. Only one is required.  `fbseqSerial` can run on most machines, but it is slow for large datasets. `fbseqCUDA` requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. 
 
 # Read the [model vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/model.html) first. 
 
@@ -8,7 +8,7 @@ An understanding of the underlying hierarchical model is important for understan
 
 # Check your system.
 
-You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install `fbseq`, load it in an R session, create input, and analyze output. To actually run the underlying Markov chain Monte Carlo (MCMC) procedure, however, you need access to a machine with a [CUDA-enabled GPU](http://www.nvidia.com/object/cuda_home_new.html), along with the [`fbseqCUDA` package](https://github.com/wlandau/fbseqCUDA). `fbseqCUDA` is the internal engine of `fbseq`, and it is implemented in CUDA to provide necessary acceleration for the MCMC. `fbseq` and `fbseqCUDA` are kept separate for convenience. For example, you can set up input with `fbseq` and without `fbseqCUDA` on a low-end laptop, run the main algorithm remotely with both `fbseq` and `fbseqCUDA` on a CUDA-enabled [cloud computing enterprise](http://www.nvidia.com/object/gpu-cloud-computing-services.html) such as [Amazon Web Services](http://aws.amazon.com/ec2/instance-types/), and analyze the output locally with `fbseq` and without `fbseqCUDA`. See the [`fbseqCUDA` installation vignette](https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html) for more details. For best viewing, download the html vignette to your desktop and then open it with a browser.
+You need to have at least R $\ge$ 3.2.0, along with the R packages `coda`, `ggplot2`, `methods`, `reshape2`, and `knitr`. All are available through the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/). With those requirements met, you can install `fbseq`, load it in an R session, create input, and analyze output. 
 
 # Install `fbseq`
 
@@ -37,6 +37,57 @@ R CMD INSTALL ...
 
 where `...` is replaced by the name of the tarball produced by `R CMD build`. 
 
-# Install `fbseqCUDA` 
+# Install an MCMC backend package, either `fbseqSerial`, `fbseqCUDA`, or both
 
-You can only install `fbseqCUDA` on a machine with CUDA and a CUDA-capable graphics processing unit (GPU). The `fbseqCUDA` package is necessary for running the MCMC, but not for preparing input or analyzing output. For installation instructions, see the [`fbseqCUDA` installation vignette](https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html).
+`fbseqSerial` and `fbseqCUDA` are alternative backends used to run the MCMC. To test the MCMC functionality on a small dataset, you can install the [`fbseqSerial` package](https://github.com/wlandau/fbseqSerial) package and call `fbseq(..., backend = "serial")`. For a dataset with a large number of genes (rows), `fbseqSerial` is slow. If you have a machine with a CUDA-capable general general purpose graphics processing unit (GPU), you can install the `fbseqCUDA` backend and call `fbseq(..., backend = "CUDA")` or simply `fbseq(...)` to run a serious analysis. MCMCs that take days with `fbseqSerial` take only a few hours with `fbseqCUDA`.
+
+# Quick start
+
+After installing `fbseq` and `fbseqSerial`, the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package. For more specific operational details, see the [tutorial vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/tutorial.html).
+
+```
+library(fbseq)
+
+# Example RNA-seq dataset wrapped in an S4 class.
+data(paschold) 
+
+# Use a small subset of the data (few genes).
+paschold@counts = head(paschold@counts, 20) 
+
+# Run the MCMC for only a few iterations.
+configs = Configs(burnin = 10, iterations = 10, thin = 1) 
+
+# Set up the MCMC.
+chain = Chain(paschold, configs) 
+
+# Run 4 dispersed independent Markov chains.
+chain_list = fbseq(chain, backend = "serial")
+
+# Monitor convergence with in all parameters with 
+# Gelman-Rubin potential scale reduction factors
+head(psrf(chain_list)) 
+
+# Means, standard deviations, and credible intervals of all parameters 
+head(estimates(chain_list))
+
+# Gene-specific (row-specific) posterior probabilities
+head(probs(chain_list))
+
+# Monte Carlo samples on a small subset of parameters
+m = mcmc_samples(chain_list) 
+dim(m)
+m[1:5, 1:5]
+
+# Set max_iter=Inf below to automatically run until convergence.
+max_iter = 3
+iter = 1
+chain@verbose = as.integer(0) # turn off console messages
+chain_list = list(chain)
+while(iter < max_iter){
+  chain_list = fbseq(chain_list[[1]], backend = "serial")
+  gelman = psrf(chain_list)
+  # saveRDS(chain_list, "chain_list_so_far.rds") # option to save progress
+  if(all(gelman < 1.1)) break
+  iter = iter + 1
+}
+```

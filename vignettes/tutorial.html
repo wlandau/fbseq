@@ -67,27 +67,26 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <li><a href="#option-2-use-install_github-to-install-the-development-version."><span class="toc-section-number">4.2</span> Option 2: use <code>install_github</code> to install the development version.</a></li>
 <li><a href="#option-3-build-the-development-version-from-the-source."><span class="toc-section-number">4.3</span> Option 3: build the development version from the source.</a></li>
 </ul></li>
-<li><a href="#install-fbseqserial-and-possibly-fbseqcuda"><span class="toc-section-number">5</span> Install <code>fbseqSerial</code> and possibly <code>fbseqCUDA</code></a></li>
-<li><a href="#workflow-overview"><span class="toc-section-number">6</span> Workflow overview</a><ul>
-<li><a href="#create-a-scenario-object."><span class="toc-section-number">6.1</span> Create a <code>Scenario</code> object.</a><ul>
-<li><a href="#example-scenario-from-paschold"><span class="toc-section-number">6.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></a></li>
-<li><a href="#example-simulated-scenario-with-scenario_heterosis_model"><span class="toc-section-number">6.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></a></li>
+<li><a href="#install-an-mcmc-backend-package-either-fbseqserial-fbseqcuda-or-both"><span class="toc-section-number">5</span> Install an MCMC backend package, either <code>fbseqSerial</code>, <code>fbseqCUDA</code>, or both</a></li>
+<li><a href="#quick-start"><span class="toc-section-number">6</span> Quick start</a></li>
+<li><a href="#operational-details"><span class="toc-section-number">7</span> Operational details</a><ul>
+<li><a href="#create-a-scenario-object."><span class="toc-section-number">7.1</span> Create a <code>Scenario</code> object.</a><ul>
+<li><a href="#example-scenario-from-paschold"><span class="toc-section-number">7.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></a></li>
+<li><a href="#example-simulated-scenario-with-scenario_heterosis_model"><span class="toc-section-number">7.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></a></li>
 </ul></li>
-<li><a href="#optional-create-a-configs-object."><span class="toc-section-number">6.2</span> (Optional) create a <code>Configs</code> object.</a></li>
-<li><a href="#optional-create-a-starts-object."><span class="toc-section-number">6.3</span> (Optional) create a <code>Starts</code> object.</a></li>
-<li><a href="#create-a-chain-object."><span class="toc-section-number">6.4</span> Create a <code>Chain</code> object.</a></li>
-<li><a href="#call-fbseq-on-the-chain-object."><span class="toc-section-number">6.5</span> Call <code>fbseq</code> on the <code>Chain</code> object.</a></li>
-<li><a href="#what-if-fbseq-tells-me-i-need-the-fbseqcuda-package"><span class="toc-section-number">6.6</span> What if <code>fbseq</code> tells me I need the <code>fbseqCUDA</code> package?</a></li>
-<li><a href="#inspect-the-output."><span class="toc-section-number">6.7</span> Inspect the output.</a></li>
+<li><a href="#optional-create-a-configs-object."><span class="toc-section-number">7.2</span> (Optional) create a <code>Configs</code> object.</a></li>
+<li><a href="#optional-create-a-starts-object."><span class="toc-section-number">7.3</span> (Optional) create a <code>Starts</code> object.</a></li>
+<li><a href="#create-a-chain-object."><span class="toc-section-number">7.4</span> Create a <code>Chain</code> object.</a></li>
+<li><a href="#call-fbseq-on-the-chain-object."><span class="toc-section-number">7.5</span> Call <code>fbseq</code> on the <code>Chain</code> object.</a></li>
+<li><a href="#choosing-a-backend-fbseqserial-or-fbseqcuda"><span class="toc-section-number">7.6</span> Choosing a backend: <code>fbseqSerial</code> or <code>fbseqCUDA</code></a></li>
+<li><a href="#inspect-the-output."><span class="toc-section-number">7.7</span> Inspect the output.</a></li>
 </ul></li>
 </ul>
 </div>
 
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(fbseq)
-<span class="kw">library</span>(methods)</code></pre>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>The <code>fbseq</code> package fits a hierarchical model to RNA-seq data in fully Bayesian fashion. Although it was originally designed to fit RNA-seq data, it can also be used to analyze count data with tens of thousands of response variables and only a handful of observations each.</p>
+<p>The <code>fbseq</code> package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). <code>fbseq</code> is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, <code>fbseqSerial</code> and <code>fbseqCUDA</code>, are backend packages that run the MCMC behind the scenes. Only one is required. <code>fbseqSerial</code> can run on most machines, but it is slow for large datasets. <code>fbseqCUDA</code> requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it’s much faster due to parallel computing.</p>
 </div>
 <div id="read-the-model-vignette-first." class="section level1">
 <h1><span class="header-section-number">2</span> Read the <a href="https://github.com/wlandau/fbseq/blob/master/vignettes/model.html">model vignette</a> first.</h1>
@@ -95,7 +94,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </div>
 <div id="check-your-system." class="section level1">
 <h1><span class="header-section-number">3</span> Check your system.</h1>
-<p>You need to have at least R <span class="math">\(\ge\)</span> 3.2.0, along with the R packages <code>coda</code>, <code>ggplot2</code>, <code>methods</code>, <code>reshape2</code>, and <code>knitr</code>. All are available through the <a href="https://cran.r-project.org/">Comprehensive R Archive Network (CRAN</a>. With those requirements met, you can install <code>fbseq</code>, load it in an R session, create input, and analyze output. You can also use install the <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code> package</a> package and call <code>fbseq(..., backend = &quot;serial&quot;)</code> to run an MCMC to fit the model to a small dataset. To run the MCMC on a large dataset, however, you should use a machine with a <a href="http://www.nvidia.com/object/cuda_home_new.html">CUDA-enabled GPU</a>, and make sure to have the <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code> package</a> installed. <code>fbseqCUDA</code> is the internal engine of <code>fbseq</code>, and it is implemented in CUDA to provide necessary acceleration for the MCMC. <code>fbseq</code> and <code>fbseqCUDA</code> are kept separate for convenience. For example, you can set up input with <code>fbseq</code> and without <code>fbseqCUDA</code> on a low-end laptop, run the main algorithm remotely with both <code>fbseq</code> and <code>fbseqCUDA</code> on a CUDA-enabled <a href="http://www.nvidia.com/object/gpu-cloud-computing-services.html">cloud computing enterprise</a> such as <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Web Services</a>, and analyze the output locally with <code>fbseq</code> and without <code>fbseqCUDA</code>. See the <a href="https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html"><code>fbseqCUDA</code> installation vignette</a> for more details. For best viewing, download the html vignette to your desktop and then open it with a browser. <code>fbseqSerial</code> is just a portable version of <code>fbseqCUDA</code> that does not use GPU computing. <code>fbseqSerial</code> should allow you to run the MCMC routine (i.e., <code>fbseq(..., backend = &quot;serial&quot;)</code>) on most machines, but it is slow for large enough datasets.</p>
+<p>You need to have at least R <span class="math">\(\ge\)</span> 3.2.0, along with the R packages <code>coda</code>, <code>ggplot2</code>, <code>methods</code>, <code>reshape2</code>, and <code>knitr</code>. All are available through the <a href="https://cran.r-project.org/">Comprehensive R Archive Network (CRAN</a>. With those requirements met, you can install <code>fbseq</code>, load it in an R session, create input, and analyze output.</p>
 </div>
 <div id="install-fbseq" class="section level1">
 <h1><span class="header-section-number">4</span> Install <code>fbseq</code></h1>
@@ -118,15 +117,63 @@ R CMD INSTALL ...</code></pre>
 <p>where <code>...</code> is replaced by the name of the tarball produced by <code>R CMD build</code>.</p>
 </div>
 </div>
-<div id="install-fbseqserial-and-possibly-fbseqcuda" class="section level1">
-<h1><span class="header-section-number">5</span> Install <code>fbseqSerial</code> and possibly <code>fbseqCUDA</code></h1>
-<p><code>fbseqSerial</code> is portable, but you can only install <code>fbseqCUDA</code> on a machine with CUDA and a CUDA-capable graphics processing unit (GPU). The <code>fbseqCUDA</code> package is necessary for running the parallelized MCMC. <code>fbseqSerial</code> is a version of <code>fbseqCUDA</code> that uses no parallel computing at all. <code>fbseqSerial</code> can run on most machines, but it is slow for large datasets. For installation instructions, see the <a href="https://github.com/wlandau/fbseqCUDA/blob/master/vignettes/install.html"><code>fbseqCUDA</code> installation vignette</a>.</p>
+<div id="install-an-mcmc-backend-package-either-fbseqserial-fbseqcuda-or-both" class="section level1">
+<h1><span class="header-section-number">5</span> Install an MCMC backend package, either <code>fbseqSerial</code>, <code>fbseqCUDA</code>, or both</h1>
+<p><code>fbseqSerial</code> and <code>fbseqCUDA</code> are alternative backends used to run the MCMC. To test the MCMC functionality on a small dataset, you can install the <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code> package</a> package and call <code>fbseq(..., backend = &quot;serial&quot;)</code>. For a dataset with a large number of genes (rows), <code>fbseqSerial</code> is slow. If you have a machine with a CUDA-capable general general purpose graphics processing unit (GPU), you can install the <code>fbseqCUDA</code> backend and call <code>fbseq(..., backend = &quot;CUDA&quot;)</code> or simply <code>fbseq(...)</code> to run a serious analysis. MCMCs that take days with <code>fbseqSerial</code> take only a few hours with <code>fbseqCUDA</code>.</p>
 </div>
-<div id="workflow-overview" class="section level1">
-<h1><span class="header-section-number">6</span> Workflow overview</h1>
-<p>A typical workflow only requires a few lines of code. However, it requires an understanding of the S4 classes of this package. The steps are as follows.</p>
+<div id="quick-start" class="section level1">
+<h1><span class="header-section-number">6</span> Quick start</h1>
+<p>After installing <code>fbseq</code> and <code>fbseqSerial</code>, the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(fbseq)
+
+<span class="co"># Example RNA-seq dataset wrapped in an S4 class.</span>
+<span class="kw">data</span>(paschold) 
+
+<span class="co"># Use a small subset of the data (few genes).</span>
+paschold@counts =<span class="st"> </span><span class="kw">head</span>(paschold@counts, <span class="dv">20</span>) 
+
+<span class="co"># Run the MCMC for only a few iterations.</span>
+configs =<span class="st"> </span><span class="kw">Configs</span>(<span class="dt">burnin =</span> <span class="dv">10</span>, <span class="dt">iterations =</span> <span class="dv">10</span>, <span class="dt">thin =</span> <span class="dv">1</span>) 
+
+<span class="co"># Set up the MCMC.</span>
+chain =<span class="st"> </span><span class="kw">Chain</span>(paschold, configs) 
+
+<span class="co"># Run 4 dispersed independent Markov chains.</span>
+chain_list =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> <span class="st">&quot;serial&quot;</span>)
+
+<span class="co"># Monitor convergence with in all parameters with </span>
+<span class="co"># Gelman-Rubin potential scale reduction factors</span>
+<span class="kw">head</span>(<span class="kw">psrf</span>(chain_list)) 
+
+<span class="co"># Means, standard deviations, and credible intervals of all parameters </span>
+<span class="kw">head</span>(<span class="kw">estimates</span>(chain_list))
+
+<span class="co"># Gene-specific (row-specific) posterior probabilities</span>
+<span class="kw">head</span>(<span class="kw">probs</span>(chain_list))
+
+<span class="co"># Monte Carlo samples on a small subset of parameters</span>
+m =<span class="st"> </span><span class="kw">mcmc_samples</span>(chain_list) 
+<span class="kw">dim</span>(m)
+m[<span class="dv">1</span>:<span class="dv">5</span>, <span class="dv">1</span>:<span class="dv">5</span>]
+
+<span class="co"># Set max_iter=Inf below to automatically run until convergence.</span>
+max_iter =<span class="st"> </span><span class="dv">3</span>
+iter =<span class="st"> </span><span class="dv">1</span>
+chain@verbose =<span class="st"> </span><span class="kw">as.integer</span>(<span class="dv">0</span>) <span class="co"># turn off console messages</span>
+chain_list =<span class="st"> </span><span class="kw">list</span>(chain)
+while(iter &lt;<span class="st"> </span>max_iter){
+  chain_list =<span class="st"> </span><span class="kw">fbseq</span>(chain_list[[<span class="dv">1</span>]], <span class="dt">backend =</span> <span class="st">&quot;serial&quot;</span>)
+  gelman =<span class="st"> </span><span class="kw">psrf</span>(chain_list)
+  <span class="co"># saveRDS(chain_list, &quot;chain_list_so_far.rds&quot;) # option to save progress</span>
+  if(<span class="kw">all</span>(gelman &lt;<span class="st"> </span><span class="fl">1.1</span>)) break
+  iter =<span class="st"> </span>iter +<span class="st"> </span><span class="dv">1</span>
+}</code></pre>
+</div>
+<div id="operational-details" class="section level1">
+<h1><span class="header-section-number">7</span> Operational details</h1>
+<p>Here is the breakdown for finer control of the package.</p>
 <div id="create-a-scenario-object." class="section level2">
-<h2><span class="header-section-number">6.1</span> Create a <code>Scenario</code> object.</h2>
+<h2><span class="header-section-number">7.1</span> Create a <code>Scenario</code> object.</h2>
 <p><code>Scenario</code> is an S4 class for storing the count data, design matrix, and instructions for calculating posterior probabilities of quantities of interest.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">new</span>(<span class="st">&quot;Scenario&quot;</span>))</code></pre>
 <pre><code>## Formal class 'Scenario' [package &quot;fbseq&quot;] with 6 slots
@@ -137,13 +184,15 @@ R CMD INSTALL ...</code></pre>
 ##   ..@ propositions: list()
 ##   ..@ supplement  : list()</code></pre>
 <p>Type <code>help(&quot;Scenario-class&quot;)</code> for details about the slots. When you have these slots ready, use the <code>Scenario</code> function to create a <code>Scenario</code> object.</p>
-<pre class="sourceCode r"><code class="sourceCode r">scenario =<span class="st"> </span><span class="kw">Scenario</span>(<span class="dt">counts =</span> counts, <span class="dt">design =</span> design, <span class="dt">contrasts =</span> contrasts, <span class="dt">bounds =</span> bounds, <span class="dt">propositions =</span> propositions, <span class="dt">supplement =</span> supplement)</code></pre>
-<p>With the exception of <code>Chain</code> objects, arguments passed to <code>Scenario</code> need to be explicitly passed to their slots. For example,</p>
+<pre class="sourceCode r"><code class="sourceCode r">scenario =<span class="st"> </span><span class="kw">Scenario</span>(<span class="dt">counts =</span> counts, <span class="dt">design =</span> design, 
+  <span class="dt">contrasts =</span> contrasts, <span class="dt">bounds =</span> bounds, <span class="dt">propositions =</span> propositions, 
+  <span class="dt">supplement =</span> supplement)</code></pre>
+<p>For this constructor, arguments should be explicitly named. For example,</p>
 <pre class="sourceCode r"><code class="sourceCode r">scenario =<span class="st"> </span><span class="kw">Scenario</span>(counts, design, contrasts, bounds, propositions, supplement)</code></pre>
 <p>would throw an error.</p>
 <div id="example-scenario-from-paschold" class="section level3">
-<h3><span class="header-section-number">6.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></h3>
-<p>The package comes with a <code>Scenario</code> with data taken from <span class="citation">Paschold et al. (2012)</span>. The data is from an RNA-sequencing (RNA-seq) data experiment on maize described in the paper.</p>
+<h3><span class="header-section-number">7.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></h3>
+<p>The package comes with a <code>Scenario</code> with data taken from <span class="citation">Paschold et al. (2012)</span>. The data is from an RNA-sequencing (RNA-seq) data experiment on maize.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(paschold)
 <span class="kw">head</span>(paschold@counts)</code></pre>
 <pre><code>##                  B73_1 B73_2 B73_3 B73_4 Mo17_1 Mo17_2 Mo17_3 Mo17_4
@@ -167,49 +216,55 @@ R CMD INSTALL ...</code></pre>
 ## AC148152.3_FG006          1          1          2
 ## AC148152.3_FG008          3          6          2
 ## AC148167.6_FG001        609        801        769</code></pre>
-<p>Here, the genes are rows (response variables) and the columns are RNA-seq libraries (observations, samples of genetic material). Each count is the relative measure of the expression of a gene in a laboratory sample of genetic material. The observations are divided into 4 groups:</p>
+<p>The dataset is large, so if you’re just trying out the package on your home computer, it would be best to simply use a subset of the data</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(paschold@counts)</code></pre>
+<pre><code>## [1] 39656    16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">paschold@counts =<span class="st"> </span><span class="kw">head</span>(paschold@counts, <span class="dv">20</span>)
+<span class="kw">dim</span>(paschold@counts)</code></pre>
+<pre><code>## [1] 20 16</code></pre>
+<p>In the data, the genes are rows and the columns are RNA-seq replicates. Each count is the relative measure of the expression of a gene in a replicate. The observations are divided into 4 genetic varieties:</p>
 <ul>
-<li><code>B73</code>: maize seedlings from an inbred corn population in Iowa.</li>
-<li><code>Mo17</code>: seedlings from a different inbred corn population in Missouri.</li>
-<li><code>B73xMo17</code>: hybrid seedlings produced from pollenating <code>B73</code> corn plants with <code>Mo17</code> pollen.</li>
-<li><code>Mo17xB73</code>: hybrid seedlings produced from pollenating <code>Mo17</code> corn plants with <code>B73</code> pollen.</li>
+<li><code>B73</code>: an inbred Iowa maize variety</li>
+<li><code>Mo17</code>: an inbred Missouri maize variety</li>
+<li><code>B73xMo17</code>: a first-generation (F1) hybrid produced from pollenating <code>B73</code> with <code>Mo17</code></li>
+<li><code>Mo17xB73</code>: an F1 hybrid from pollenating <code>Mo17</code> with <code>B73</code></li>
 </ul>
-<p>The goal of this scenario is to detect which genes satisfy which of following conditions.</p>
+<p>The goal of this scenario is to detect genes that display heterosis, or hybrid vigor, with respect to expression level (RNA-seq count). Heterosis is the phenomenon in which a hybrid surpasses both parents with respect to a given trait. The different types of heterosis are defined as follows in terms of the log RNA-seq counts.</p>
 <table>
 <tbody>
 <tr class="odd">
-<td align="left">high-parent heterosis, both hybrids</td>
+<td align="left">high-parent heterosis of the hybrid mean</td>
 <td align="left"><span class="math">\(\qquad\)</span></td>
-<td align="left">all hybrid counts &gt; <code>B73</code> and <code>Mo17</code> counts</td>
+<td align="left">hybrid mean &gt; max(<code>B73</code> and <code>Mo17</code>)</td>
 </tr>
 <tr class="even">
-<td align="left">low-parent heterosis, both hybrids</td>
+<td align="left">low-parent heterosis of the hybrid mean</td>
 <td align="left"></td>
-<td align="left">all hybrid counts &lt; <code>B73</code> and <code>Mo17</code> counts</td>
+<td align="left">hybrid mean &lt; min(<code>B73</code> and <code>Mo17</code>)</td>
 </tr>
 <tr class="odd">
-<td align="left">high-parent heterosis, <code>B73xMo17</code></td>
+<td align="left">high-parent heterosis of <code>B73xMo17</code></td>
 <td align="left"></td>
-<td align="left"><code>B73xMo17</code> counts &gt; <code>B73</code> and <code>Mo17</code> counts</td>
+<td align="left"><code>B73xMo17</code> &gt; max(<code>B73</code> and <code>Mo17</code>)</td>
 </tr>
 <tr class="even">
-<td align="left">low-parent heterosis, <code>B73xMo17</code></td>
+<td align="left">low-parent heterosis of <code>B73xMo17</code></td>
 <td align="left"></td>
-<td align="left"><code>B73xMo17</code> counts &lt; <code>B73</code> and <code>Mo17</code> counts</td>
+<td align="left"><code>B73xMo17</code> &lt; min(<code>B73</code> and <code>Mo17</code>)</td>
 </tr>
 <tr class="odd">
-<td align="left">high-parent heterosis, <code>Mo17xB73</code></td>
+<td align="left">high-parent heterosis of <code>Mo17xB73</code></td>
 <td align="left"></td>
-<td align="left"><code>Mo17xB73</code> counts &gt; <code>B73</code> and <code>Mo17</code> counts</td>
+<td align="left"><code>Mo17xB73</code> &gt; max(<code>B73</code> and <code>Mo17</code>)</td>
 </tr>
 <tr class="even">
-<td align="left">low-parent heterosis, <code>Mo17xB73</code></td>
+<td align="left">low-parent heterosis of <code>Mo17xB73</code></td>
 <td align="left"></td>
-<td align="left"><code>Mo17xB73</code> counts &lt; <code>B73</code> and <code>Mo17</code> counts</td>
+<td align="left"><code>Mo17xB73</code> &lt; min(<code>B73</code> and <code>Mo17</code>)</td>
 </tr>
 </tbody>
 </table>
-<p>To translate this problem into a <code>Scenario</code>, we use the design matrix,</p>
+<p>To define the parameterization of the model coefficients <span class="math">\(\beta_{\ell, g}\)</span>, we use the design matrix slot in our <code>Scenario</code> object.</p>
 <pre class="sourceCode r"><code class="sourceCode r">paschold@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## B73_1           1      1     -1      0      1
@@ -228,7 +283,7 @@ R CMD INSTALL ...</code></pre>
 ## Mo17xB73_2      1      1      1     -1      1
 ## Mo17xB73_3      1      1      1     -1     -1
 ## Mo17xB73_4      1      1      1     -1     -1</code></pre>
-<p>In words, the main effect parameters are <span class="math">\(\beta_{\ell, g}\)</span> for effect <span class="math">\(\ell = 1, \ldots, L = 5\)</span> and <span class="math">\(g = 1, \ldots, G = 39656\)</span>, and they describe linear combinations of the libraries within a gene. In the following table, a logarithmic scale is used for the interpretations.</p>
+<p>We can interpret each parameters as follows.</p>
 <table>
 <tbody>
 <tr class="odd">
@@ -258,42 +313,42 @@ R CMD INSTALL ...</code></pre>
 </tr>
 </tbody>
 </table>
-<p>With these interpretations, the table of conditions becomes</p>
+<p>In terms of the <span class="math">\(\beta_{\ell, g}\)</span>’s, the conditions for heterosis become the following.</p>
 <table>
 <tbody>
 <tr class="odd">
-<td align="left">high-parent heterosis, mean of hybrids</td>
+<td align="left">high-parent heterosis of the hybrid mean</td>
 <td align="left"><span class="math">\(\qquad\)</span></td>
 <td align="left"><span class="math">\(\beta_{2, g} &gt; 0\)</span> and <span class="math">\(\beta_{3, g} &gt; 0\)</span></td>
 </tr>
 <tr class="even">
-<td align="left">low-parent heterosis, mean of hybrids</td>
+<td align="left">low-parent heterosis of the hybrid mean</td>
 <td align="left"></td>
 <td align="left"><span class="math">\(-\beta_{2, g} &gt; 0\)</span> and <span class="math">\(-\beta_{3, g} &gt; 0\)</span></td>
 </tr>
 <tr class="odd">
-<td align="left">high-parent heterosis, <code>B73xMo17</code></td>
+<td align="left">high-parent heterosis of <code>B73xMo17</code></td>
 <td align="left"></td>
 <td align="left"><span class="math">\(2\beta_{2, g} + \beta_{4, g} &gt; 0\)</span> and <span class="math">\(2\beta_{3, g} + \beta_{4, g} &gt; 0\)</span></td>
 </tr>
 <tr class="even">
-<td align="left">low-parent heterosis, <code>B73xMo17</code></td>
+<td align="left">low-parent heterosis of <code>B73xMo17</code></td>
 <td align="left"></td>
 <td align="left"><span class="math">\(-2\beta_{2, g} - \beta_{4, g} &gt; 0\)</span> and <span class="math">\(-2\beta_{3, g} - \beta_{4, g} &gt; 0\)</span></td>
 </tr>
 <tr class="odd">
-<td align="left">high-parent heterosis, <code>Mo17xB73</code></td>
+<td align="left">high-parent heterosis of <code>Mo17xB73</code></td>
 <td align="left"></td>
 <td align="left"><span class="math">\(2\beta_{2, g} - \beta_{4, g} &gt; 0\)</span> and <span class="math">\(2\beta_{3, g} - \beta_{4, g} &gt; 0\)</span></td>
 </tr>
 <tr class="even">
-<td align="left">low-parent heterosis, <code>Mo17xB73</code></td>
+<td align="left">low-parent heterosis of <code>Mo17xB73</code></td>
 <td align="left"></td>
 <td align="left"><span class="math">\(-2\beta_{2, g} + \beta_{4, g} &gt; 0\)</span> and <span class="math">\(-2\beta_{3, g} + \beta_{4, g} &gt; 0\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>Each linear combination of the <span class="math">\(\beta_{\ell, g}\)</span>’s is a contrast, and each row of the table is a logical proposition. We want a posterior probability for each proposition. Let <span class="math">\(\text{I}(\cdot)\)</span> be the indicator function, <span class="math">\(m = 1, \ldots, M\)</span> be an MCMC iteration (including “thinned” iterations, but not burnin/throwaway iterations), and <span class="math">\(\beta_{\ell, g}^{(m)}\)</span> be the MCMC sample of <span class="math">\(\beta_{\ell, g}\)</span> for iteration <span class="math">\(m\)</span>. Then, the posterior probabilities of interest should be calculated as:</p>
+<p>Gene-specific (i.e., row-specific) posterior probabilities are calculated using Monte Carlo samples <span class="math">\(\beta_{\ell, g}^{(m)}\)</span> of the <span class="math">\(\beta_{\ell, g}\)</span>’s for MCMC iteration <span class="math">\(m = 1, \ldots, M\)</span>. Below, <span class="math">\(\text{I}(\cdot)\)</span> is the indicator function (which returns 1 when its argument is true and 0 otherwise).</p>
 <p><span class="math">\[ \begin{align*}
 P(\text{high-parent heterosis, mean of hybrids} \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left (\beta_{2, g}^{(m)} &gt; 0 \text{ and } \beta_{3, g}^{(m)} &gt; 0 \right ) \\
 P(\text{low-parent heterosis, mean of hybrids}) \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( -\beta_{2, g}^{(m)} &gt; 0 \text{ and } -\beta_{3, g}^{(m)} &gt; 0 \right ) \\
@@ -302,7 +357,7 @@ P(\text{low-parent heterosis, B73xMo17}) \ | \ \text{data}) &amp;\approx \frac{1
 P(\text{high-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( 2\beta_{2, g}^{(m)} - \beta_{4, g}^{(m)} &gt; 0 \text{ and } 2\beta_{3, g}^{(m)} - \beta_{4, g}^{(m)} &gt; 0 \right ) \\
 P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1}{M} \sum_{m = 1}^M \text{I}\left ( -2\beta_{2, g}^{(m)} + \beta_{4, g}^{(m)} &gt; 0 \text{ and }-2\beta_{3, g}^{(m)} + \beta_{4, g}^{(m)} &gt; 0 \right )
 \end{align*} \]</span></p>
-<p>To tell the package to calculate these posterior probabilities, be sure to make use of the <code>contrasts</code>, <code>bounds</code>, and <code>propositions</code> slots. The Paschold scenario has the 12 contrasts,</p>
+<p>To tell the software to calculate these posterior probabilities, use of the <code>contrasts</code>, <code>bounds</code>, and <code>propositions</code> slots of the <code>Scenario</code> object. In general, the package can calculate probabilities of that depend on linear combinations of the <span class="math">\(\beta_{\ell, g}\)</span>’s, and the <code>contrasts</code> slot specifies these linear combinations.</p>
 <pre class="sourceCode r"><code class="sourceCode r">paschold@contrasts</code></pre>
 <pre><code>## $`high-parent_B73xMo17_Mo17xB73_1`
 ## beta_1 beta_2 beta_3 beta_4 beta_5 
@@ -351,7 +406,7 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ## $`low-parent_Mo17xB73_2`
 ## beta_1 beta_2 beta_3 beta_4 beta_5 
 ##      0      0     -2      1      0</code></pre>
-<p>the lower bounds in the inequalities (all zero),</p>
+<p>As in the heterosis example, the probabilities are calculated by comparing the linear combinations to lower bounds. In the heterosis example, linear combinations are being compared to zero, so all the slots in the <code>bounds</code> slot should be zero.</p>
 <pre class="sourceCode r"><code class="sourceCode r">paschold@bounds</code></pre>
 <pre><code>## high-parent_B73xMo17_Mo17xB73_1 high-parent_B73xMo17_Mo17xB73_2 
 ##                               0                               0 
@@ -365,7 +420,7 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ##                               0                               0 
 ##           low-parent_Mo17xB73_1           low-parent_Mo17xB73_2 
 ##                               0                               0</code></pre>
-<p>and the 6 logical propositions we care about, expressed in terms of the indices of the contrasts above.</p>
+<p>The conditions for heterosis are formulated as logical propositions, and these propositions are logical conjunctions that depend on the linear combinations and lower bounds from before. To write these heterosis propositions in terms of <code>contrasts</code> and <code>bounds</code>, use the <code>propositions</code> slot.</p>
 <pre class="sourceCode r"><code class="sourceCode r">paschold@propositions</code></pre>
 <pre><code>## $`high-parent_B73xMo17_Mo17xB73`
 ## high-parent_B73xMo17_Mo17xB73_1 high-parent_B73xMo17_Mo17xB73_2 
@@ -390,35 +445,35 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 ## $`low-parent_Mo17xB73`
 ## low-parent_Mo17xB73_1 low-parent_Mo17xB73_2 
 ##                    11                    12</code></pre>
-<p>When the MCMC is run with the <code>fbseq</code> function, the package will estimate, for each gene, the probability that each of the 6 propositions is true.</p>
-<p>Note: every <code>Scenario</code> object has an optional <code>suppelement</code> slot with additional information about the scenario. In this case, <code>paschold@supplement</code> is an empty list.</p>
+<p>With the <code>contrasts</code>, <code>bounds</code>, and <code>propositions</code> defined, the-specific posterior probabilities are fully-specified.</p>
+<p>Lastly, every <code>Scenario</code> object has an optional <code>suppelement</code> slot with additional information about the scenario. In this case, <code>paschold@supplement</code> is an empty list.</p>
 </div>
 <div id="example-simulated-scenario-with-scenario_heterosis_model" class="section level3">
-<h3><span class="header-section-number">6.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></h3>
+<h3><span class="header-section-number">7.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></h3>
 <p>To simulate a heterosis scenario similar to that of <span class="citation">Paschold et al. (2012)</span>, use the <code>scenario_heterosis_model</code> function. Count data are simulated from the model given fixed values for the hyperparameters.</p>
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1         9         8        26        24        30        27
-## gene_2        31        26         3        12        29        29
-## gene_3         9        13        10        16        46        58
-## gene_4        10         7        23        24        14        20
-## gene_5         7         7         3        12        13         9
-## gene_6        44        40        51        40        23        30
+## gene_1        31        19        18        15        35        43
+## gene_2         9        14        12        13        20        14
+## gene_3         8        13         8         3         1         2
+## gene_4       163       136       112       135        60        90
+## gene_5        68        62        31        48        69        94
+## gene_6         6        11        16        14        13        12
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1        50        40        10         16         26         19
-## gene_2        13        15        24          9          6          8
-## gene_3        56        52        22         20         11         14
-## gene_4        90        94         7          4         26         33
-## gene_5        16        15         6          6          7          5
-## gene_6        20        21        28         37         32         43
+## gene_1        21        12        37         34          8         23
+## gene_2        11         8         5         15         12          7
+## gene_3         2         4         5          3          4          3
+## gene_4        62        88        86         66         56         51
+## gene_5        78        57        68         64         48         35
+## gene_6        25        20        12          8          9         18
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         12         10         24         42
-## gene_2         15         25         11          7
-## gene_3         21         14         12         26
-## gene_4          1         10         28         39
-## gene_5          6          3         11          6
-## gene_6         42         38         55         45</code></pre>
+## gene_1         31         27         27          8
+## gene_2         15         15          7         12
+## gene_3          4          5          2          1
+## gene_4        100         80         70         69
+## gene_5         50         58         54         63
+## gene_6          5          8         19         21</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -521,195 +576,37 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 </div>
 </div>
 <div id="optional-create-a-configs-object." class="section level2">
-<h2><span class="header-section-number">6.2</span> (Optional) create a <code>Configs</code> object.</h2>
+<h2><span class="header-section-number">7.2</span> (Optional) create a <code>Configs</code> object.</h2>
 <p>The <code>Configs</code> S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so just for the sake of trying out the package, you should be able to get away with calling the <code>Configs</code> function with no arguments. For a full list of slots and their explanations, type <code>help(&quot;Configs-class&quot;)</code>.</p>
-<p>However, for serious analyses, you may want to adjust the <code>iterations</code>, <code>burnin</code>, and <code>thin</code> slots to control the duration of the MCMC. <code>burinin</code> is the number of throwaway iterations at the beginning of the MCMC, <code>iterations</code> is the number of iterations for which parameter samples are actually returned to the user, and <code>thin</code> specifies the thinning interval. The total number of MCMC iterations is <code>burnin + iterations * thin</code>, and all of the <code>iterations * thin</code> portion is used to calculate posterior means, mean squares, and posterior probabilities of interest specified in the <code>Scenario</code> object. If <code>thin</code> is &gt; 1, not all parameter samples after burnin are returned to the user. For example, <code>thin</code> is 10, then after burnin, actual parameter samples are saved every 10th iteration.</p>
-<p>You may also want to adjust the <code>Configs</code> slots that apply constraints on model parameters. The <code>parameter_sets_update</code> controls which sets of parameters to update during the MCMC. Parameter sets not specified in <code>parameter_sets_update</code> will be held constant, so this slot can be used to run an empirical Bayes analysis, for example. The <code>parameter_sets_return</code>, <code>genes_return</code>, <code>libraries_return</code> (currently moot because there are no library-specific parameters other than the epsilons), <code>genes_return_epsilon</code>, and <code>libraries_return_epsilon</code> slots control which Monte Carlo parameter samples to return to the user.</p>
-<p>The <code>samplers</code> slot, in principle, allows the user to choose the MCMC algorithm to use: slice sampling, Metropolis-Hastings, etc. Currently, only the default stepping-out slice sampler is fully implemented and tested.</p>
+<p>The main slots to consider are the <code>iterations</code>, <code>burnin</code>, and <code>thin</code> slots, which control the duration of the MCMC. The total number of MCMC iterations is <code>burnin + iterations * thin</code>. <code>burinin</code> is the number of throwaway iterations at the beginning of the MCMC. Afterwards the next <code>iterations * thin</code> iterations are used to compute posterior probabilities and estimated means and mean squares for every parameter. Only <code>iterations</code> Monte Carlo parameter samples are returned to the user, and then, only for parameters specified in the <code>parameter_sets_return</code> slot. The <code>parameter_sets_update</code> slot specifies which parameters to update during the MCMC, giving the user the option to run empirical Bayes, for example. For gene-specific parameters in <code>parameter_sets_update</code>, not all parameters are returned for all the genes. (Downloading data from the GPU is expensive). Select the genes for parameter samples you want with the <code>genes_return</code> slot. For the <span class="math">\(\epsilon_{n, g}\)</span> parameters, use <code>genes_return_epsilon</code> to specify the values of <span class="math">\(g\)</span> and <code>libraries_return_epsilon</code> to specify the values of <span class="math">\(n\)</span>.</p>
 </div>
 <div id="optional-create-a-starts-object." class="section level2">
-<h2><span class="header-section-number">6.3</span> (Optional) create a <code>Starts</code> object.</h2>
-<p>The <code>Starts</code> S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as the unspecified starting values are automatically generated for a given dataset and design with <code>generate_starts</code> inside the constructor of <code>Chain</code> class. However, the user may wish to modify individual slots. For more information, type <code>help(&quot;Starts-class&quot;)</code> and be sure to read the vignette on the hierarchical model.</p>
+<h2><span class="header-section-number">7.3</span> (Optional) create a <code>Starts</code> object.</h2>
+<p>The <code>Starts</code> S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as the unspecified starting values are automatically generated. However, the user may wish to specify starting values by setting the slots manually. For more information, type <code>help(&quot;Starts-class&quot;)</code> and be sure to read the vignette on the hierarchical model.</p>
 </div>
 <div id="create-a-chain-object." class="section level2">
-<h2><span class="header-section-number">6.4</span> Create a <code>Chain</code> object.</h2>
-<p>The <code>Chain</code> class plays the role of an environment or workspace. It stores all the information in your <code>Scenario</code>, <code>Configs</code>, and <code>Starts</code> objects, in addition to Monte Carlo output and results. There are many, many S4 slots. For details on the slots, type <code>help(&quot;Chain-class&quot;)</code> and be sure to read the hierarchical model vignette. For help on how to create <code>Chain</code> objects, type <code>help(&quot;Chain&quot;)</code>.</p>
+<h2><span class="header-section-number">7.4</span> Create a <code>Chain</code> object.</h2>
+<p>The <code>Chain</code> class is the container for a whole Markov chain. It stores all the information in your <code>Scenario</code>, <code>Configs</code>, and <code>Starts</code> objects, in addition to Monte Carlo output and results. There are many, many S4 slots. For details on the slots, type <code>help(&quot;Chain-class&quot;)</code> and be sure to read the hierarchical model vignette. For help on how to create <code>Chain</code> objects, type <code>help(&quot;Chain&quot;)</code>.</p>
 <p>With only a <code>Scenario</code> object, you can create a <code>Chain</code> object with</p>
 <pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(scenario)</code></pre>
 <p>If you have <code>Configs</code> and/or <code>Starts</code> objects, you can pass them in as well.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(scenario, configs, starts)</code></pre>
 <p>As an example, here is the <code>Chain</code> created from the <code>paschold</code> scenario visited earlier.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(paschold)
-<span class="kw">str</span>(chain)</code></pre>
-<pre><code>## Formal class 'Chain' [package &quot;fbseq&quot;] with 97 slots
-##   ..@ bound_names               : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
-##   ..@ contrast_names            : chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
-##   ..@ gene_names                : chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
-##   ..@ library_names             : chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
-##   ..@ proposition_names         : chr [1:6] &quot;high-parent_B73xMo17_Mo17xB73&quot; &quot;low-parent_B73xMo17_Mo17xB73&quot; &quot;high-parent_B73xMo17&quot; &quot;low-parent_B73xMo17&quot; ...
-##   ..@ bounds                    : Named num [1:12] 0 0 0 0 0 0 0 0 0 0 ...
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
-##   ..@ contrasts                 : Named num [1:60] 0 1 0 0 0 0 0 1 0 0 ...
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:60] &quot;high-parent_B73xMo17_Mo17xB73_1.beta_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_1.beta_2&quot; &quot;high-parent_B73xMo17_Mo17xB73_1.beta_3&quot; &quot;high-parent_B73xMo17_Mo17xB73_1.beta_4&quot; ...
-##   ..@ counts                    : int [1:634496] 1 3 2323 2 3 672 459 1184 551 245 ...
-##   ..@ design                    : num [1:80] 1 1 1 1 1 1 1 1 1 1 ...
-##   ..@ propositions              : int [1:72] 1 1 0 0 0 0 0 0 0 0 ...
-##   ..@ supplement                : list()
-##   ..@ burnin                    : int 100000
-##   ..@ effects_update_beta       : int [1:5] 1 2 3 4 5
-##   ..@ genes_return              : int [1:3] 8163 20123 31295
-##   ..@ genes_return_epsilon      : int [1:3] 35235 36552 38394
-##   ..@ iterations                : int 5000
-##   ..@ libraries_return          : int [1:3] 4 10 16
-##   ..@ libraries_return_epsilon  : int [1:3] 9 13 14
-##   ..@ parameter_sets_return     : Named int [1:8] 1 1 1 1 1 1 1 0
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
-##   ..@ parameter_sets_update     : Named int [1:8] 1 1 1 1 1 1 1 0
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:8] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
-##   ..@ priors                    : Named int [1:5] 0 0 0 0 0
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
-##   ..@ samplers                  : chr &quot;default&quot;
-##   ..@ thin                      : int 20
-##   ..@ verbose                   : int 5
-##   ..@ C                         : int 12
-##   ..@ countSums_g               : int [1:39656] 7 169 28253 35 213 11719 8598 16934 7935 3697 ...
-##   ..@ countSums_n               : int [1:16] 11570430 10080543 9028832 9658141 10029386 9011261 10284321 9645122 10954923 10203856 ...
-##   ..@ designUnique              : num [1:80] 1 0 0 0 0 0 0 0 0 0 ...
-##   ..@ designUniqueN             : int [1:5] 1 2 2 2 2
-##   ..@ G                         : int 39656
-##   ..@ Greturn                   : int 3
-##   ..@ GreturnEpsilon            : int 3
-##   ..@ L                         : int 5
-##   ..@ Lupdate_beta              : int 5
-##   ..@ N                         : int 16
-##   ..@ Nreturn                   : int 3
-##   ..@ NreturnEpsilon            : int 3
-##   ..@ P                         : int 6
-##   ..@ probs                     : num [1:237936] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ seeds                     : int(0) 
-##   ..@ a                         : num 1
-##   ..@ b                         : num 1
-##   ..@ c                         : num [1:5] 10 10 10 10 10
-##   ..@ d                         : num 1000
-##   ..@ h                         : Named num [1:16] 0.0653 -0.0384 -0.1794 -0.1501 0.034 ...
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
-##   ..@ k                         : num [1:5] 1 1 1 1 1
-##   ..@ q                         : num [1:5] 3 3 3 3 3
-##   ..@ r                         : num [1:5] 2 2 2 2 2
-##   ..@ s                         : num [1:5] 100 100 100 100 100
-##   ..@ beta                      : num [1:75000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ epsilon                   : num [1:45000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ gamma                     : num [1:15000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ nu                        : num [1:5000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ sigmaSquared              : num [1:25000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ tau                       : num [1:5000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ theta                     : num [1:25000] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ xi                        : num(0) 
-##   ..@ betaStart                 : num [1:198280] -0.311 1.833 7.593 0.807 2.336 ...
-##   ..@ epsilonStart              : num [1:634496] 0.0335 0.2412 0.1782 0.2027 0.0229 ...
-##   ..@ gammaStart                : Named num [1:39656] 0.1408 0.3233 0.0138 0.2646 0.1845 ...
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
-##   ..@ nuStart                   : num 4.94
-##   ..@ sigmaSquaredStart         : num [1:5] 7.4795 0.0665 0.0618 0.0154 0.0698
-##   ..@ tauStart                  : num 0.222
-##   ..@ thetaStart                : num [1:5] 3.17 5.07e-17 -1.90e-17 1.14e-17 3.36e-17
-##   ..@ xiStart                   : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...
-##   ..@ betaPostMean              : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ epsilonPostMean           : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ gammaPostMean             : num [1:39656] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ nuPostMean                : num 0
-##   ..@ sigmaSquaredPostMean      : num [1:5] 0 0 0 0 0
-##   ..@ tauPostMean               : num 0
-##   ..@ thetaPostMean             : num [1:5] 0 0 0 0 0
-##   ..@ xiPostMean                : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ betaPostMeanSquare        : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ epsilonPostMeanSquare     : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ gammaPostMeanSquare       : num [1:39656] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ nuPostMeanSquare          : num 0
-##   ..@ sigmaSquaredPostMeanSquare: num [1:5] 0 0 0 0 0
-##   ..@ tauPostMeanSquare         : num 0
-##   ..@ thetaPostMeanSquare       : num [1:5] 0 0 0 0 0
-##   ..@ xiPostMeanSquare          : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ betaSampler               : int 1
-##   ..@ epsilonSampler            : int 1
-##   ..@ gammaSampler              : int 1
-##   ..@ nuSampler                 : int 1
-##   ..@ sigmaSquaredSampler       : int 1
-##   ..@ tauSampler                : int 1
-##   ..@ thetaSampler              : int 1
-##   ..@ xiSampler                 : int 1
-##   ..@ betaTune                  : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ epsilonTune               : num [1:634496] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ gammaTune                 : num [1:39656] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..@ nuTune                    : num 0
-##   ..@ sigmaSquaredTune          : num [1:5] 0 0 0 0 0
-##   ..@ tauTune                   : num 0
-##   ..@ thetaTune                 : num [1:5] 0 0 0 0 0
-##   ..@ xiTune                    : num [1:198280] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+<span class="co"># Call str(chain) to inspect the slots.</span></code></pre>
 <p>You can recover the scenario, configuration, or starting values of a <code>Chain</code> object with the <code>Scenario</code>, <code>Configs</code>, and <code>Starts</code> objects. For example,</p>
 <pre class="sourceCode r"><code class="sourceCode r">scenario =<span class="st"> </span><span class="kw">Scenario</span>(chain)
 configs =<span class="st"> </span><span class="kw">Configs</span>(chain)
 starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
-<span class="kw">str</span>(scenario)</code></pre>
-<pre><code>## Formal class 'Scenario' [package &quot;fbseq&quot;] with 6 slots
-##   ..@ bounds      : Named num [1:12] 0 0 0 0 0 0 0 0 0 0 ...
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:12] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot; &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot; ...
-##   ..@ contrasts   :List of 12
-##   .. ..$ high-parent_B73xMo17_Mo17xB73_1: Named num [1:5] 0 1 0 0 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ high-parent_B73xMo17_Mo17xB73_2: Named num [1:5] 0 0 1 0 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ low-parent_B73xMo17_Mo17xB73_1 : Named num [1:5] 0 -1 0 0 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ low-parent_B73xMo17_Mo17xB73_2 : Named num [1:5] 0 0 -1 0 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ high-parent_B73xMo17_1         : Named num [1:5] 0 2 0 1 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ high-parent_B73xMo17_2         : Named num [1:5] 0 0 2 1 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ low-parent_B73xMo17_1          : Named num [1:5] 0 -2 0 -1 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ low-parent_B73xMo17_2          : Named num [1:5] 0 0 -2 -1 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ high-parent_Mo17xB73_1         : Named num [1:5] 0 2 0 -1 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ high-parent_Mo17xB73_2         : Named num [1:5] 0 0 2 -1 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ low-parent_Mo17xB73_1          : Named num [1:5] 0 -2 0 1 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   .. ..$ low-parent_Mo17xB73_2          : Named num [1:5] 0 0 -2 1 0
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   ..@ counts      : int [1:39656, 1:16] 1 3 2323 2 3 672 459 1184 551 245 ...
-##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
-##   .. .. ..$ : chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
-##   .. .. ..$ : chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
-##   ..@ design      : num [1:16, 1:5] 1 1 1 1 1 1 1 1 1 1 ...
-##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
-##   .. .. ..$ : chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
-##   .. .. ..$ : chr [1:5] &quot;beta_1&quot; &quot;beta_2&quot; &quot;beta_3&quot; &quot;beta_4&quot; ...
-##   ..@ propositions:List of 6
-##   .. ..$ high-parent_B73xMo17_Mo17xB73: Named int [1:2] 1 2
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;high-parent_B73xMo17_Mo17xB73_1&quot; &quot;high-parent_B73xMo17_Mo17xB73_2&quot;
-##   .. ..$ low-parent_B73xMo17_Mo17xB73 : Named int [1:2] 3 4
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;low-parent_B73xMo17_Mo17xB73_1&quot; &quot;low-parent_B73xMo17_Mo17xB73_2&quot;
-##   .. ..$ high-parent_B73xMo17         : Named int [1:2] 5 6
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;high-parent_B73xMo17_1&quot; &quot;high-parent_B73xMo17_2&quot;
-##   .. ..$ low-parent_B73xMo17          : Named int [1:2] 7 8
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;low-parent_B73xMo17_1&quot; &quot;low-parent_B73xMo17_2&quot;
-##   .. ..$ high-parent_Mo17xB73         : Named int [1:2] 9 10
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;high-parent_Mo17xB73_1&quot; &quot;high-parent_Mo17xB73_2&quot;
-##   .. ..$ low-parent_Mo17xB73          : Named int [1:2] 11 12
-##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;low-parent_Mo17xB73_1&quot; &quot;low-parent_Mo17xB73_2&quot;
-##   ..@ supplement  : list()</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(configs)</code></pre>
+<span class="kw">str</span>(configs)</code></pre>
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 8163 20123 31295
-##   ..@ genes_return_epsilon    : int [1:3] 35235 36552 38394
+##   ..@ genes_return            : int [1:3] 10843 12626 31984
+##   ..@ genes_return_epsilon    : int [1:3] 9819 31715 38437
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 4 10 16
-##   ..@ libraries_return_epsilon: int [1:3] 9 13 14
+##   ..@ libraries_return        : int [1:3] 1 7 14
+##   ..@ libraries_return_epsilon: int [1:3] 12 15 16
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
@@ -717,73 +614,61 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 ##   ..@ samplers                : chr &quot;default&quot;
 ##   ..@ thin                    : num 20
 ##   ..@ verbose                 : int 5</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(starts)</code></pre>
-<pre><code>## Formal class 'Starts' [package &quot;fbseq&quot;] with 17 slots
-##   ..@ a           : num 1
-##   ..@ b           : num 1
-##   ..@ c           : num [1:5] 10 10 10 10 10
-##   ..@ d           : num 1000
-##   ..@ h           : Named num [1:16] 0.0653 -0.0384 -0.1794 -0.1501 0.034 ...
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:16] &quot;B73_1&quot; &quot;B73_2&quot; &quot;B73_3&quot; &quot;B73_4&quot; ...
-##   ..@ k           : num [1:5] 1 1 1 1 1
-##   ..@ q           : num [1:5] 3 3 3 3 3
-##   ..@ r           : num [1:5] 2 2 2 2 2
-##   ..@ s           : num [1:5] 100 100 100 100 100
-##   ..@ beta        : num [1:198280] -0.311 1.833 7.593 0.807 2.336 ...
-##   ..@ epsilon     : num [1:634496] 0.0335 0.2412 0.1782 0.2027 0.0229 ...
-##   ..@ gamma       : Named num [1:39656] 0.1408 0.3233 0.0138 0.2646 0.1845 ...
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:39656] &quot;AC147602.5_FG004&quot; &quot;AC148152.3_FG001&quot; &quot;AC148152.3_FG005&quot; &quot;AC148152.3_FG006&quot; ...
-##   ..@ nu          : num 4.94
-##   ..@ sigmaSquared: num [1:5] 7.4795 0.0665 0.0618 0.0154 0.0698
-##   ..@ tau         : num 0.222
-##   ..@ theta       : num [1:5] 3.17 5.07e-17 -1.90e-17 1.14e-17 3.36e-17
-##   ..@ xi          : num [1:198280] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 <p>Note that the unspecified starting values were automatically generated in the construction of the <code>Chain</code> object.</p>
 </div>
 <div id="call-fbseq-on-the-chain-object." class="section level2">
-<h2><span class="header-section-number">6.5</span> Call <code>fbseq</code> on the <code>Chain</code> object.</h2>
-<p>The <code>fbseq</code> function actually runs the MCMC algorithm to fit the model and calculate posterior probabilities of interest. It takes a single <code>Chain</code> object as an argument, and if the <code>additional_chains</code> argument is 0, outputs another <code>Chain</code> object with posterior means and means of squares of parameters, estimated posterior probabilities of interest, and updated starting values.</p>
+<h2><span class="header-section-number">7.5</span> Call <code>fbseq</code> on the <code>Chain</code> object.</h2>
+<p>The <code>fbseq</code> function runs the MCMC algorithm to estimate parameters and calculate posterior probabilities. It takes a single <code>Chain</code> object as an argument, and outputs either another <code>Chain</code> object or a list of <code>Chain</code> objects, depending on the value of <code>additional_chains</code>. To run a single chain, use:</p>
 <pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">additional_chains =</span> <span class="dv">0</span>)</code></pre>
-<p>The starting values of <code>out</code> are the final parameter samples of the previous MCMC. The upshot is that calling <code>fbseq</code> on <code>out</code> will resume the MCMC where it left off.</p>
+<p>Here, <code>out</code> is another <code>Chain</code> object with the results. The starting values of <code>out</code> are the final parameter samples of the previous MCMC. That way, you can call <code>fbseq</code> on <code>out</code> and the MCMC will resume where it last left off.</p>
 <pre class="sourceCode r"><code class="sourceCode r">continuation =<span class="st"> </span><span class="kw">fbseq</span>(out, <span class="dt">additional_chains =</span> <span class="dv">0</span>)</code></pre>
-<p>You can even run the MCMC indefinitely and save your work at after every attempt.</p>
+<p>To monitor convergence, you can run multiple chains and use the <code>psrf</code> function to compute Gelman-Rubin potential scale reduction factors on a list of chains <span class="citation">(Gelman et al. 2013)</span>. For example, to automatically run the MCMC until convergence, you could do the following.</p>
 <pre class="sourceCode r"><code class="sourceCode r">repeat{
-  chain =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">additional_chains =</span> <span class="dv">0</span>)
-  <span class="kw">saveRDS</span>(chain, <span class="st">&quot;chain.rds&quot;</span>)
+  chain_list =<span class="st"> </span><span class="kw">fbseq</span>(chain) <span class="co"># equivalent to fbseq(chain, additional_chains = 3)</span>
+  <span class="kw">saveRDS</span>(chain, <span class="st">&quot;chain_list_so_far.rds&quot;</span>)
+  if(<span class="kw">all</span>(<span class="kw">psrf</span>(chain_list)) &lt;<span class="st"> </span><span class="fl">1.1</span>) break
 }</code></pre>
 <p>If the <code>additional_chains</code> argument is greater than 0, an additional <code>additional_chains</code> MCMC chains will be run after the first one, and the output object from <code>fbseq</code> will a list of the total <code>1 + additional_chains</code> run. This is useful for computing Gelman-Rubin potential scale reduction factors with the <code>psrf</code> function to assess convergence.</p>
 <pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">additional_chains =</span> <span class="dv">3</span>)
 <span class="kw">psrf</span>(out)</code></pre>
 </div>
-<div id="what-if-fbseq-tells-me-i-need-the-fbseqcuda-package" class="section level2">
-<h2><span class="header-section-number">6.6</span> What if <code>fbseq</code> tells me I need the <code>fbseqCUDA</code> package?</h2>
-<p><code>fbseqSerial</code> is a version of <code>fbseqCUDA</code> that should work on most machines. It does not use GPU computing, though, and it is slow for large datasets. If you don’t have <code>fbseqCUDA</code>, install <code>fbseqSerial</code> and then run</p>
+<div id="choosing-a-backend-fbseqserial-or-fbseqcuda" class="section level2">
+<h2><span class="header-section-number">7.6</span> Choosing a backend: <code>fbseqSerial</code> or <code>fbseqCUDA</code></h2>
+<p><code>fbseqSerial</code> can run on most machines, but it is slow for datasets with lots of genes. Select the <code>fbseqSerial</code> backend by specifying <code>backend = &quot;serial&quot;</code> in <code>fbseq</code>:</p>
 <pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> <span class="st">&quot;serial&quot;</span>)</code></pre>
-<p>You can also distribute any additional MCMC chains (after the first one) over forked processes.</p>
+<p>For the serial backend, you can distribute the MCMC chains after the first chain over multiple parallel processes.</p>
 <pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> <span class="st">&quot;serial&quot;</span>, <span class="dt">processes =</span> <span class="dv">3</span>)</code></pre>
-<p>The first chain will still run in its own process before the rest. The reason is that the later chains use the first chain to get starting values, which should be overdispersed relative to the full joint posterior distribution.</p>
+<p><code>fbseqCUDA</code> requires a CUDA-capable graphics processing unit (GPU), but it is much faster. Elapsed runtimes are in hours rather than days for typical-sized RNA-seq datasets. Select this backend with either</p>
+<pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> <span class="st">&quot;CUDA&quot;</span>)</code></pre>
+<p>or simply</p>
+<pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain)</code></pre>
 </div>
 <div id="inspect-the-output." class="section level2">
-<h2><span class="header-section-number">6.7</span> Inspect the output.</h2>
-<p>No sample output is shipped with this package because output <code>Chain</code> objects are is usually large, in the tens of megabytes at least. However, all the functions to extract output are easy one-liners. Let <code>obj</code> be a either single <code>Chain</code> object or a list of chain objects returned by <code>fbseq()</code>.</p>
+<h2><span class="header-section-number">7.7</span> Inspect the output.</h2>
+<p>The <code>fbseq</code> package has several functions for analyzing MCMC output. Below <code>obj</code>, can either be a <code>Chain</code> object or a list of <code>Chain</code> objects.</p>
 <table>
 <tbody>
 <tr class="odd">
+<td align="left"><code>psrf(obj)</code></td>
+<td align="left"></td>
+<td align="left">Gelman-Rubin potential scale reduction factors on all parameters, used to monitor convergence <span class="citation">(Gelman et al. 2013)</span>. Here, <code>obj</code> must be a list of at least 2 <code>Chain</code> objects.</td>
+</tr>
+<tr class="even">
 <td align="left"><code>probs(obj)</code></td>
 <td align="left"></td>
-<td align="left">Estimated gene-specific posterior probabilities of each logical proposition specified in <code>Scenario</code></td>
-</tr>
-<tr class="even">
-<td align="left"><code>effect_sizes(obj)</code></td>
-<td align="left"></td>
-<td align="left">Estimated gene-specific effect sizes for each logical proposition. For example, if the proposition is “<span class="math">\(2\beta_{2, g} - \beta_{4, g} &gt; 1\)</span> and <span class="math">\(2\beta_{3, g} - \beta_{4, g} &gt; 0.5\)</span>”, then the effect size is <span class="math">\(\min \left (2\beta_{2, g} - \beta_{4, g} - 1, \ 2\beta_{3, g} - \beta_{4, g} - 0.5 \right )^+\)</span>, where <span class="math">\((\cdots)^+\)</span> denote the positive part of an expression.</td>
+<td align="left">Estimated gene-specific posterior probabilities specified in <code>Scenario</code></td>
 </tr>
 <tr class="odd">
-<td align="left"><code>estimates(obj, level)</code></td>
+<td align="left"><code>effect_sizes(obj)</code></td>
 <td align="left"></td>
-<td align="left">Posterior means and credible intervals (of level <code>level</code>) for all parameters. Note: to avoid taking up too much memory, the credible intervals are computed using the posterior means and variances of parameters, not quantiles of actual parameter samples. The results are approximate.</td>
+<td align="left">Effect sizes that correspond to the posterior probabilities. For example, for “<span class="math">\(P (2\beta_{2, g} - \beta_{4, g} &gt; 1\)</span> and <span class="math">\(2\beta_{3, g} - \beta_{4, g} &gt; 0.5 | \text{data})\)</span>”, the effect size is the positive part of <span class="math">\(\min \left (2\beta_{2, g} - \beta_{4, g} - 1, \ 2\beta_{3, g} - \beta_{4, g} - 0.5 \right )\)</span>.</td>
 </tr>
 <tr class="even">
+<td align="left"><code>estimates(obj, level)</code></td>
+<td align="left"></td>
+<td align="left">Posterior means, standard deviations, and credible intervals (of level <code>level</code>) for all parameters. The credible intervals are computed using the normal distributions given by the posterior means and standard deviations.</td>
+</tr>
+<tr class="odd">
 <td align="left"><code>mcmc_samples(obj)</code></td>
 <td align="left"><span class="math">\(\qquad\)</span></td>
 <td align="left">Monte Carlo samples of returned parameters selected in <code>Configs</code></td>
@@ -792,6 +677,7 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 </table>
 <div class="references">
 <h1 id="references" class="unnumbered">References</h1>
+<p>Gelman, Andrew, John b. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. CRC Press.</p>
 <p>Paschold, Anja, Yi Jia, Caroline Marcon, Steve Lund, Nick B Larson, Cheng-Ting Yeh, Stephan Ossowski, et al. 2012. “Complementation Contributes to Transcriptome Complexity in Maize (<em>Zea Mays L.</em>) Hybrids Relative to Their Inbred Parents.” <em>Genome Research</em> 22 (12). Cold Spring Harbor Lab: 2445–54.</p>
 </div>
 </div>
