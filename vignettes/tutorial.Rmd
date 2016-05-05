@@ -43,7 +43,7 @@ For [`fbseq`](https://github.com/wlandau/fbseq) , you can navigate to a [list of
 
 For this option, you need the `devtools` package, available from CRAN or GitHub. Open R and run 
 
-```{r, eval=F}
+```
 library(devtools)
 install_github("wlandau/fbseq")
 ```
