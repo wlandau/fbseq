@@ -106,7 +106,7 @@ m[1:5, 1:5]
 # Set max_iter=Inf below to automatically run until convergence.
 max_iter = 3
 iter = 1
-chain@verbose = as.integer(1) # turn off console messages
+chain@verbose = as.integer(0) # turn off console messages
 chain_list = fbseq(chain, backend = back_end)
 # saveRDS(chain_list, "chain_list_so_far.rds") # option to save progress
 gelman = psrf(chain_list)
