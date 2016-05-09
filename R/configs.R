@@ -2,7 +2,9 @@
 NULL
 
 #' @title Class \code{Configs}
-#' @description A collection of MCMC control parameters.
+#' @description Set individual MCMC control parameters 
+#' (slots listed in \code{help("Configs-class")}).
+#' @seealso \code{help("Configs-class")}
 #' @exportClass Configs
 #'
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
@@ -22,7 +24,7 @@ NULL
 #' you want to return
 #' @slot parameter_sets_update Character vector naming the variables to calculate/update
 #' during the MCMC.
-#' @slot priors Names of the family of priors on the betas after integrating out the xi's. 
+#' @slot priors Character vector. Names of the family of priors on the betas after integrating out the xi's. 
 #' Can be any value returned by \code{special_beta_priors()}. All other values will default to the normal prior.
 #' @slot samplers character string indicating the sampling algorithm
 #' @slot thin MCMC thinning interval. \code{thin = 1} means parameter samples will be saved for every iterations

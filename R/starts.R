@@ -1,7 +1,7 @@
 #' @title Class \code{Starts}
-#' @description A way for users to specify model parameter 
-#' starting values. Use only when creating new \code{obj}
-#' objects from scratch.
+#' @description Set MCMC starting values and model constants listed
+#' by \code{help("Starts-class")}.
+#' @seealso \code{help("Starts-class")}
 #' @exportClass Starts
 #' 
 #' @slot a initialization constant  

@@ -126,6 +126,8 @@ R CMD INSTALL ...</code></pre>
 <p>After installing <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> and <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> , the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(fbseq)
 
+back_end =<span class="st"> &quot;serial&quot;</span> <span class="co"># change this to &quot;CUDA&quot; to use fbseqCUDA as the backend</span>
+
 <span class="co"># Example RNA-seq dataset wrapped in an S4 class.</span>
 <span class="kw">data</span>(paschold) 
 
@@ -139,7 +141,7 @@ configs =<span class="st"> </span><span class="kw">Configs</span>(<span class="d
 chain =<span class="st"> </span><span class="kw">Chain</span>(paschold, configs) 
 
 <span class="co"># Run 4 dispersed independent Markov chains.</span>
-chain_list =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> <span class="st">&quot;serial&quot;</span>)
+chain_list =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> back_end)
 
 <span class="co"># Monitor convergence with in all parameters with </span>
 <span class="co"># Gelman-Rubin potential scale reduction factors</span>
@@ -160,9 +162,9 @@ m[<span class="dv">1</span>:<span class="dv">5</span>, <span class="dv">1</span>
 max_iter =<span class="st"> </span><span class="dv">3</span>
 iter =<span class="st"> </span><span class="dv">1</span>
 chain@verbose =<span class="st"> </span><span class="kw">as.integer</span>(<span class="dv">0</span>) <span class="co"># turn off console messages</span>
-chain_list =<span class="st"> </span><span class="kw">list</span>(chain)
+chain_list =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> back_end)
 while(iter &lt;<span class="st"> </span>max_iter){
-  chain_list =<span class="st"> </span><span class="kw">fbseq</span>(chain_list[[<span class="dv">1</span>]], <span class="dt">backend =</span> <span class="st">&quot;serial&quot;</span>)
+  chain_list =<span class="st"> </span><span class="kw">lapply</span>(chain_list, fbseq, <span class="dt">additional_chains =</span> <span class="dv">0</span>, <span class="dt">backend =</span> back_end)
   gelman =<span class="st"> </span><span class="kw">psrf</span>(chain_list)
   <span class="co"># saveRDS(chain_list, &quot;chain_list_so_far.rds&quot;) # option to save progress</span>
   if(<span class="kw">all</span>(gelman &lt;<span class="st"> </span><span class="fl">1.1</span>)) break
@@ -454,26 +456,26 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1         2         1         3         2         1         2
-## gene_2        33        39        77        87        65        54
-## gene_3         9         6        10         7         7         4
-## gene_4        12        10        21        34        21        12
-## gene_5         8         8         3         1        10        10
-## gene_6        17        19        12         6         7        11
+## gene_1        14        27         5        13        22        22
+## gene_2        53        50        47        30       119       103
+## gene_3        25        19        12        29         2         2
+## gene_4        48        60       138       150        32        37
+## gene_5         9         7        32        22        16        16
+## gene_6        23        13        16        15        31        39
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1         3         3         4          1          5          0
-## gene_2       147       168        51         40        114        110
-## gene_3         1         5        12          5          1          1
-## gene_4        54        55        13          9         24         36
-## gene_5         5         5        16         16          6          6
-## gene_6         6         6        14         19          5          6
+## gene_1         7         9        24         24         12          8
+## gene_2        71        88        50         41         41         43
+## gene_3         5         3        10          6          4          4
+## gene_4        63        80        54         39        103        115
+## gene_5        39        34        24         19         37         44
+## gene_6        21        29        32         35         18         21
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1          3          4          4          6
-## gene_2         45         57        133        102
-## gene_3          7          6          5          2
-## gene_4         11          6         23         32
-## gene_5          8         10          4          2
-## gene_6         12          7          9         10</code></pre>
+## gene_1         25         16         13         12
+## gene_2         40         56         47         70
+## gene_3          7         11         11          1
+## gene_4         48         30        119        131
+## gene_5         13         15         42         38
+## gene_6         38         29         26         35</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -602,11 +604,11 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 7254 33495 35594
-##   ..@ genes_return_epsilon    : int [1:3] 6898 14461 30491
+##   ..@ genes_return            : int [1:3] 8908 31880 36139
+##   ..@ genes_return_epsilon    : int [1:3] 3986 25372 27765
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 9 14 15
-##   ..@ libraries_return_epsilon: int [1:3] 5 7 9
+##   ..@ libraries_return        : int [1:3] 9 10 15
+##   ..@ libraries_return_epsilon: int [1:3] 5 12 16
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...

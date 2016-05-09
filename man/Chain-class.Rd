@@ -5,9 +5,7 @@
 \alias{Chain-class}
 \title{Class \code{Chain}}
 \description{
-the main storage object for a heterosis MCMC chain.
-Create a new one with a call to \code{Chain()} and run MCMC
-by feeding one into \code{single_chain()}.
+Create an MCMC \code{Chain} object.
 }
 \section{Slots}{
 
@@ -223,4 +221,7 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{xiTune}}{tuning parameter}
 }}
+\seealso{
+\code{help("Chain-class")}
+}
 

@@ -84,9 +84,9 @@ m[1:5, 1:5]
 max_iter = 3
 iter = 1
 chain@verbose = as.integer(0) # turn off console messages
-chain_list = list(chain)
+chain_list = fbseq(chain, backend = back_end)
 while(iter < max_iter){
-  chain_list = fbseq(chain_list[[1]], backend = back_end)
+  chain_list = lapply(chain_list, fbseq, additional_chains = 0, backend = back_end)
   gelman = psrf(chain_list)
   # saveRDS(chain_list, "chain_list_so_far.rds") # option to save progress
   if(all(gelman < 1.1)) break

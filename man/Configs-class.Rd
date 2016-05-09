@@ -5,7 +5,8 @@
 \alias{Configs-class}
 \title{Class \code{Configs}}
 \description{
-A collection of MCMC control parameters.
+Set individual MCMC control parameters 
+(slots listed in \code{help("Configs-class")}).
 }
 \section{Slots}{
 
@@ -36,7 +37,7 @@ you want to return}
 \item{\code{parameter_sets_update}}{Character vector naming the variables to calculate/update
 during the MCMC.}
 
-\item{\code{priors}}{Names of the family of priors on the betas after integrating out the xi's. 
+\item{\code{priors}}{Character vector. Names of the family of priors on the betas after integrating out the xi's. 
 Can be any value returned by \code{special_beta_priors()}. All other values will default to the normal prior.}
 
 \item{\code{samplers}}{character string indicating the sampling algorithm}
@@ -49,4 +50,7 @@ is used to calculate posterior means, mean squares, and probabilities.}
 \item{\code{verbose}}{Number of times to print out progress during burnin and the actual MCMC.
 If \code{verbose} > 0, then progress messages will also print during setup and cleanup.}
 }}
+\seealso{
+\code{help("Configs-class")}
+}
 

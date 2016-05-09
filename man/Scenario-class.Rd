@@ -5,7 +5,8 @@
 \alias{Scenario-class}
 \title{Class \code{Scenario}}
 \description{
-A collection of MCMC control parameters.
+Set individual slots in a \code{Scenario} object (data, 
+design matrix, etc.) listed by \code{help("Scenario-class")}.
 }
 \section{Slots}{
 
@@ -31,4 +32,7 @@ its corresponding value in \code{bound}. See the tutorial vignette for more deta
 \item{\code{supplement}}{a list containing supplementary information about the scenario: 
 for example, how the data were simulated, if applicable}
 }}
+\seealso{
+\code{help("Scenario-class")}
+}
 

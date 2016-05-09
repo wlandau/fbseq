@@ -5,9 +5,8 @@
 \alias{Starts-class}
 \title{Class \code{Starts}}
 \description{
-A way for users to specify model parameter 
-starting values. Use only when creating new \code{obj}
-objects from scratch.
+Set MCMC starting values and model constants listed
+by \code{help("Starts-class")}.
 }
 \section{Slots}{
 
@@ -46,4 +45,7 @@ objects from scratch.
 
 \item{\code{xi}}{MCMC starting values}
 }}
+\seealso{
+\code{help("Starts-class")}
+}
 

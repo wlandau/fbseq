@@ -1,5 +1,7 @@
 #' @title Class \code{Scenario}
-#' @description A collection of MCMC control parameters.
+#' @description Set individual slots in a \code{Scenario} object (data, 
+#' design matrix, etc.) listed by \code{help("Scenario-class")}.
+#' @seealso \code{help("Scenario-class")}
 #' @exportClass Scenario
 #' 
 #' @slot bounds Numeric vector of length \code{length(contrasts)}. Used to formulate 

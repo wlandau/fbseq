@@ -2,9 +2,8 @@
 NULL
 
 #' @title Class \code{Chain}
-#' @description the main storage object for a heterosis MCMC chain.
-#' Create a new one with a call to \code{Chain()} and run MCMC
-#' by feeding one into \code{single_chain()}.
+#' @description Create an MCMC \code{Chain} object.
+#' @seealso \code{help("Chain-class")}
 #' @exportClass Chain
 #'
 #' @slot bound_names names of \code{bounds} slot in the original \code{Scenario} object
