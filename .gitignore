@@ -16,3 +16,5 @@
 .Rhistory
 Rbuildignore/*.pdf
 Rbuildignore/local/
+.Rproj.user
+fbseq.Rproj

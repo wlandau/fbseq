@@ -48,6 +48,8 @@ After installing [`fbseq`](https://github.com/wlandau/fbseq)  and [`fbseqSerial`
 ```
 library(fbseq)
 
+back_end = "serial" # change this to "CUDA" to use fbseqCUDA as the backend
+
 # Example RNA-seq dataset wrapped in an S4 class.
 data(paschold) 
 
@@ -61,7 +63,7 @@ configs = Configs(burnin = 10, iterations = 10, thin = 1)
 chain = Chain(paschold, configs) 
 
 # Run 4 dispersed independent Markov chains.
-chain_list = fbseq(chain, backend = "serial")
+chain_list = fbseq(chain, backend = back_end)
 
 # Monitor convergence with in all parameters with 
 # Gelman-Rubin potential scale reduction factors
@@ -84,7 +86,7 @@ iter = 1
 chain@verbose = as.integer(0) # turn off console messages
 chain_list = list(chain)
 while(iter < max_iter){
-  chain_list = fbseq(chain_list[[1]], backend = "serial")
+  chain_list = fbseq(chain_list[[1]], backend = back_end)
   gelman = psrf(chain_list)
   # saveRDS(chain_list, "chain_list_so_far.rds") # option to save progress
   if(all(gelman < 1.1)) break
