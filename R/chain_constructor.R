@@ -2,11 +2,13 @@
 NULL
 
 #' @title Function \code{Chain}
-#' @description Construct a \code{Chain} object, the 
-#' one argument to \code{single_chain(...)}.
-#' @details If \code{list} is set, all other arguments will be dropped.
+#' @description Construct a \code{Chain} object out of \code{Scenario},
+#' \code{Configs}, and \code{Starts} objects or with a list of slots listed 
+#' by \code{help("Chain-class")}.
+#' @details If \code{slots} is not \code{NULL}, all other arguments will be dropped.
+#' @seealso \code{help("Chain-class")}
 #' @export
-#' @return a \code{Chain} object ready to be passed to \code{single_chain()}
+#' @return a \code{Chain} object
 #'
 #' @param scenario a \code{Scenario} object with count data, the design matrix, etc.
 #' @param configs A \code{Configs} object of MCMC control parameters.

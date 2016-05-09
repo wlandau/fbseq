@@ -15,7 +15,10 @@ Configs(obj = NULL, ...)
 a \code{Configs} object
 }
 \description{
-Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
-Elements passed with \code{...} must be named. For example, \code{Configs(diag = "gelman")}.
+Create a \code{Configs} from a \code{Chain} object or by
+setting individual slots.
+}
+\seealso{
+\code{help("Configs-class")}
 }
 

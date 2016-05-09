@@ -12,6 +12,10 @@ Starts(obj = NULL, ...)
 \item{...}{additional slots.}
 }
 \description{
-Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
+Create a \code{Starts} from a \code{Chain} object or by
+setting individual slots.
+}
+\seealso{
+\code{help("Starts-class")}
 }
 

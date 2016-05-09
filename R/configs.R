@@ -4,7 +4,6 @@ NULL
 #' @title Class \code{Configs}
 #' @description Set individual MCMC control parameters 
 #' (slots listed in \code{help("Configs-class")}).
-#' @seealso \code{help("Configs-class")}
 #' @exportClass Configs
 #'
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
@@ -66,8 +65,9 @@ setClass("Configs",
 )
 
 #' @title Constructor for class \code{Configs}
-#' @description Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
-#' Elements passed with \code{...} must be named. For example, \code{Configs(diag = "gelman")}.
+#' @description Create a \code{Configs} from a \code{Chain} object or by
+#' setting individual slots.
+#' @seealso \code{help("Configs-class")}
 #' @export
 #' @return a \code{Configs} object
 #' @param obj a \code{Chain} or \code{list} object to get slots from.

@@ -15,7 +15,10 @@ Scenario(obj = NULL, ...)
 a \code{Scenario} object
 }
 \description{
-Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
-Elements passed with \code{...} must be named. For example, \code{Scenario(design = my_matrix)}.
+Create a \code{Scenario} from a \code{Chain} object or by
+setting individual slots.
+}
+\seealso{
+\code{help("Scenario-class")}
 }
 

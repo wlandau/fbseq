@@ -1,7 +1,6 @@
 #' @title Class \code{Scenario}
 #' @description Set individual slots in a \code{Scenario} object (data, 
 #' design matrix, etc.) listed by \code{help("Scenario-class")}.
-#' @seealso \code{help("Scenario-class")}
 #' @exportClass Scenario
 #' 
 #' @slot bounds Numeric vector of length \code{length(contrasts)}. Used to formulate 
@@ -62,8 +61,9 @@ check_scenario = function(scenario){
 }
 
 #' @title Constructor for class \code{Scenario}
-#' @description Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
-#' Elements passed with \code{...} must be named. For example, \code{Scenario(design = my_matrix)}.
+#' @description Create a \code{Scenario} from a \code{Chain} object or by
+#' setting individual slots.
+#' @seealso \code{help("Scenario-class")}
 #' @export
 #' @return a \code{Scenario} object
 #' @param obj a \code{Chain} or \code{list} object to get slots from.

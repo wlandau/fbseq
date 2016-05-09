@@ -2,8 +2,7 @@
 NULL
 
 #' @title Class \code{Chain}
-#' @description Create an MCMC \code{Chain} object.
-#' @seealso \code{help("Chain-class")}
+#' @description MCMC \code{Chain} class.
 #' @exportClass Chain
 #'
 #' @slot bound_names names of \code{bounds} slot in the original \code{Scenario} object

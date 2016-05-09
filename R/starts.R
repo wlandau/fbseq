@@ -1,7 +1,6 @@
 #' @title Class \code{Starts}
 #' @description Set MCMC starting values and model constants listed
 #' by \code{help("Starts-class")}.
-#' @seealso \code{help("Starts-class")}
 #' @exportClass Starts
 #' 
 #' @slot a initialization constant  
@@ -57,7 +56,9 @@ setClass("Starts",
 )
 
 #' @title Constructor for class \code{Starts}
-#' @description Precedence will be given to the \code{Chain} or \code{list} object over \code{...}.
+#' @description Create a \code{Starts} from a \code{Chain} object or by
+#' setting individual slots.
+#' @seealso \code{help("Starts-class")}
 #' @export
 #' @param obj a \code{Chain} or \code{list} object to get slots from.
 #' @param ... additional slots.

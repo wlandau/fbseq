@@ -5,7 +5,7 @@
 \alias{Chain-class}
 \title{Class \code{Chain}}
 \description{
-Create an MCMC \code{Chain} object.
+MCMC \code{Chain} class.
 }
 \section{Slots}{
 
@@ -221,7 +221,4 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{xiTune}}{tuning parameter}
 }}
-\seealso{
-\code{help("Chain-class")}
-}
 

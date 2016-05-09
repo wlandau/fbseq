@@ -16,13 +16,17 @@ Chain(scenario, configs = Configs(), starts = Starts(), slots = NULL)
 \item{slots}{a list of slots to be plugged into a \code{Chain} object}
 }
 \value{
-a \code{Chain} object ready to be passed to \code{single_chain()}
+a \code{Chain} object
 }
 \description{
-Construct a \code{Chain} object, the 
-one argument to \code{single_chain(...)}.
+Construct a \code{Chain} object out of \code{Scenario},
+\code{Configs}, and \code{Starts} objects or with a list of slots listed 
+by \code{help("Chain-class")}.
 }
 \details{
-If \code{list} is set, all other arguments will be dropped.
+If \code{slots} is not \code{NULL}, all other arguments will be dropped.
+}
+\seealso{
+\code{help("Chain-class")}
 }
 

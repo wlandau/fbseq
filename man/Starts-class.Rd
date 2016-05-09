@@ -45,7 +45,4 @@ by \code{help("Starts-class")}.
 
 \item{\code{xi}}{MCMC starting values}
 }}
-\seealso{
-\code{help("Starts-class")}
-}
 

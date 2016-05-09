@@ -106,9 +106,11 @@ m[1:5, 1:5]
 # Set max_iter=Inf below to automatically run until convergence.
 max_iter = 3
 iter = 1
-chain@verbose = as.integer(0) # turn off console messages
+chain@verbose = as.integer(1) # turn off console messages
 chain_list = fbseq(chain, backend = back_end)
-while(iter < max_iter){
+# saveRDS(chain_list, "chain_list_so_far.rds") # option to save progress
+gelman = psrf(chain_list)
+if(any(gelman >= 1.1)) while(iter < max_iter){
   chain_list = lapply(chain_list, fbseq, additional_chains = 0, backend = back_end)
   gelman = psrf(chain_list)
   # saveRDS(chain_list, "chain_list_so_far.rds") # option to save progress
@@ -116,7 +118,6 @@ while(iter < max_iter){
   iter = iter + 1
 }
 ```
- 
 
 
 
@@ -322,8 +323,10 @@ continuation = fbseq(out, additional_chains = 0)
 To monitor convergence, you can run multiple chains and use the `psrf` function to compute Gelman-Rubin potential scale reduction factors on a list of chains [@bda]. For example, to automatically run the MCMC until convergence, you could do the following.
 
 ```{r, eval = F}
-repeat{
-  chain_list = fbseq(chain) # equivalent to fbseq(chain, additional_chains = 3)
+chain_list = fbseq(chain)  # equivalent to fbseq(chain, additional_chains = 3)
+saveRDS(chain, "chain_list_so_far.rds")
+if(any(psrf(chain_list)) >= 1.1) repeat{
+  chain_list = lapply(chain_list, fbseq)
   saveRDS(chain, "chain_list_so_far.rds")
   if(all(psrf(chain_list)) < 1.1) break
 }

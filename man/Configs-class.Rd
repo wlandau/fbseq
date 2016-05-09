@@ -50,7 +50,4 @@ is used to calculate posterior means, mean squares, and probabilities.}
 \item{\code{verbose}}{Number of times to print out progress during burnin and the actual MCMC.
 If \code{verbose} > 0, then progress messages will also print during setup and cleanup.}
 }}
-\seealso{
-\code{help("Configs-class")}
-}
 

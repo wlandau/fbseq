@@ -32,7 +32,4 @@ its corresponding value in \code{bound}. See the tutorial vignette for more deta
 \item{\code{supplement}}{a list containing supplementary information about the scenario: 
 for example, how the data were simulated, if applicable}
 }}
-\seealso{
-\code{help("Scenario-class")}
-}
 
