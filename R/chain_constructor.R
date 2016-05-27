@@ -94,11 +94,14 @@ fill_easy_gaps = function(chain, scenario){
     c(out, rep(0, dim(scenario@design)[1] - length(out)))
   })
 
+  G = nrow(scenario@counts)
+  N = nrow(scenario@design)
+
   if(!length(chain@effects_update_beta)) chain@effects_update_beta = 1:ncol(scenario@design)
-  if(!length(chain@genes_return)) chain@genes_return = sample.int(nrow(scenario@counts), 3, replace = T)
-  if(!length(chain@genes_return_epsilon)) chain@genes_return_epsilon = sample.int(nrow(scenario@counts), 3, replace = T)
-  if(!length(chain@libraries_return)) chain@libraries_return = sample.int(ncol(scenario@counts), 3, replace = T)
-  if(!length(chain@libraries_return_epsilon)) chain@libraries_return_epsilon = sample.int(ncol(scenario@counts), 3, replace = T)
+  if(!length(chain@genes_return)) chain@genes_return = sample.int(nrow(scenario@counts), 3, replace = G < 3)
+  if(!length(chain@genes_return_epsilon)) chain@genes_return_epsilon = sample.int(nrow(scenario@counts), 3, replace = G < 3)
+  if(!length(chain@libraries_return)) chain@libraries_return = sample.int(ncol(scenario@counts), 3, replace = N < 3)
+  if(!length(chain@libraries_return_epsilon)) chain@libraries_return_epsilon = sample.int(ncol(scenario@counts), 3, replace = N < 3)
 
   chain@bound_names = as.character(names(scenario@bounds))
   chain@contrast_names = as.character(names(scenario@contrasts))
@@ -114,14 +117,14 @@ fill_easy_gaps = function(chain, scenario){
   chain@designUniqueN = as.integer(apply(scenario@design, 2, function(x){length(unique(x[x != 0]))}))
   chain@genes_return = sort(chain@genes_return)
   chain@genes_return_epsilon = sort(chain@genes_return_epsilon)
-  chain@G = G = nrow(scenario@counts)
+  chain@G = G
   chain@Greturn = Greturn = length(chain@genes_return)
   chain@GreturnEpsilon = GreturnEpsilon = length(chain@genes_return_epsilon)
   chain@libraries_return = sort(chain@libraries_return)
   chain@libraries_return_epsilon = sort(chain@libraries_return_epsilon)
   chain@L = L = ncol(scenario@design)
   chain@Lupdate_beta = length(chain@effects_update_beta)
-  chain@N = N = nrow(scenario@design)
+  chain@N = N
   chain@Nreturn = Nreturn = length(chain@libraries_return)
   chain@NreturnEpsilon = NreturnEpsilon = length(chain@libraries_return_epsilon)
   chain@P = length(scenario@propositions)

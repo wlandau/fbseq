@@ -4,7 +4,7 @@
 #' @return x with no zeros
 #' @param x argument
 get_nonzeros = function(x){
-  stopifnot(any(x > 0))
+  if(!any(x > 0)) x = rexp(length(x))
   x1 = x[x > 0]
   x[x <= 0] = sample(x1, sum(x <= 0), replace = T)
   x
@@ -66,7 +66,9 @@ generate_starts = function(counts, design, starts = Starts()){
   nu = nt$nu
   tau = nt$tau
 
+  if(!is.finite(tau)) tau = 1e-12
   if(tau < 0) tau = 1e-12
+  if(!is.finite(nu)) nu = 1e-12
   if(nu < 0) nu = 1e-12
   if(nu > starts@d) nu = starts@d
 
