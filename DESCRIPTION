@@ -15,6 +15,7 @@ Imports:
     reshape2
 Suggests:
     fbseqCUDA,
+    fbseqOpenMP,
     fbseqSerial,
     knitr
 VignetteBuilder: knitr

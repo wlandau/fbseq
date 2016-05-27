@@ -4,7 +4,7 @@
 \alias{single_mcmc}
 \title{Function \code{single_mcmc}}
 \usage{
-single_mcmc(chain, backend = "CUDA")
+single_mcmc(chain, backend = "CUDA", threads = 1)
 }
 \arguments{
 \item{chain}{object of type \code{Chain}. This \code{chain} argument could be
@@ -13,7 +13,10 @@ if \code{chain} is the output from a previous call to \code{run_mcmc(...)},
 then the function will continue the MCMC from where it left off.}
 
 \item{backend}{defaults to "CUDA". Other options include "serial", which
-does not use any parallel computing.}
+does not use any parallel computing, and "OpenMP", which uses "OpenMP" 
+threads to parallelize within Markov chains.}
+
+\item{threads}{number of threads for the OpenMP backend.}
 }
 \value{
 a \code{Chain} object with updated parameter values. You can feed

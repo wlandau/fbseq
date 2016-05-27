@@ -4,7 +4,8 @@
 \alias{fbseq}
 \title{Function \code{fbseq}}
 \usage{
-fbseq(chain, additional_chains = 3, backend = "CUDA", processes = 1)
+fbseq(chain, additional_chains = 3, backend = "CUDA", processes = 1,
+  threads = 1)
 }
 \arguments{
 \item{chain}{object of type \code{Chain}. See the package vignette for details.}
@@ -23,6 +24,8 @@ does not use any parallel computing.}
 the additional chains. This argument is automatically reset to 1 for the CUDA 
 backend because parallel processes can interfere with CUDA contexts.
 For some other backends, chains will be distributed accross processes.}
+
+\item{threads}{Number of threads for the OpenMP implementation.}
 }
 \value{
 a \code{Chain} object or a list of \code{Chain} objects, depending on 

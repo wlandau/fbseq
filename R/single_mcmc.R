@@ -14,15 +14,21 @@ NULL
 #' if \code{chain} is the output from a previous call to \code{run_mcmc(...)},
 #' then the function will continue the MCMC from where it left off.
 #' @param backend defaults to "CUDA". Other options include "serial", which
-#' does not use any parallel computing.
-single_mcmc = function(chain, backend = "CUDA"){
+#' does not use any parallel computing, and "OpenMP", which uses "OpenMP" 
+#' threads to parallelize within Markov chains.
+#' @param threads number of threads for the OpenMP backend.
+single_mcmc = function(chain, backend = "CUDA", threads = 1){
   chain@seeds = as.integer(sample.int(1e3 * chain@N * chain@G, chain@N * chain@G))
+  if(chain@verbose) cat("Using", backend, "backend.\n")
   if(backend == "CUDA"){
     check_backend("fbseqCUDA")
     fbseqCUDA::fbseqCUDA(chain)
   } else if(backend == "serial"){
     check_backend("fbseqSerial")
     fbseqSerial::fbseqSerial(chain)
+  } else if(backend == "OpenMP"){
+    check_backend("fbseqOpenMP")
+    fbseqOpenMP::fbseqOpenMP(chain, threads = threads)
   } else {
     stop("illegal backend.")
   }

@@ -43,7 +43,7 @@ where `...` is replaced by the name of the tarball produced by `R CMD build`.
 
 # Quick start
 
-After installing [`fbseq`](https://github.com/wlandau/fbseq)  and [`fbseqSerial`](https://github.com/wlandau/fbseqSerial) , the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package. For more specific operational details, see the [tutorial vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/tutorial.html).
+After installing [`fbseq`](https://github.com/wlandau/fbseq)  and [`fbseqSerial`](https://github.com/wlandau/fbseqSerial), the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package. For more specific operational details, see the [tutorial vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/tutorial.html).
 
 ```
 library(fbseq)
@@ -95,3 +95,7 @@ if(any(gelman >= 1.1)) while(iter < max_iter){
   iter = iter + 1
 }
 ```
+
+# OpenMP support
+
+As of May 27 2016, the [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP) package is now available to provide OpenMP support. In this backend, OpenMP threads are used for parallel computation within Markov chains. Installation is similar to the other backends, and it requires OpenMP. to run, just call `fbseq(chain, backend = "OpenMP", threads = threads)`. The default number of threads is 1.

@@ -376,4 +376,10 @@ The [`fbseq`](https://github.com/wlandau/fbseq)  package has several functions f
 | `estimates(obj, level)`  |	|  Posterior means, standard deviations, and credible intervals (of level `level`) for all parameters. The credible intervals are computed using the normal distributions given by the posterior means and standard deviations. | 
 |`mcmc_samples(obj)` |	$\qquad$ | Monte Carlo samples of returned parameters selected in `Configs` | 
 
+# OpenMP support
+
+As of May 27 2016, the [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP) package is now available to provide OpenMP support. In this backend, OpenMP threads are used for parallel computation within Markov chains. Installation is similar to the other backends, and it requires OpenMP. to run, just call `fbseq(chain, backend = "OpenMP", threads = threads)`. The default number of threads is 1.
+
+
+
 # References
