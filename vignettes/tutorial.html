@@ -459,26 +459,26 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1        18        32        19         9        30        22
-## gene_2         5         4        10         5         8        13
-## gene_3         9        17        20        27        20        23
-## gene_4        10         8         5         8         1         4
-## gene_5        48        80        52        47        70        59
-## gene_6        76        78        55        37        46        35
+## gene_1        44        38        17        19        25        19
+## gene_2        29        19        64        77        51        38
+## gene_3         9        13        10        12        11         8
+## gene_4        27        35        47        31         9        11
+## gene_5         4         5        11        17         7         6
+## gene_6         7         7         5         5         5         9
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1        25        21        23         24         18         21
-## gene_2         9         5         5          5         10          6
-## gene_3        18        34         6         18         29         28
-## gene_4         7         3         2          1          2          4
-## gene_5        32        25        52         42         28         23
-## gene_6        18        11        38         45         22         20
+## gene_1        13         7        23         25          4         11
+## gene_2        67        76        16         20         76         82
+## gene_3        12         4        13          8         13         12
+## gene_4        33        33        49         41         42         27
+## gene_5         9         7         7          5         12         10
+## gene_6         6         4        11         14          5          9
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         24         29         27         27
-## gene_2         11          4          7          4
-## gene_3         31          9         18         15
-## gene_4          4          4          3          5
-## gene_5         44         41         33         28
-## gene_6         41         42         24         18</code></pre>
+## gene_1         20         23          9         13
+## gene_2         49         31         58         77
+## gene_3         11         21         14         12
+## gene_4         89        143         60         41
+## gene_5          7          2         12         13
+## gene_6         12         19          7         13</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -607,11 +607,11 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 246 19948 36221
-##   ..@ genes_return_epsilon    : int [1:3] 29699 32740 36500
+##   ..@ genes_return            : int [1:3] 5817 26376 38642
+##   ..@ genes_return_epsilon    : int [1:3] 2620 10307 24116
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 4 5 6
-##   ..@ libraries_return_epsilon: int [1:3] 8 8 9
+##   ..@ libraries_return        : int [1:3] 5 10 12
+##   ..@ libraries_return_epsilon: int [1:3] 5 10 14
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
@@ -686,7 +686,7 @@ if(<span class="kw">any</span>(<span class="kw">psrf</span>(chain_list)) &gt;=<s
 </div>
 <div id="openmp-support" class="section level1">
 <h1><span class="header-section-number">8</span> OpenMP support</h1>
-<p>As of May 27 2016, the <a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> package is now available to provide OpenMP support. In this backend, OpenMP threads are used for parallel computation within Markov chains. Installation is similar to the other backends, and it requires OpenMP. to run, just call <code>fbseq(chain, backend = &quot;OpenMP&quot;, threads = threads)</code>. The default number of threads is 1.</p>
+<p>As of May 27 2016, the <a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> package is now available to provide OpenMP support. In this backend, OpenMP threads are used for parallel computation within Markov chains. Installation is similar to the other backends, and it requires OpenMP. to run, just call <code>fbseq(chain, backend = &quot;OpenMP&quot;, threads = 4)</code>, for example. The default number of threads is 1. To check if OpenMP is correctly enabled for the package, run <code>fbseqOpenMP::check_OpenMP()</code>.</p>
 <div class="references">
 <h1 id="references" class="unnumbered">References</h1>
 <p>Gelman, Andrew, John b. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. CRC Press.</p>

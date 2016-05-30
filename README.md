@@ -98,4 +98,4 @@ if(any(gelman >= 1.1)) while(iter < max_iter){
 
 # OpenMP support
 
-As of May 27 2016, the [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP) package is now available to provide OpenMP support. In this backend, OpenMP threads are used for parallel computation within Markov chains. Installation is similar to the other backends, and it requires OpenMP. to run, just call `fbseq(chain, backend = "OpenMP", threads = threads)`. The default number of threads is 1.
+As of May 27 2016, the [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP) package is now available to provide OpenMP support. In this backend, OpenMP threads are used for parallel computation within Markov chains. Installation is similar to the other backends, and it requires OpenMP. to run, just call `fbseq(chain, backend = "OpenMP", threads = 4)`, for example. The default number of threads is 1. To check if OpenMP is correctly enabled for the package, run `fbseqOpenMP::check_OpenMP()`.
