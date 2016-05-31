@@ -21,13 +21,14 @@ VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
     'assign_samplers.R'
+    'backends.R'
     'starts.R'
     'chain.R'
     'generate_starts.R'
     'special_beta_priors.R'
     'samplers.R'
     'chain_constructor.R'
-    'check_backend.R'
+    'check_fbseq_input.R'
     'parameters.R'
     'configs.R'
     'cuda_usage.R'

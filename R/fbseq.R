@@ -22,25 +22,18 @@ NULL
 #' For some other backends, chains will be distributed accross processes.
 #' @param threads Number of threads for the OpenMP implementation.
 fbseq = function(chain, additional_chains = 3, backend = "CUDA", processes = 1, threads = 1){
+  processes = check_fbseq_input(backend, processes, threads)
   if(chain@verbose & additional_chains > 0) cat("Running pilot chain.\n")
-
-  if(threads > 1 & backend == "CUDA") 
-    warning("threads argument to the fbseq function is disregarded for the CUDA backend.")
-
-  if(processes > 1){
-    if(backend == "CUDA"){
-      processes = 1
-      warning("For CUDA backend, processes must equal 1. Using 1 process.")
-    } else if(threads > 1){
-      processes = 1
-      warning("For OpenMP backend and threads > 1, processes must equal 1. Using 1 process.")
-    }
-  }
-
   pilot = single_mcmc(chain, backend = backend, threads = threads)
   if(additional_chains < 1){
     return(pilot)
   } else {
+    if(chain@verbose){
+      p = ifelse(processes > 1, 
+        paste0("distributed over ", processes, " parallel processes.\n"), 
+        "in sequence.\n")
+      cat("Running", additional_chains, "additional dispersed chains", p)
+    }
     out = c(pilot, mclapply(1:additional_chains + 1, function(i){
       dis = disperse_starts(pilot)
       if(chain@verbose) 

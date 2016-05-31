@@ -1,6 +1,3 @@
-#' @include check_backend.R cuda_usage.R
-NULL
-
 #' @title Function \code{single_mcmc}
 #' @description Runs a single MCMC chain for a fixed number of iterations.
 #' 
@@ -21,10 +18,8 @@ single_mcmc = function(chain, backend = "CUDA", threads = 1){
   chain@seeds = as.integer(sample.int(1e3 * chain@N * chain@G, chain@N * chain@G))
   if(chain@verbose) cat("Using", backend, "backend.\n")
   if(backend == "CUDA"){
-    check_backend("fbseqCUDA")
     fbseqCUDA::fbseqCUDA(chain)
   } else if(backend == "OpenMP"){
-    check_backend("fbseqOpenMP")
     fbseqOpenMP::fbseqOpenMP(chain, threads = threads)
   } else {
     stop("illegal backend.")
