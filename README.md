@@ -100,9 +100,9 @@ if(any(gelman >= 1.1)) while(iter < max_iter){
 
 There are multiple options for activating parallel computing.
 
-- Select `backend = "CUDA"` rather than `backend = "OpenMP` in the `fbseq` function. This option uses [`CUDA`](https://en.wikipedia.org/wiki/CUDA) 
+- Select `backend = "CUDA"` rather than `backend = "OpenMP` in the `fbseq` function. (The [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) package must be installed.) This option uses [`CUDA`](https://en.wikipedia.org/wiki/CUDA) 
 to massively parallelize each individual MCMC chain if [`CUDA`](https://en.wikipedia.org/wiki/CUDA) is installed on your machine.
-- Select `backend = "OpenMP"` and `threads = n` in the `fbseq` function, where `n` is greater than 1. This option uses [`OpenMP`](https://en.wikipedia.org/wiki/OpenMP) to
+- Select `backend = "OpenMP"` and `threads = n` in the `fbseq` function, where `n` is greater than 1. (The [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP) package must be installed.) This option uses [`OpenMP`](https://en.wikipedia.org/wiki/OpenMP) to
 parallelize each individual MCMC chain if [`OpenMP`](https://en.wikipedia.org/wiki/OpenMP) is available on your machine.
-- Select `backend = "OpenMP"` and `processes = n` in the `fbseq` function, where `n` is greater than 1. Whether [`OpenMP`](https://en.wikipedia.org/wiki/OpenMP) is installed
+- Select `backend = "OpenMP"` and `processes = n` in the `fbseq` function, where `n` is greater than 1. (The [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP) package must be installed.) Whether [`OpenMP`](https://en.wikipedia.org/wiki/OpenMP) is installed
 or not, this option will distribute some of the MCMC chains over `n` parallel processes. Cannot combine with `backend = "CUDA"` or `threads = n` (`n > 1`).
