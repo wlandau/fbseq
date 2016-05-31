@@ -6,11 +6,11 @@ Version: 0.0
 Author: Will Landau <will.landau@gmail.com>
 Maintainer: Will Landau <will.landau@gmail.com>
 Depends:
-    R (>= 3.0.0)
+    R (>= 3.0.0),
+    methods
 Imports:
     actuar,
     coda,
-    methods,
     parallel,
     reshape2
 Suggests:
