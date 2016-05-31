@@ -1,6 +1,6 @@
 # Introduction
 
-The [`fbseq`](https://github.com/wlandau/fbseq)  package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). [`fbseq`](https://github.com/wlandau/fbseq)  is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) , are backend packages that run the MCMC behind the scenes. Only one is required.  [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  can run on most machines, but it is slow for large datasets. [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA)  requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. 
+The [`fbseq`](https://github.com/wlandau/fbseq)  package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). [`fbseq`](https://github.com/wlandau/fbseq)  is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP)  and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA), are backend packages that run the MCMC behind the scenes. Only one is required.  [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP)  can run on most machines, but it is slow for large datasets. [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. 
 
 # Read the [model vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/model.html) first. 
 
@@ -39,16 +39,16 @@ where `...` is replaced by the name of the tarball produced by `R CMD build`.
 
 # Install an MCMC backend package
 
-[`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) , are backend packages that run the MCMC behind the scenes. Only one is required.  [`fbseqSerial`](https://github.com/wlandau/fbseqSerial)  can run on most machines, but it is slow for large datasets. [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA)  requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. Installation is similar to that of [`fbseq`](https://github.com/wlandau/fbseq)  and is detailed in their respective `README.md` files and package vignettes.
+[`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMp)  and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) , are backend packages that run the MCMC behind the scenes. Only one is required.  [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP) can run on most machines, but it is slow for large datasets. [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA)  requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. Installation is similar to that of [`fbseq`](https://github.com/wlandau/fbseq)  and is detailed in their respective `README.md` files and package vignettes.
 
 # Quick start
 
-After installing [`fbseq`](https://github.com/wlandau/fbseq)  and [`fbseqSerial`](https://github.com/wlandau/fbseqSerial), the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package. For more specific operational details, see the [tutorial vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/tutorial.html).
+After installing [`fbseq`](https://github.com/wlandau/fbseq)  and [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP), the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package. For more specific operational details, see the [tutorial vignette](https://github.com/wlandau/fbseq/blob/master/vignettes/tutorial.html).
 
 ```
 library(fbseq)
 
-back_end = "serial" # change this to "CUDA" to use fbseqCUDA as the backend
+back_end = "OpenMP" # change this to "CUDA" to use fbseqCUDA as the backend
 
 # Example RNA-seq dataset wrapped in an S4 class.
 data(paschold) 
@@ -96,6 +96,13 @@ if(any(gelman >= 1.1)) while(iter < max_iter){
 }
 ```
 
-# OpenMP support
+# Activate parallel computing
 
-As of May 27 2016, the [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP) package is now available to provide OpenMP support. In this backend, OpenMP threads are used for parallel computation within Markov chains. Installation is similar to the other backends, and it requires OpenMP. to run, just call `fbseq(chain, backend = "OpenMP", threads = 4)`, for example. The default number of threads is 1. To check if OpenMP is correctly enabled for the package, run `fbseqOpenMP::check_OpenMP()`.
+There are multiple options for activating parallel computing.
+
+- Select `backend = "CUDA"` rather than `backend = "OpenMP` in the `fbseq` function. This option uses [`CUDA`](https://en.wikipedia.org/wiki/CUDA) 
+to massively parallelize each individual MCMC chain if [`CUDA`](https://en.wikipedia.org/wiki/CUDA) is installed on your machine.
+- Select `backend = "OpenMP"` and `threads = n` in the `fbseq` function, where `n` is greater than 1. This option uses [`OpenMP`](https://en.wikipedia.org/wiki/OpenMP) to
+parallelize each individual MCMC chain if [`OpenMP`](https://en.wikipedia.org/wiki/OpenMP) is available on your machine.
+- Select `backend = "OpenMP"` and `processes = n` in the `fbseq` function, where `n` is greater than 1. Whether [`OpenMP`](https://en.wikipedia.org/wiki/OpenMP) is installed
+or not, this option will distribute some of the MCMC chains over `n` parallel processes. Cannot combine with `backend = "CUDA"` or `threads = n` (`n > 1`).

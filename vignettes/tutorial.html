@@ -69,25 +69,26 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </ul></li>
 <li><a href="#install-an-mcmc-backend-package"><span class="toc-section-number">5</span> Install an MCMC backend package</a></li>
 <li><a href="#quick-start"><span class="toc-section-number">6</span> Quick start</a></li>
-<li><a href="#operational-details"><span class="toc-section-number">7</span> Operational details</a><ul>
-<li><a href="#create-a-scenario-object."><span class="toc-section-number">7.1</span> Create a <code>Scenario</code> object.</a><ul>
-<li><a href="#example-scenario-from-paschold"><span class="toc-section-number">7.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></a></li>
-<li><a href="#example-simulated-scenario-with-scenario_heterosis_model"><span class="toc-section-number">7.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></a></li>
+<li><a href="#activate-parallel-computing"><span class="toc-section-number">7</span> Activate parallel computing</a></li>
+<li><a href="#operational-details"><span class="toc-section-number">8</span> Operational details</a><ul>
+<li><a href="#create-a-scenario-object."><span class="toc-section-number">8.1</span> Create a <code>Scenario</code> object.</a><ul>
+<li><a href="#example-scenario-from-paschold"><span class="toc-section-number">8.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></a></li>
+<li><a href="#example-simulated-scenario-with-scenario_heterosis_model"><span class="toc-section-number">8.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></a></li>
 </ul></li>
-<li><a href="#optional-create-a-configs-object."><span class="toc-section-number">7.2</span> (Optional) create a <code>Configs</code> object.</a></li>
-<li><a href="#optional-create-a-starts-object."><span class="toc-section-number">7.3</span> (Optional) create a <code>Starts</code> object.</a></li>
-<li><a href="#create-a-chain-object."><span class="toc-section-number">7.4</span> Create a <code>Chain</code> object.</a></li>
-<li><a href="#call-fbseq-on-the-chain-object."><span class="toc-section-number">7.5</span> Call <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> on the <code>Chain</code> object.</a></li>
-<li><a href="#choosing-a-backend-fbseqserial-or-fbseqcuda"><span class="toc-section-number">7.6</span> Choosing a backend: <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> or <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a></a></li>
-<li><a href="#inspect-the-output."><span class="toc-section-number">7.7</span> Inspect the output.</a></li>
+<li><a href="#optional-create-a-configs-object."><span class="toc-section-number">8.2</span> (Optional) create a <code>Configs</code> object.</a></li>
+<li><a href="#optional-create-a-starts-object."><span class="toc-section-number">8.3</span> (Optional) create a <code>Starts</code> object.</a></li>
+<li><a href="#create-a-chain-object."><span class="toc-section-number">8.4</span> Create a <code>Chain</code> object.</a></li>
+<li><a href="#call-fbseq-on-the-chain-object."><span class="toc-section-number">8.5</span> Call <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> on the <code>Chain</code> object.</a></li>
+<li><a href="#choosing-a-backend-fbseqopenmp-or-fbseqcuda"><span class="toc-section-number">8.6</span> Choosing a backend: <a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> or <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a></a></li>
+<li><a href="#inspect-the-output."><span class="toc-section-number">8.7</span> Inspect the output.</a></li>
 </ul></li>
-<li><a href="#openmp-support"><span class="toc-section-number">8</span> OpenMP support</a></li>
 </ul>
 </div>
 
+<pre><code>## Loading required package: methods</code></pre>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>The <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing (RNA-seq) count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> and <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> , are backend packages that run the MCMC behind the scenes. Only one is required. <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> can run on most machines, but it is slow for large datasets. <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it’s much faster due to parallel computing.</p>
+<p>The <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing (RNA-seq) count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, <a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> and <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> , are backend packages that run the MCMC behind the scenes. Only one is required. <a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> can run on most machines, but it is slow for large datasets. <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it’s much faster due to parallel computing.</p>
 </div>
 <div id="read-the-model-vignette-first." class="section level1">
 <h1><span class="header-section-number">2</span> Read the <a href="https://github.com/wlandau/fbseq/blob/master/vignettes/model.html">model vignette</a> first.</h1>
@@ -120,14 +121,14 @@ R CMD INSTALL ...</code></pre>
 </div>
 <div id="install-an-mcmc-backend-package" class="section level1">
 <h1><span class="header-section-number">5</span> Install an MCMC backend package</h1>
-<p><a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> and <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> , are backend packages that run the MCMC behind the scenes. Only one is required. <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> can run on most machines, but it is slow for large datasets. <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it’s much faster due to parallel computing. Installation is similar to that of <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> and is detailed in their respective <code>README.md</code> files and package vignettes.</p>
+<p><a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> and <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a>, are backend packages that run the MCMC behind the scenes. Only one is required. <a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> can run on most machines, but it is slow for large datasets. <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it’s much faster due to parallel computing. Installation is similar to that of <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> and is detailed in their respective <code>README.md</code> files and package vignettes.</p>
 </div>
 <div id="quick-start" class="section level1">
 <h1><span class="header-section-number">6</span> Quick start</h1>
-<p>After installing <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> and <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> , the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package.</p>
+<p>After installing <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> and <a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> , the following should take a couple seconds to run. The example walks through an example data analysis and shows a few key features of the package.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(fbseq)
 
-back_end =<span class="st"> &quot;serial&quot;</span> <span class="co"># change this to &quot;CUDA&quot; to use fbseqCUDA as the backend</span>
+back_end =<span class="st"> &quot;OpenMP&quot;</span> <span class="co"># change this to &quot;CUDA&quot; to use fbseqCUDA as the backend</span>
 
 <span class="co"># Example RNA-seq dataset wrapped in an S4 class.</span>
 <span class="kw">data</span>(paschold) 
@@ -174,11 +175,20 @@ if(<span class="kw">any</span>(gelman &gt;=<span class="st"> </span><span class=
   iter =<span class="st"> </span>iter +<span class="st"> </span><span class="dv">1</span>
 }</code></pre>
 </div>
+<div id="activate-parallel-computing" class="section level1">
+<h1><span class="header-section-number">7</span> Activate parallel computing</h1>
+<p>There are multiple options for activating parallel computing.</p>
+<ul>
+<li>Select <code>backend = &quot;CUDA&quot;</code> rather than <code>backend = &quot;OpenMP</code> in the <code>fbseq</code> function. This option uses <a href="https://en.wikipedia.org/wiki/CUDA"><code>CUDA</code></a> to massively parallelize each individual MCMC chain if <a href="https://en.wikipedia.org/wiki/CUDA"><code>CUDA</code></a> is installed on your machine.</li>
+<li>Select <code>backend = &quot;OpenMP&quot;</code> and <code>threads = n</code> in the <code>fbseq</code> function, where <code>n</code> is greater than 1. This option uses <a href="https://en.wikipedia.org/wiki/OpenMP"><code>OpenMP</code></a> to parallelize each individual MCMC chain if <a href="https://en.wikipedia.org/wiki/OpenMP"><code>OpenMP</code></a> is available on your machine.</li>
+<li>Select <code>backend = &quot;OpenMP&quot;</code> and <code>processes = n</code> in the <code>fbseq</code> function, where <code>n</code> is greater than 1. Whether <a href="https://en.wikipedia.org/wiki/OpenMP"><code>OpenMP</code></a> is installed or not, this option will distribute some of the MCMC chains over <code>n</code> parallel processes. Cannot combine with <code>backend = &quot;CUDA&quot;</code> or <code>threads = n</code> (<code>n &gt; 1</code>).</li>
+</ul>
+</div>
 <div id="operational-details" class="section level1">
-<h1><span class="header-section-number">7</span> Operational details</h1>
+<h1><span class="header-section-number">8</span> Operational details</h1>
 <p>Here is the breakdown for finer control of the package.</p>
 <div id="create-a-scenario-object." class="section level2">
-<h2><span class="header-section-number">7.1</span> Create a <code>Scenario</code> object.</h2>
+<h2><span class="header-section-number">8.1</span> Create a <code>Scenario</code> object.</h2>
 <p><code>Scenario</code> is an S4 class for storing the count data, design matrix, and instructions for calculating posterior probabilities of quantities of interest.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">new</span>(<span class="st">&quot;Scenario&quot;</span>))</code></pre>
 <pre><code>## Formal class 'Scenario' [package &quot;fbseq&quot;] with 6 slots
@@ -196,7 +206,7 @@ if(<span class="kw">any</span>(gelman &gt;=<span class="st"> </span><span class=
 <pre class="sourceCode r"><code class="sourceCode r">scenario =<span class="st"> </span><span class="kw">Scenario</span>(counts, design, contrasts, bounds, propositions, supplement)</code></pre>
 <p>would throw an error.</p>
 <div id="example-scenario-from-paschold" class="section level3">
-<h3><span class="header-section-number">7.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></h3>
+<h3><span class="header-section-number">8.1.1</span> Example scenario from <span class="citation">Paschold et al. (2012)</span></h3>
 <p>The package comes with a <code>Scenario</code> with data taken from <span class="citation">Paschold et al. (2012)</span>. The data is from an RNA-sequencing (RNA-seq) data experiment on maize.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(paschold)
 <span class="kw">head</span>(paschold@counts)</code></pre>
@@ -454,31 +464,31 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <p>Lastly, every <code>Scenario</code> object has an optional <code>suppelement</code> slot with additional information about the scenario. In this case, <code>paschold@supplement</code> is an empty list.</p>
 </div>
 <div id="example-simulated-scenario-with-scenario_heterosis_model" class="section level3">
-<h3><span class="header-section-number">7.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></h3>
+<h3><span class="header-section-number">8.1.2</span> Example simulated scenario with <code>scenario_heterosis_model</code></h3>
 <p>To simulate a heterosis scenario similar to that of <span class="citation">Paschold et al. (2012)</span>, use the <code>scenario_heterosis_model</code> function. Count data are simulated from the model given fixed values for the hyperparameters.</p>
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1        44        38        17        19        25        19
-## gene_2        29        19        64        77        51        38
-## gene_3         9        13        10        12        11         8
-## gene_4        27        35        47        31         9        11
-## gene_5         4         5        11        17         7         6
-## gene_6         7         7         5         5         5         9
+## gene_1        15         6        24        26        10        12
+## gene_2         4         4         6        11         5         4
+## gene_3         2        10         7         7        17         9
+## gene_4        11         9        41        35         2         4
+## gene_5        40        51        33        26        55        62
+## gene_6         2         0        11         7         5         4
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1        13         7        23         25          4         11
-## gene_2        67        76        16         20         76         82
-## gene_3        12         4        13          8         13         12
-## gene_4        33        33        49         41         42         27
-## gene_5         9         7         7          5         12         10
-## gene_6         6         4        11         14          5          9
+## gene_1        36        43        25         17         40         27
+## gene_2         3         6         4          6         12          7
+## gene_3        15         9        11          8          8          5
+## gene_4        15         6         8          6         21         14
+## gene_5        37        32        88         59         38         56
+## gene_6        16        13         5          6          1          4
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         20         23          9         13
-## gene_2         49         31         58         77
-## gene_3         11         21         14         12
-## gene_4         89        143         60         41
-## gene_5          7          2         12         13
-## gene_6         12         19          7         13</code></pre>
+## gene_1         15         11         32         29
+## gene_2          7          7          3          8
+## gene_3         10          8          1          8
+## gene_4          8          5         25         20
+## gene_5         60         75         31         34
+## gene_6          2          2          4          9</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -581,16 +591,16 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 </div>
 </div>
 <div id="optional-create-a-configs-object." class="section level2">
-<h2><span class="header-section-number">7.2</span> (Optional) create a <code>Configs</code> object.</h2>
+<h2><span class="header-section-number">8.2</span> (Optional) create a <code>Configs</code> object.</h2>
 <p>The <code>Configs</code> S4 class contains the practical MCMC configuration parameters, such as the number of Monte Carlo iterations and the length of burnin, and important details about model specification. All of them have default settings, so just for the sake of trying out the package, you should be able to get away with calling the <code>Configs</code> function with no arguments. For a full list of slots and their explanations, type <code>help(&quot;Configs-class&quot;)</code>.</p>
 <p>The main slots to consider are the <code>iterations</code>, <code>burnin</code>, and <code>thin</code> slots, which control the duration of the MCMC. The total number of MCMC iterations is <code>burnin + iterations * thin</code>. <code>burinin</code> is the number of throwaway iterations at the beginning of the MCMC. Afterwards the next <code>iterations * thin</code> iterations are used to compute posterior probabilities and estimated means and mean squares for every parameter. Only <code>iterations</code> Monte Carlo parameter samples are returned to the user, and then, only for parameters specified in the <code>parameter_sets_return</code> slot. The <code>parameter_sets_update</code> slot specifies which parameters to update during the MCMC, giving the user the option to run empirical Bayes, for example. For gene-specific parameters in <code>parameter_sets_update</code>, not all parameters are returned for all the genes. (Downloading data from the GPU is expensive). Select the genes for parameter samples you want with the <code>genes_return</code> slot. For the <span class="math">\(\epsilon_{n, g}\)</span> parameters, use <code>genes_return_epsilon</code> to specify the values of <span class="math">\(g\)</span> and <code>libraries_return_epsilon</code> to specify the values of <span class="math">\(n\)</span>.</p>
 </div>
 <div id="optional-create-a-starts-object." class="section level2">
-<h2><span class="header-section-number">7.3</span> (Optional) create a <code>Starts</code> object.</h2>
+<h2><span class="header-section-number">8.3</span> (Optional) create a <code>Starts</code> object.</h2>
 <p>The <code>Starts</code> S4 class has the starting values of an MCMC chain. Usually, the user does not need to worry about it, as the unspecified starting values are automatically generated. However, the user may wish to specify starting values by setting the slots manually. For more information, type <code>help(&quot;Starts-class&quot;)</code> and be sure to read the vignette on the hierarchical model.</p>
 </div>
 <div id="create-a-chain-object." class="section level2">
-<h2><span class="header-section-number">7.4</span> Create a <code>Chain</code> object.</h2>
+<h2><span class="header-section-number">8.4</span> Create a <code>Chain</code> object.</h2>
 <p>The <code>Chain</code> class is the container for a whole Markov chain. It stores all the information in your <code>Scenario</code>, <code>Configs</code>, and <code>Starts</code> objects, in addition to Monte Carlo output and results. There are many, many S4 slots. For details on the slots, type <code>help(&quot;Chain-class&quot;)</code> and be sure to read the hierarchical model vignette. For help on how to create <code>Chain</code> objects, type <code>help(&quot;Chain&quot;)</code>.</p>
 <p>With only a <code>Scenario</code> object, you can create a <code>Chain</code> object with</p>
 <pre class="sourceCode r"><code class="sourceCode r">chain =<span class="st"> </span><span class="kw">Chain</span>(scenario)</code></pre>
@@ -607,11 +617,11 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 5817 26376 38642
-##   ..@ genes_return_epsilon    : int [1:3] 2620 10307 24116
+##   ..@ genes_return            : int [1:3] 1544 17049 22529
+##   ..@ genes_return_epsilon    : int [1:3] 624 696 28261
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 5 10 12
-##   ..@ libraries_return_epsilon: int [1:3] 5 10 14
+##   ..@ libraries_return        : int [1:3] 7 10 12
+##   ..@ libraries_return_epsilon: int [1:3] 1 5 8
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
@@ -622,7 +632,7 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <p>Note that the unspecified starting values were automatically generated in the construction of the <code>Chain</code> object.</p>
 </div>
 <div id="call-fbseq-on-the-chain-object." class="section level2">
-<h2><span class="header-section-number">7.5</span> Call <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> on the <code>Chain</code> object.</h2>
+<h2><span class="header-section-number">8.5</span> Call <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> on the <code>Chain</code> object.</h2>
 <p>The <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> function runs the MCMC algorithm to estimate parameters and calculate posterior probabilities. It takes a single <code>Chain</code> object as an argument, and outputs either another <code>Chain</code> object or a list of <code>Chain</code> objects, depending on the value of <code>additional_chains</code>. To run a single chain, use:</p>
 <pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">additional_chains =</span> <span class="dv">0</span>)</code></pre>
 <p>Here, <code>out</code> is another <code>Chain</code> object with the results. The starting values of <code>out</code> are the final parameter samples of the previous MCMC. That way, you can call <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> on <code>out</code> and the MCMC will resume where it last left off.</p>
@@ -639,19 +649,19 @@ if(<span class="kw">any</span>(<span class="kw">psrf</span>(chain_list)) &gt;=<s
 <pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">additional_chains =</span> <span class="dv">3</span>)
 <span class="kw">psrf</span>(out)</code></pre>
 </div>
-<div id="choosing-a-backend-fbseqserial-or-fbseqcuda" class="section level2">
-<h2><span class="header-section-number">7.6</span> Choosing a backend: <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> or <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a></h2>
-<p><a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> can run on most machines, but it is slow for datasets with lots of genes. Select the <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> backend by specifying <code>backend = &quot;serial&quot;</code> in <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> :</p>
-<pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> <span class="st">&quot;serial&quot;</span>)</code></pre>
-<p>For the serial backend, you can distribute the MCMC chains after the first chain over multiple parallel processes.</p>
-<pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> <span class="st">&quot;serial&quot;</span>, <span class="dt">processes =</span> <span class="dv">3</span>)</code></pre>
+<div id="choosing-a-backend-fbseqopenmp-or-fbseqcuda" class="section level2">
+<h2><span class="header-section-number">8.6</span> Choosing a backend: <a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> or <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a></h2>
+<p><a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> can run on most machines, but it is slow for datasets with lots of genes. Select the <a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> backend by specifying <code>backend = &quot;OpenMP&quot;</code> in <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> :</p>
+<pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> <span class="st">&quot;OpenMP&quot;</span>)</code></pre>
+<p>For the OpenMP backend, you can distribute the MCMC chains after the first chain over multiple parallel processes.</p>
+<pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> <span class="st">&quot;OpenMP&quot;</span>, <span class="dt">processes =</span> <span class="dv">3</span>)</code></pre>
 <p><a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> requires a CUDA-capable graphics processing unit (GPU), but it is much faster. Elapsed runtimes are in hours rather than days for typical-sized RNA-seq datasets. Select this backend with either</p>
 <pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain, <span class="dt">backend =</span> <span class="st">&quot;CUDA&quot;</span>)</code></pre>
 <p>or simply</p>
 <pre class="sourceCode r"><code class="sourceCode r">out =<span class="st"> </span><span class="kw">fbseq</span>(chain)</code></pre>
 </div>
 <div id="inspect-the-output." class="section level2">
-<h2><span class="header-section-number">7.7</span> Inspect the output.</h2>
+<h2><span class="header-section-number">8.7</span> Inspect the output.</h2>
 <p>The <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> package has several functions for analyzing MCMC output. Below <code>obj</code>, can either be a <code>Chain</code> object or a list of <code>Chain</code> objects.</p>
 <table>
 <tbody>
@@ -682,15 +692,11 @@ if(<span class="kw">any</span>(<span class="kw">psrf</span>(chain_list)) &gt;=<s
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div id="openmp-support" class="section level1">
-<h1><span class="header-section-number">8</span> OpenMP support</h1>
-<p>As of May 27 2016, the <a href="https://github.com/wlandau/fbseqOpenMP"><code>fbseqOpenMP</code></a> package is now available to provide OpenMP support. In this backend, OpenMP threads are used for parallel computation within Markov chains. Installation is similar to the other backends, and it requires OpenMP. to run, just call <code>fbseq(chain, backend = &quot;OpenMP&quot;, threads = 4)</code>, for example. The default number of threads is 1. To check if OpenMP is correctly enabled for the package, run <code>fbseqOpenMP::check_OpenMP()</code>.</p>
 <div class="references">
 <h1 id="references" class="unnumbered">References</h1>
 <p>Gelman, Andrew, John b. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. CRC Press.</p>
 <p>Paschold, Anja, Yi Jia, Caroline Marcon, Steve Lund, Nick B Larson, Cheng-Ting Yeh, Stephan Ossowski, et al. 2012. “Complementation Contributes to Transcriptome Complexity in Maize (<em>Zea Mays L.</em>) Hybrids Relative to Their Inbred Parents.” <em>Genome Research</em> 22 (12). Cold Spring Harbor Lab: 2445–54.</p>
+</div>
 </div>
 </div>
 
