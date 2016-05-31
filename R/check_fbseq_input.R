@@ -10,7 +10,7 @@
 #' with other modes of parallelism.
 #' For some other backends, chains will be distributed accross processes.
 #' @param threads Number of threads for the OpenMP implementation.
-check_fbseq_input = function(backend, processes, threads){
+check_fbseq_input = function(backend, processes = 1, threads = 1){
   backend_package = paste0("fbseq", backend)
   if(!(backend_package %in% backends())){
     stop("Illegal backend ", backend, ". Type backends() or ?backends for legal backends.")

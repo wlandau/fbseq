@@ -4,7 +4,7 @@
 \alias{check_fbseq_input}
 \title{Function \code{check_fbseq_input}}
 \usage{
-check_fbseq_input(backend, processes, threads)
+check_fbseq_input(backend, processes = 1, threads = 1)
 }
 \arguments{
 \item{backend}{Backend for parallel computing. Options are
