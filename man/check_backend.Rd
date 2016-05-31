@@ -7,9 +7,8 @@
 check_backend(backend_package = "fbseqCUDA")
 }
 \arguments{
-\item{backend_package}{defaults to "fbseqCUDA". Other options include
-"fbseqSerial", which does not use any parallel computing, and 
-"fbseqOpenMP", which uses OpenMP for parallelization.}
+\item{backend_package}{defaults to "fbseqCUDA". The other option is 
+"fbseqOpenMP", which uses OpenMP for parallelization if possible.}
 }
 \description{
 Checks that a given backend package.

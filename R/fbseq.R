@@ -13,9 +13,8 @@ NULL
 #' such as Gelman-Rubin potential scale reduction factors. The additional chains will be run after
 #' the first chain and have starting values overdispersed to the full joint posterior distribution, as estimated
 #' by the results of the first chain.
-#' @param backend defaults to "CUDA" (from package \code{fbseqCUDA}). 
-#' Other options include "serial" (from package \code{fbseqSerial}), which
-#' does not use any parallel computing.
+#' @param backend Backend for parallel computing. Options are
+#' "CUDA" and "OpenMP".
 #' @param processes number of CPU processes to fork for 
 #' the additional chains. This argument is automatically reset to 1 for non-serial
 #' backends because additional \code{parallel::mclapply} processes interfere
@@ -24,7 +23,19 @@ NULL
 #' @param threads Number of threads for the OpenMP implementation.
 fbseq = function(chain, additional_chains = 3, backend = "CUDA", processes = 1, threads = 1){
   if(chain@verbose & additional_chains > 0) cat("Running pilot chain.\n")
-  if(backend != "serial") processes = 1
+
+  if(processes > 1){
+    if(backend == "CUDA"){
+      processes = 1
+      if(chain@verbose) 
+        warning("For CUDA backend, processes must equal 1. Using 1 process.")
+    } else if(threads > 1){
+      processes = 1
+      if(chain@verbose) 
+        warning("For OpenMP backend and threads > 1, processes must equal 1. Using 1 process.")
+    }
+  }
+
   pilot = single_mcmc(chain, backend = backend, threads = threads)
   if(additional_chains < 1){
     return(pilot)
