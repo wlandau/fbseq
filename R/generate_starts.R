@@ -127,9 +127,9 @@ dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
     out[out <= lower & Sd > 0] = NA
     out[out >= upper & Sd > 0] = NA
   }
-  i = is.na(out)
+  i = !is.finite(out)
   out[i] = runif(sum(i), lower[i], upper[i])
-  i = is.na(out)
+  i = !is.finite(out)
   out[i] = Mean[i]
   out
 }
