@@ -104,7 +104,7 @@ dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
   m = chain@iterations * chain@thin
   Mean = slot(chain, paste0(parm, "PostMean"))
   MeanSquare = slot(chain, paste0(parm, "PostMeanSquare"))
-  Sd =  sqrt(m*(MeanSquare - Mean^2)/(m - 1))
+  Sd = sqrt(m*(MeanSquare - Mean^2)/(m - 1))
   n = length(Mean)
 
   if(!length(lower)) lower = -Inf
@@ -121,17 +121,17 @@ dispersed_set = function(chain, parm, lower = -Inf, upper = Inf){
   ct = 0
   while(any(is.na(out))){
     ct = ct + 1
-    if(ct > 1e3) stop("cannot disperse starting values. Try increasing iterations or thinning.")
+    if(ct > 1e3) break
     i = is.na(out)
     out[i] = rt(sum(i), df = df)*Sd[i]*sqrt((df-2)/df) + Mean[i]
     out[out <= lower & Sd > 0] = NA
     out[out >= upper & Sd > 0] = NA
   }
+  i = is.na(out)
+  out[i] = runif(sum(i), lower[i], upper[i])
+  i = is.na(out)
+  out[i] = Mean[i]
   out
-
-#  Min = pmax(lower, Mean - 3*Sd, na.rm = T)
-#  Max = pmin(upper, Mean + 3*Sd, na.rm = T) 
-#  runif(n, Min, Max)
 }
 
 #' @title Function \code{disperse_starts}
