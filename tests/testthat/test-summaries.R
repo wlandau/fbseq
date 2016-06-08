@@ -1,14 +1,14 @@
-# library(fbseq); library(testthat); backend = "OpenMP"
+# library(fbseq); library(testthat); backend = backend
 source("utils.R")
 
 for(backend in c("OpenMP", "CUDA")){
 
 context(paste(backend, "summaries"))
-if(backend == "OpenMP") threads = 1 + fbseqOpenMP::OpenMP_working()
+threads = 1 + (fbseqOpenMP::OpenMP_working() & (backend == "OpenMP"))
 
 test_that(paste(backend, "contrast means are calculated correctly."), {
   skip_if_missing_backend(backend)
-  obj = fbseq(ch, backend = "OpenMP", additional_chains = 3, threads = threads)
+  obj = fbseq(ch, backend = backend, additional_chains = 3, threads = threads)
   samples = Reduce("+", lapply(obj, mcmc_samples))/4
   contrast_est = contrast_estimates(obj)
   for(g in 1:dim(paschold@counts)[1]){ 
@@ -23,7 +23,7 @@ test_that(paste(backend, "contrast means are calculated correctly."), {
 
 test_that(paste(backend, "contrast mean squares are calculated correctly."), {
   skip_if_missing_backend(backend)
-  obj = fbseq(ch, backend = "OpenMP", additional_chains = 0, threads = threads)
+  obj = fbseq(ch, backend = backend, additional_chains = 0, threads = threads)
   samples = mcmc_samples(obj)
   contrast_est = contrast_estimates(obj)
   for(g in 1:dim(paschold@counts)[1]){ 
@@ -39,7 +39,7 @@ test_that(paste(backend, "contrast mean squares are calculated correctly."), {
 
 test_that(paste(backend, "functions estimates and contrast_estimates works with multiple chains."), {
   skip_if_missing_backend(backend)
-  obj = fbseq(ch, backend = "OpenMP", additional_chains = 3, threads = threads)
+  obj = fbseq(ch, backend = backend, additional_chains = 3, threads = threads)
   for(f in c("estimates", "contrast_estimates")){
     est = get(f)(obj)
     ests = lapply(obj, get(f))
@@ -55,7 +55,7 @@ test_that(paste(backend, "parameter sample means and mean squares are calculated
     genes_return_epsilon = 1:20, libraries_return_epsilon = 1:16,
     verbose = 0, priors = "Laplace")
   ch = Chain(paschold, cf)
-  obj = fbseq(ch, backend = "OpenMP", additional_chains = 0, threads = threads)
+  obj = fbseq(ch, backend = backend, additional_chains = 0, threads = threads)
   est = estimates(obj)
   samples = mcmc_samples(obj)
   n = colnames(samples)
