@@ -64,6 +64,10 @@ NULL
 #' @slot NreturnEpsilon number of libraries to return library-specific MCMC epsilon parameter samples
 #' @slot P number of propositions involving contrasts
 #' @slot probs estimated posterior probabilities of propositions in the \code{Scenario} object.
+#' @slot contrastsPostMean Posterior means of the linear combinations of the 
+#' betas, specified by the \code{contrasts} slot.
+#' @slot contrastsPostMeanSquare Posterior mean squares of the linear combinations of the
+#' betas, specified by the \code{contrasts} slot.
 #' @slot seeds vector of N*G random number generator seeds
 #' 
 #' @slot a initialization constant  
@@ -173,6 +177,8 @@ setClass("Chain",
     NreturnEpsilon = "integer",
     P = "integer",
     probs = "numeric",
+    contrastsPostMean = "numeric",
+    contrastsPostMeanSquare = "numeric",
     seeds = "integer",
 
     a = "numeric",

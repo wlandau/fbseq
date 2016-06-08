@@ -16,7 +16,8 @@ Imports:
 Suggests:
     fbseqCUDA,
     fbseqOpenMP,
-    knitr
+    knitr,
+    testthat
 VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
@@ -31,6 +32,7 @@ Collate:
     'check_fbseq_input.R'
     'parameters.R'
     'configs.R'
+    'contrast_estimates.R'
     'cuda_usage.R'
     'data.R'
     'effect_sizes.R'

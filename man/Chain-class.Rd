@@ -105,6 +105,12 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 
 \item{\code{probs}}{estimated posterior probabilities of propositions in the \code{Scenario} object.}
 
+\item{\code{contrastsPostMean}}{Posterior means of the linear combinations of the 
+betas, specified by the \code{contrasts} slot.}
+
+\item{\code{contrastsPostMeanSquare}}{Posterior mean squares of the linear combinations of the
+betas, specified by the \code{contrasts} slot.}
+
 \item{\code{seeds}}{vector of N*G random number generator seeds}
 
 \item{\code{a}}{initialization constant}

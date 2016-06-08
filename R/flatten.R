@@ -113,8 +113,10 @@ flatten_starts = function(starts){
 flatten_post = function(chain, square = F, updated_only = T){
   post = ifelse(square, "PostMeanSquare", "PostMean")
   faux_starts = Starts()
-  for(x in slotNames(chain)[grep(paste0(post, "$"), slotNames(chain))])
-    slot(faux_starts, gsub(post, "", x)) = slot(chain, x)
+  for(x in slotNames(chain)[grep(paste0(post, "$"), slotNames(chain))]){
+    if(gsub(post, "", x) %in% slotNames(faux_starts))
+      slot(faux_starts, gsub(post, "", x)) = slot(chain, x)
+  }
 
   u = chain@parameter_sets_update
   cand = parameters()

@@ -129,6 +129,8 @@ fill_easy_gaps = function(chain, scenario){
   chain@NreturnEpsilon = NreturnEpsilon = length(chain@libraries_return_epsilon)
   chain@P = length(scenario@propositions)
   chain@probs = rep(0, chain@P * chain@G)
+  chain@contrastsPostMean = rep(0, chain@C * chain@G)
+  chain@contrastsPostMeanSquare = rep(0, chain@C * chain@G)
 
   stopifnot(chain@genes_return %in% 1:chain@G)
   stopifnot(chain@genes_return_epsilon %in% 1:chain@G)
