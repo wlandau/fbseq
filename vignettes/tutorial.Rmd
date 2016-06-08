@@ -95,6 +95,11 @@ head(psrf(chain_list))
 # Means, standard deviations, and credible intervals of all parameters 
 head(estimates(chain_list))
 
+# Means, standard deviations, and credible intervals of 
+# linear combinations of the "beta" parameters used to calculate
+# gene-specific posterior probabilities.
+head(contrast_estimates(chain_list))
+
 # Gene-specific (row-specific) posterior probabilities
 head(probs(chain_list))
 
