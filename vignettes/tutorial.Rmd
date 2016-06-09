@@ -88,6 +88,9 @@ chain = Chain(paschold, configs)
 # Run 4 dispersed independent Markov chains.
 chain_list = fbseq(chain, backend = back_end)
 
+# Get total runtime.
+attr(chain_list, "runtime")
+
 # Monitor convergence with in all parameters with 
 # Gelman-Rubin potential scale reduction factors
 head(psrf(chain_list)) 
