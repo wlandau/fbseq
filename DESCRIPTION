@@ -48,4 +48,5 @@ Collate:
     'psrf.R'
     's4list.R'
     'scenario_heterosis_model.R'
+    'smallchain.R'
 RoxygenNote: 5.0.1
