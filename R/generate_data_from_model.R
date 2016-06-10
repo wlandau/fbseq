@@ -44,7 +44,7 @@ generate_data_from_model = function(genes, design, truth){
     beta = matrix(truth@beta, nrow = genes)
     mu = t(design %*% t(beta))
 
-    suppressWarnings(counts <- matrix(rpois(genes*libraries, exp(h + epsilon + mu)), nrow = genes))
+    counts = matrix(rpois(genes*libraries, exp(h + epsilon + mu)), nrow = genes)
   }
 
   rownames(counts) = paste("gene_", 1:genes, sep="")
