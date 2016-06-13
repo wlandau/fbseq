@@ -475,26 +475,26 @@ P(\text{low-parent heterosis, Mo17xB73}) \ | \ \text{data}) &amp;\approx \frac{1
 <pre class="sourceCode r"><code class="sourceCode r">s =<span class="st"> </span><span class="kw">scenario_heterosis_model</span>(<span class="dt">genes =</span> <span class="dv">1000</span>, <span class="dt">libraries =</span> <span class="dv">16</span>)
 <span class="kw">head</span>(s@counts)</code></pre>
 <pre><code>##        parent1_1 parent1_2 parent1_3 parent1_4 parent2_5 parent2_6
-## gene_1        29        41        28        19        32        27
-## gene_2        12        10        28        15         8         4
-## gene_3        33        50        76        68        10        15
-## gene_4         9         4         8        10         7         9
-## gene_5        51        51        18        16        56        45
-## gene_6         8         4        17        19         7         5
+## gene_1         8        23        11        17        12        12
+## gene_2        13        18        10         6        11        12
+## gene_3        92        78       164       157        46        44
+## gene_4        63        94        55        49        60        46
+## gene_5        17        22        22        47        38        49
+## gene_6        40        36        23        23        61       108
 ##        parent2_7 parent2_8 hybrid1_9 hybrid1_10 hybrid1_11 hybrid1_12
-## gene_1        12        17        32         46         16         16
-## gene_2        14        21         8          9         12         18
-## gene_3        39        43        36         27         56         51
-## gene_4        28        12         3          4          3          4
-## gene_5        12        16        58         36         12         14
-## gene_6        15         7         9          8         11         15
+## gene_1         0         4        11         11          8          5
+## gene_2         4         9        13         14          7          6
+## gene_3        95       127       127        110        179        204
+## gene_4        27        38        62         40         24         25
+## gene_5        31        27        28         18          5         17
+## gene_6        85        64        53         56         59         38
 ##        hybrid2_13 hybrid2_14 hybrid2_15 hybrid2_16
-## gene_1         31         38         18         13
-## gene_2          7          7         14         16
-## gene_3         31         31         83         74
-## gene_4          7          3          3          4
-## gene_5         55         61         18         18
-## gene_6          4          8         13         13</code></pre>
+## gene_1          8         10          6          5
+## gene_2         14         13          7          6
+## gene_3        142        121        286        191
+## gene_4         37         48         30         26
+## gene_5         38         19         10         19
+## gene_6         67         71         46         42</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">s@design</code></pre>
 <pre><code>##            beta_1 beta_2 beta_3 beta_4 beta_5
 ## parent1_1       1      1     -1      0      1
@@ -623,11 +623,11 @@ starts =<span class="st"> </span><span class="kw">Starts</span>(chain)
 <pre><code>## Formal class 'Configs' [package &quot;fbseq&quot;] with 13 slots
 ##   ..@ burnin                  : int 100000
 ##   ..@ effects_update_beta     : int [1:5] 1 2 3 4 5
-##   ..@ genes_return            : int [1:3] 3000 17217 38322
-##   ..@ genes_return_epsilon    : int [1:3] 8019 10055 26526
+##   ..@ genes_return            : int [1:3] 7533 25107 25582
+##   ..@ genes_return_epsilon    : int [1:3] 13060 14797 30797
 ##   ..@ iterations              : int 5000
-##   ..@ libraries_return        : int [1:3] 5 6 7
-##   ..@ libraries_return_epsilon: int [1:3] 4 10 16
+##   ..@ libraries_return        : int [1:3] 1 4 15
+##   ..@ libraries_return_epsilon: int [1:3] 4 5 12
 ##   ..@ parameter_sets_return   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ parameter_sets_update   : chr [1:7] &quot;beta&quot; &quot;epsilon&quot; &quot;gamma&quot; &quot;nu&quot; ...
 ##   ..@ priors                  : Named chr [1:5] &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; &quot;normal&quot; ...
