@@ -12,7 +12,9 @@ Imports:
     actuar,
     coda,
     parallel,
-    reshape2
+    reshape2,
+    stats,
+    utils
 Suggests:
     fbseqCUDA,
     fbseqOpenMP,
