@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/22809/wlandau/fbseq.svg)](https://zenodo.org/badge/latestdoi/22809/wlandau/fbseq)
+
 # Introduction
 
 The [`fbseq`](https://github.com/wlandau/fbseq)  package part of a collection of packages for the fully Bayesian analysis of RNA-sequencing count data, where a hierarchical model is fit with Markov chain Monte Carlo (MCMC). [`fbseq`](https://github.com/wlandau/fbseq)  is the user interface, and it contains top level functions for calling the MCMC and analyzing output. The other packages, [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP)  and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA), are backend packages that run the MCMC behind the scenes. Only one is required.  [`fbseqOpenMP`](https://github.com/wlandau/fbseqOpenMP)  can run on most machines, but it is slow for large datasets. [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) requires special hardware (i.e. a CUDA general-purpose graphics processing unit), but it's much faster due to parallel computing. 
