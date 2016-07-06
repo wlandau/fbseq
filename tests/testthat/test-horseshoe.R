@@ -10,7 +10,9 @@ test_that(paste(backend, "thetas are sampled iff priors != \"horseshoe\"."), {
   skip_if_missing_backend(backend)
   cf@priors = c("horseshoe", "Laplace", "horseshoe", "t", "normal")
   cf@parameter_sets_update = cf@parameter_sets_return = parameters()
+  cf@theta_update = which(cf@priors != "horseshoe")
   ch = Chain(paschold, cf)
+  ch@thetaStart[2:ncol(paschold@design)] = 0
   obj = fbseq(ch, backend = backend, additional_chains = 3, threads = threads)
   m = mcmc_samples(obj)
   theta = m[,grep("theta", colnames(m))]

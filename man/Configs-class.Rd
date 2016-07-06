@@ -15,6 +15,8 @@ Set individual MCMC control parameters
 
 \item{\code{effects_update_beta}}{values of l for which to update the beta_{l, g} parameters. For debugging only.}
 
+\item{\code{theta_update}}{Indices l for which theta_l is updated/sampled in the MCMC.}
+
 \item{\code{genes_return}}{Indices of genes whose parameter samples you want to return.
 Applies to all gene-specific parameters except for the epsilons.}
 

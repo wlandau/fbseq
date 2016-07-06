@@ -40,6 +40,8 @@ for example, how the data were simulated, if applicable}
 
 \item{\code{effects_update_beta}}{bounds of l for which to update the beta_{l, g} parameters.}
 
+\item{\code{theta_update}}{Indices l for which theta_l is updated/sampled in the MCMC.}
+
 \item{\code{genes_return}}{Indices of genes whose parameter samples you want to return.
 Applies to all gene-specific parameters except for the epsilons.}
 
@@ -94,6 +96,8 @@ If \code{verbose} > 0, then progress messages will also print during setup and c
 \item{\code{L}}{number of columns in the original design matrix}
 
 \item{\code{Lupdate_beta}}{number of bounds of l for which to update the beta_{l, g} parameters.}
+
+\item{\code{Lupdate_theta}}{number of indices l for which to update the theta_l parameters.}
 
 \item{\code{N}}{number of libraries}
 

@@ -8,6 +8,7 @@ NULL
 #'
 #' @slot burnin MCMC burnin, the number of MCMC iterations to ignore at the beginning of each obj
 #' @slot effects_update_beta values of l for which to update the beta_{l, g} parameters. For debugging only.
+#' @slot theta_update Indices l for which theta_l is updated/sampled in the MCMC.
 #' @slot genes_return Indices of genes whose parameter samples you want to return.
 #' Applies to all gene-specific parameters except for the epsilons.
 #' @slot genes_return_epsilon Indices of genes g for which epsilon_{n, g} is updated/returned.
@@ -36,6 +37,7 @@ setClass("Configs",
   slots = list(
     burnin = "numeric",
     effects_update_beta = "numeric",
+    theta_update = "numeric",
     genes_return = "numeric",
     genes_return_epsilon = "numeric",
     iterations = "numeric",

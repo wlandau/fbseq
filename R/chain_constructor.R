@@ -98,6 +98,7 @@ fill_easy_gaps = function(chain, scenario){
   N = nrow(scenario@design)
 
   if(!length(chain@effects_update_beta)) chain@effects_update_beta = 1:ncol(scenario@design)
+  if(!length(chain@theta_update)) chain@theta_update = 1:ncol(scenario@design)
   if(!length(chain@genes_return)) chain@genes_return = sample.int(nrow(scenario@counts), 3, replace = G < 3)
   if(!length(chain@genes_return_epsilon)) chain@genes_return_epsilon = sample.int(nrow(scenario@counts), 3, replace = G < 3)
   if(!length(chain@libraries_return)) chain@libraries_return = sample.int(ncol(scenario@counts), 3, replace = N < 3)
@@ -124,6 +125,7 @@ fill_easy_gaps = function(chain, scenario){
   chain@libraries_return_epsilon = sort(chain@libraries_return_epsilon)
   chain@L = L = ncol(scenario@design)
   chain@Lupdate_beta = length(chain@effects_update_beta)
+  chain@Lupdate_theta = length(chain@theta_update)
   chain@N = N
   chain@Nreturn = Nreturn = length(chain@libraries_return)
   chain@NreturnEpsilon = NreturnEpsilon = length(chain@libraries_return_epsilon)
