@@ -37,8 +37,10 @@ estimates = function(obj, level = 0.95){
     scale = s$mean*(shape - 1)
     s$lower = s$upper = s$mean
     i = is.finite(shape)
-    s$lower[i] = qinvgamma(1 - p, shape = shape[i], scale = scale[i])
-    s$upper[i] = qinvgamma(p, shape = shape[i], scale = scale[i])
+    if(any(i)){
+      s$lower[i] = qinvgamma(1 - p, shape = shape[i], scale = scale[i])
+      s$upper[i] = qinvgamma(p, shape = shape[i], scale = scale[i])
+    }
     d[n,] = s
   }
 
