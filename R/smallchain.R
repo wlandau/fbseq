@@ -4,7 +4,7 @@
 #' @return A small \code{Chain} object
 #' @param size Number of genes. Also the number of iterations and burnin.
 smallchain = function(size = 25){
-  data(paschold)
+  data(paschold, envir = environment())
   paschold = get("paschold")
   size = 25
   paschold@counts = paschold@counts[1:size,]

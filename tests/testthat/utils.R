@@ -1,4 +1,4 @@
-data(paschold)
+data(paschold, envir = environment())
 paschold@counts = paschold@counts[1:20,]
 cf = Configs(iterations = 50, burnin = 50, thin = 1, genes_return = 1:20, verbose = 0)
 ch = Chain(paschold, cf)

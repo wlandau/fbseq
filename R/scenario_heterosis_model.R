@@ -11,7 +11,7 @@ scenario_heterosis_model = function(genes = 3e4, libraries = 16,
         0.04, 0.03, 0.0005, 0.1), theta = c(3, 
         0, -0.007, -0.005, 0.008))){
 
-  data(paschold)
+  data(paschold, envir = environment())
   paschold = get("paschold")
   stopifnot(libraries >= nrow(paschold@design))
 
